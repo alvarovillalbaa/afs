@@ -173,7 +173,6 @@ This applies to:
 - `knowledge/`
 - `runbooks/`
 - `research/`
-- `official-documentation/`
 - `context/`
 
 ### Examples of living destinations

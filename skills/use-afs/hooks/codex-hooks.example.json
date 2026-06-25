@@ -1,0 +1,11 @@
+{
+  "description": "Example hook configuration for Codex-compatible runners. Adapt the schema to the runner in use.",
+  "hooks": {
+    "after_write": [
+      {
+        "name": "validate-afs",
+        "command": "npm run afs:validate -- ."
+      }
+    ]
+  }
+}

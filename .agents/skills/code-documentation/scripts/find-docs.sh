@@ -142,7 +142,7 @@ case "$cmd" in
         echo ""
 
         echo "📚 LIVING DOCS"
-        for dir in specs sources lib references cookbook knowledge runbooks research official-documentation context; do
+        for dir in specs sources lib references cookbook knowledge runbooks research context; do
             base="$REPO_ROOT/$dir"
             if [[ -d "$base" ]]; then
                 echo "   ✓ $base"

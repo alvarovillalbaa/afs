@@ -153,7 +153,6 @@ When the user has no existing structure, default to these top-level areas:
 - `knowledge/`
 - `runbooks/`
 - `research/`
-- `official-documentation/`
 - `sources/`
 
 This is the default contract:
@@ -171,8 +170,7 @@ This is the default contract:
 - `knowledge/` stores maintained timeless knowledge in a structured non-timestamped layout.
 - `runbooks/` stores operational procedures in a flat non-timestamped layout.
 - `research/` stores continuous research work in a flat non-timestamped layout.
-- `official-documentation/` stores external official documentation in a flat non-timestamped layout.
-- `sources/` stores URL-based source registries worth monitoring over time in a flat non-timestamped layout.
+- `sources/` stores external documentation, source snapshots, URL-based source registries, and provenance worth monitoring over time in a flat non-timestamped layout.
 
 Use top-level domain folders only when the user already has them or when a domain genuinely needs its own operational surface, such as `health/` or `investing/`. Do not use them as a substitute for canonical knowledge when `knowledge/` is the better home.
 
@@ -223,7 +221,7 @@ Rules:
 - use stable human-readable slugs unless the user already has an established naming scheme
 - keep canonical knowledge non-timestamped by default
 - put dated evidence inside files or timeline sections rather than encoding every knowledge file by date
-- keep `references/`, `cookbook/`, `runbooks/`, `research/`, `official-documentation/`, and `sources/` flat unless the user already relies on deeper structure
+- keep `references/`, `cookbook/`, `runbooks/`, `research/`, and `sources/` flat unless the user already relies on deeper structure
 - when a canonical page does not justify its own folder, a single markdown file is enough inside the appropriate parent directory
 
 Suggested logical subareas inside `knowledge/` when the user wants more structure:
@@ -309,7 +307,7 @@ strict-afs
 - `references/` contains flat code, API, and URL references.
 - `knowledge/` contains canonical maintained knowledge using `knowledge/<domain>/<subject>/<topic>/<case>/...`.
 - `plans/`, `specs/`, and `audits/` are used when the work produces those artifacts.
-- `cookbook/`, `runbooks/`, `research/`, `official-documentation/`, and `sources/` are flat source-of-truth support areas.
+- `cookbook/`, `runbooks/`, `research/`, and `sources/` are flat source-of-truth support areas.
 
 ## Writing Rules
 - Search before creating a new page.

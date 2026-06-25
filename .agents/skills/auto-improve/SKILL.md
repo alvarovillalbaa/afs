@@ -42,7 +42,7 @@ It should behave like a lightweight hyperagent, not a one-shot optimizer:
 2. Build a candidate improvement list across these target types:
    - `skill` — a `SKILL.md` file whose instructions caused weak or awkward execution
    - `agent` — an agent definition under `agents/` whose routing, trigger text, or workflow was off
-   - `documentation` — repo docs like `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `writing-style-guide.md`, `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `official-documentation/`, `context/`, or domain-specific AFS doc trees
+   - `documentation` — repo docs like `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `writing-style-guide.md`, `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `context/`, or domain-specific AFS doc trees
    - `memory` — memory files under `~/.claude/projects/*/memory/` that are stale, contradictory, or missing key durable facts
    - `conversation` — harvest durable memory or reusable workflows from the current conversation
 
@@ -635,10 +635,10 @@ Bad mutations:
 
 Mutation scope: the frontmatter description, `When to use`, commands/skills tables, workflow steps.
 
-### documentation (`AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `official-documentation/`, `context/`, `runbooks/**/*.md`)
+### documentation (`AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `context/`, `runbooks/**/*.md`)
 
 Good mutations:
-- Use the `code-documentation` contract consistently: Core docs (`README.md`, `ARCHITECTURE.md`, `TESTS.md`), Conditional docs (`SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`), Rare docs (`OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`), root instruction docs, timestamped AFS docs on `*/YYYY/YYYY-MM-DD/*.md`, and living AFS docs in `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `official-documentation/`, and `context/`
+- Use the `code-documentation` contract consistently: Core docs (`README.md`, `ARCHITECTURE.md`, `TESTS.md`), Conditional docs (`SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`), Rare docs (`OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`), root instruction docs, timestamped AFS docs on `*/YYYY/YYYY-MM-DD/*.md`, and living AFS docs in `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, and `context/`
 - Add missing sections that users repeatedly need to complete the workflow
 - Tighten vague instructions so the next action is obvious and testable
 - Reorder sections so the highest-priority operational guidance appears earlier

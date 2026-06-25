@@ -1,0 +1,13 @@
+---
+description: Use AFS as the shared context and source-of-truth structure.
+alwaysApply: true
+---
+
+# AFS Cursor Rule
+
+- Read `AGENTS.md`, `BRAIN.md`, `VISION.md`, `LOOPS.md`, and `TASTE.md` when
+  relevant before changing behavior, product direction, or subjective quality.
+- Put external source material in `sources/`.
+- Do not create `official-documentation/`.
+- Keep large root-style Markdown files out of `context/`.
+- Prefer updating durable AFS files over burying reusable context in chat.

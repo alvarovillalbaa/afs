@@ -2,11 +2,17 @@
   "name": "afs",
   "version": "0.1.0",
   "private": true,
+  "bin": {
+    "create-afs": "./skills/use-afs/scripts/create-afs.mjs"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "afs:create": "node skills/use-afs/scripts/create-afs.mjs",
+    "afs:validate": "node skills/use-afs/scripts/validate-afs.mjs",
+    "afs:migrate": "node skills/use-afs/scripts/migrate-afs.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",

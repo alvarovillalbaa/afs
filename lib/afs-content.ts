@@ -5,14 +5,12 @@ import {
   Building2,
   ClipboardList,
   Compass,
-  Database,
   FileText,
   FolderGit2,
   HeartPulse,
   History,
   KeyRound,
   Layers3,
-  LockKeyhole,
   MessageSquareText,
   Network,
   NotebookTabs,
@@ -23,6 +21,7 @@ import {
   ShieldCheck,
   Sparkles,
   Target,
+  Terminal,
   Users,
   Wrench,
 } from "lucide-react"
@@ -47,32 +46,87 @@ export type AfsRootFile = {
   icon: LucideIcon
 }
 
-export type VafsFeature = {
+export type AfsInfoCard = {
   title: string
   description: string
   icon: LucideIcon
 }
 
-export const afsPrinciples = [
+export type AfsInstallOption = {
+  title: string
+  command: string
+  description: string
+  icon: LucideIcon
+}
+
+export type AfsInstallProfile = {
+  title: string
+  placement: string
+  description: string
+  icon: LucideIcon
+}
+
+export type AfsAgentUsage = {
+  agent: string
+  usage: string
+  setup: string
+  files: string[]
+  icon: LucideIcon
+}
+
+export type AfsCompatibilityTarget = {
+  name: string
+  status: string
+  description: string
+  files: string[]
+  icon: LucideIcon
+}
+
+export const afsPrinciples: AfsInfoCard[] = [
   {
     title: "Filesystem first",
     description:
       "AFS stays useful through normal files, folders, Markdown, grep, pull requests, and backups.",
+    icon: Archive,
   },
   {
-    title: "Agent portable",
+    title: "Portable across harnesses",
     description:
-      "Any agentic system should be able to enter the same structure and understand where durable context belongs.",
+      "Codex, Claude Code, Cursor, Notion Agents, OpenClaw, Hermes, and local tools can share the same durable context.",
+    icon: Network,
   },
   {
-    title: "History is separate from truth",
+    title: "Trace history is separate from truth",
     description:
       "Logs, lessons, fixes, and plans preserve work-in-time evidence; specs, runbooks, and knowledge hold current truth.",
+    icon: History,
   },
   {
-    title: "Human intent stays legible",
+    title: "Human intent stays at the root",
     description:
-      "Files like SPEC.md, USER.md, COMPANY.md, VALUES.md, and SOUL.md make goals and judgment visible to agents.",
+      "Root files such as AGENTS.md, USER.md, VISION.md, LOOPS.md, and TASTE.md keep direction readable before agents act.",
+    icon: Brain,
+  },
+]
+
+export const problemPoints: AfsInfoCard[] = [
+  {
+    title: "Agent memory is fragmented",
+    description:
+      "Each harness stores instructions, traces, and context in its own format, so useful knowledge is trapped in one tool.",
+    icon: Network,
+  },
+  {
+    title: "Context is hard to move",
+    description:
+      "Teams need a plain, portable structure that lets agents share traces, context, sources, and decisions without a platform migration.",
+    icon: FolderGit2,
+  },
+  {
+    title: "Knowledge needs provenance",
+    description:
+      "External docs, links, copied references, source snapshots, and generated summaries need an obvious home with source history.",
+    icon: Search,
   },
 ]
 
@@ -87,13 +141,13 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/logs/",
         label: "Logs",
         description:
-          "Brief logs, two lines max, appended to the latest date file for meaningful changes. In non-code platforms, this can store conversational, experience, action, or pattern history.",
+          "Brief dated logs for meaningful changes, actions, discoveries, and workflow events.",
       },
       {
         path: "/lessons/",
         label: "Lessons",
         description:
-          "Lessons learned from experience, especially reusable lessons related to code and implementation work.",
+          "Reusable lessons learned from experience, especially lessons related to code, implementation, and user preference.",
       },
       {
         path: "/items/",
@@ -111,7 +165,7 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/steers/",
         label: "Steers",
         description:
-          "Traces of work that an AI did but a human or secondary LLM redirected, including what the agent got wrong or did not fully satisfy.",
+          "Traces of work that a human or secondary model redirected, including what the agent got wrong or missed.",
       },
       {
         path: "/models/",
@@ -123,7 +177,7 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/reflections/",
         label: "Reflections",
         description:
-          "Detailed reflections based on the platform, project, workflow, or recurring agent behavior.",
+          "Detailed reflections about a platform, project, workflow, or recurring agent behavior.",
       },
     ],
   },
@@ -131,7 +185,7 @@ export const afsPathGroups: AfsPathGroup[] = [
     id: "operational",
     title: "Operational",
     summary:
-      "Work products, raw material, plans, specs, sources, generated libraries, and domain-specific operating surfaces.",
+      "Work products, raw material, plans, specs, generated libraries, and domain-specific operating surfaces.",
     paths: [
       {
         path: "/audits/",
@@ -143,7 +197,7 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/raw/",
         label: "Raw",
         description:
-          "Raw data waiting to be ingested, defined, and promoted into knowledge/ or another canonical destination, then removed from raw/.",
+          "Raw data waiting to be ingested, defined, promoted into knowledge/ or another canonical destination, and then removed.",
       },
       {
         path: "<domain>/<folder>/",
@@ -155,7 +209,7 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/plans/",
         label: "Plans",
         description:
-          "Implementation plans and plan-driven development artifacts describing how work should be executed.",
+          "Implementation plans and plan-driven artifacts describing how work should be executed.",
       },
       {
         path: "/specs/",
@@ -164,22 +218,16 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Living desired-state documentation describing how something should be. These are primarily human-defined and not timestamped.",
       },
       {
-        path: "/sources/",
-        label: "Sources",
-        description:
-          "URL-based sources to monitor over time and mine for high-quality additions to the knowledge base.",
-      },
-      {
         path: "/lib/",
         label: "Library",
         description:
-          "Reusable generated content, drafts, registries, templates, and other support artifacts.",
+          "Reusable generated content, drafts, registries, templates, indexes, and other support artifacts.",
       },
       {
         path: "/objects/<type>/",
         label: "Objects",
         description:
-          "Structured object records such as clients, employees, vendors, accounts, or projects. Example: objects/clients/.",
+          "Structured object records such as clients, employees, vendors, accounts, projects, or product surfaces.",
       },
     ],
   },
@@ -187,8 +235,14 @@ export const afsPathGroups: AfsPathGroup[] = [
     id: "truth",
     title: "Source of truth",
     summary:
-      "Living documentation that should represent the current canonical understanding of the codebase, company, and workflows.",
+      "Living documentation that represents the current canonical understanding of the codebase, company, workflows, and sources.",
     paths: [
+      {
+        path: "/sources/",
+        label: "Sources",
+        description:
+          "External provider documentation, copied docs, URL registries, source snapshots, provenance notes, and citation material.",
+      },
       {
         path: "/references/",
         label: "References",
@@ -199,19 +253,19 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/cookbook/",
         label: "Cookbook",
         description:
-          "Technical guides for how something is actually done in the codebase.",
+          "Technical guides for how something is actually done in the codebase or operating environment.",
       },
       {
         path: "/knowledge/",
         label: "Knowledge",
         description:
-          "Timeless maintained knowledge about the codebase, business, or how to do something. It can be defined by humans or compiled by AI from raw/.",
+          "Timeless maintained knowledge about the codebase, business, or how to do something. It can be defined by humans or compiled from raw/.",
       },
       {
         path: "/runbooks/",
         label: "Runbooks",
         description:
-          "Operational procedures for how certain things ought to be done after they have been performed in a known way.",
+          "Operational procedures for how recurring work should be done after it has been performed in a known way.",
       },
       {
         path: "/research/",
@@ -220,16 +274,10 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Continuous research related to software engineering, business areas, markets, or other ongoing questions.",
       },
       {
-        path: "/official-documentation/",
-        label: "Official documentation",
-        description:
-          "External provider documentation copied or preserved as official reference material; it is not iterated like internal docs.",
-      },
-      {
         path: "/context/",
         label: "Context",
         description:
-          "Contextual documentation such as VALUES.md, USER.md, PREFERENCES.md, context/goals/, context/budget/, and context/roadmap/.",
+          "Lightweight scoped context by subfolder, such as context/goals/ or context/roadmap/. Large root-style Markdown files such as AGENTS.md, USER.md, VISION.md, LOOPS.md, and TASTE.md stay at the workspace root.",
       },
     ],
   },
@@ -241,6 +289,27 @@ export const rootFiles: AfsRootFile[] = [
     label: "Brain",
     description: "Decides how the AFS should be managed.",
     icon: Brain,
+  },
+  {
+    file: "VISION.md",
+    label: "Vision",
+    description:
+      "Defines the north star, current direction, non-goals, strategic constraints, and what agents should protect over time.",
+    icon: Compass,
+  },
+  {
+    file: "LOOPS.md",
+    label: "Loops",
+    description:
+      "Defines recurring agent loops, triggers, cadence, review gates, stop conditions, and improvement cycles.",
+    icon: Radar,
+  },
+  {
+    file: "TASTE.md",
+    label: "Taste",
+    description:
+      "Captures high-quality and personalized judgment: what good looks like, preferred examples, anti-patterns, and subjective standards.",
+    icon: Sparkles,
   },
   {
     file: "MEMORY.md",
@@ -307,7 +376,7 @@ export const rootFiles: AfsRootFile[] = [
     file: "COMPANY.md",
     label: "Company",
     description:
-      "Defines company-level context, including mission, vision, positioning, operating principles, team structure, culture, business model, and priorities.",
+      "Defines company-level context, including mission, positioning, operating principles, team structure, culture, business model, and priorities.",
     icon: Building2,
   },
   {
@@ -361,34 +430,189 @@ export const rootFiles: AfsRootFile[] = [
   },
 ]
 
-export const vafsFeatures: VafsFeature[] = [
+export const installationOptions: AfsInstallOption[] = [
   {
-    title: "agents-fs repositories",
+    title: "Auto-install in the current workspace",
+    command: "npm run afs:create",
     description:
-      "Standardized GitHub repositories named agents-fs will hold the official AFS paths and Markdown files.",
+      "Inspect the current folder and choose root, docs/, or agents-fs/ placement automatically.",
+    icon: Terminal,
+  },
+  {
+    title: "Install from a standard URL",
+    command: "npm run afs:create -- https://example.com/afs-standard",
+    description:
+      "Record the provided standard or GitHub URL in sources/ and still choose the safest install placement automatically.",
+    icon: Network,
+  },
+  {
+    title: "Create a standalone agents-fs repo",
+    command: "npm run afs:create -- --mode standalone --github",
+    description:
+      "Create a personal or company AFS repository named agents-fs and push it to GitHub when gh is authenticated.",
     icon: FolderGit2,
   },
   {
-    title: "Vector-backed retrieval",
+    title: "Install inside an application repo",
+    command: "npm run afs:create -- --mode docs",
     description:
-      "The filesystem will sync with an embeddings database while preserving regular grep and keyword retrieval.",
-    icon: Database,
+      "Create the full AFS shell inside docs/ so the application source tree stays separate from agent context.",
+    icon: FileText,
   },
   {
-    title: "Access controls",
+    title: "Validate an AFS workspace",
+    command: "npm run afs:validate -- .",
     description:
-      "Individual and team permissions will be handled through Supabase-backed access control.",
-    icon: LockKeyhole,
+      "Check for removed paths, missing recommended shell files, and misplaced large root-style Markdown files inside context/.",
+    icon: ShieldCheck,
   },
   {
-    title: "External integrations",
+    title: "Migrate legacy external docs",
+    command: "npm run afs:migrate -- .",
     description:
-      "Connections to outside platforms will feed and retrieve context through the same standardized structure.",
+      "Move legacy external documentation contents into sources/ without overwriting existing source material.",
+    icon: Wrench,
+  },
+]
+
+export const installationProfiles: AfsInstallProfile[] = [
+  {
+    title: "Empty or sparse folder",
+    placement: "root",
+    description:
+      "Create the full shell directly at the folder root, including root Markdown files, knowledge/INDEX.md, raw tracking files, and sources/INDEX.md.",
+    icon: Archive,
+  },
+  {
+    title: "Standalone brain",
+    placement: "agents-fs",
+    description:
+      "Use a GitHub repository named agents-fs by default for personal, company, or cross-project AFS workspaces.",
+    icon: FolderGit2,
+  },
+  {
+    title: "Application repository",
+    placement: "docs/",
+    description:
+      "Install AFS under docs/ so agent context, source provenance, and knowledge stay separated from app code.",
+    icon: FileText,
+  },
+  {
+    title: "Busy non-application folder",
+    placement: "agents-fs/",
+    description:
+      "Create a nested agents-fs/ folder when the current directory is already populated but is not an app repo or existing AFS root.",
+    icon: Layers3,
+  },
+  {
+    title: "Standard URL or GitHub URL",
+    placement: "auto",
+    description:
+      "Agents should treat a request to implement the AFS URL as an install request and choose the safest placement automatically.",
     icon: Network,
   },
 ]
 
-export const retrievalModes = [
+export const githubRepoExamples: AfsInfoCard[] = [
+  {
+    title: "alvarovillalbaa/agents-fs",
+    description:
+      "Private personal AFS repo using BRAIN.md, knowledge/INDEX.md, raw processing files, sources/, and canonical knowledge pages.",
+    icon: Brain,
+  },
+  {
+    title: "clous-ai/agents-fs",
+    description:
+      "Private company AFS repo using BRAIN.md as the root marker, raw/ as intake, and knowledge/INDEX.md as the maintained navigation surface.",
+    icon: Building2,
+  },
+]
+
+export const agentUsageGuides: AfsAgentUsage[] = [
+  {
+    agent: "Notion Agents",
+    usage:
+      "Paste the Notion template into Custom Agent instructions and point it at the pages or databases that mirror AFS root files and folders.",
+    setup:
+      "Keep durable outputs in Notion pages named after AFS files, then periodically export or sync them into the repository.",
+    files: ["templates/agent/notion-agent-instructions.md", "VISION.md", "LOOPS.md"],
+    icon: ClipboardList,
+  },
+  {
+    agent: "Claude Code",
+    usage:
+      "Use CLAUDE.md to import AGENTS.md, install the use-afs skill, and add the hook example when you want validation around file writes.",
+    setup:
+      "Keep scoped Claude rules thin and let the root AFS files define persistent policy.",
+    files: ["CLAUDE.md", ".claude/settings.json", "skills/use-afs/"],
+    icon: Brain,
+  },
+  {
+    agent: "Codex",
+    usage:
+      "Use AGENTS.md plus the repo-scoped skills/use-afs skill so Codex can route context, sources, and validation consistently.",
+    setup:
+      "Add optional Codex hooks for validation before major write operations.",
+    files: ["AGENTS.md", "skills/use-afs/", ".codex/hooks/"],
+    icon: FolderGit2,
+  },
+  {
+    agent: "Cursor",
+    usage:
+      "Use AGENTS.md for shared rules and the Cursor .mdc template for editor-local routing to AFS root files and folders.",
+    setup:
+      "Keep Cursor-specific UI or codebase rules scoped, while durable facts remain in AFS.",
+    files: ["AGENTS.md", ".cursor/rules/use-afs.mdc"],
+    icon: Compass,
+  },
+  {
+    agent: "OpenClaw",
+    usage:
+      "Use the OpenClaw template as a bridge skill that points the agent to AFS root files, sources/, logs/, and validation scripts.",
+    setup:
+      "Treat the bridge as adapter guidance unless the OpenClaw project adds a native AFS integration.",
+    files: ["templates/agent/openclaw-skill.md", "AGENTS.md", "BRAIN.md"],
+    icon: Network,
+  },
+  {
+    agent: "Hermes Agent",
+    usage:
+      "Use the generic AFS operating contract: read root intent first, write trace history into memory folders, and keep external material in sources/.",
+    setup:
+      "Attach the AGENTS.md and BRAIN.md templates to Hermes until a native adapter is available.",
+    files: ["AGENTS.md", "BRAIN.md", "sources/"],
+    icon: MessageSquareText,
+  },
+]
+
+export const compatibilityTargets: AfsCompatibilityTarget[] = [
+  {
+    name: "Gbrain by Garry Tan",
+    status: "Best-effort bridge",
+    description:
+      "AFS can expose GBRAIN.md and BRAIN.md as adapter surfaces so Gbrain-style knowledge can point back to portable files and sources.",
+    files: ["GBRAIN.md", "BRAIN.md", "sources/"],
+    icon: Brain,
+  },
+  {
+    name: "QMD by Toby at Shopify",
+    status: "Best-effort bridge",
+    description:
+      "AFS can expose QMD.md as a query and decision bridge that maps QMD-style notes back to specs, plans, knowledge, and source provenance.",
+    files: ["QMD.md", "specs/", "plans/", "knowledge/"],
+    icon: FileText,
+  },
+  {
+    name: "Plain agent harnesses",
+    status: "Native filesystem compatibility",
+    description:
+      "Any harness that can read files and write Markdown can use AFS without a proprietary database or hosted service.",
+    files: ["AGENTS.md", "VISION.md", "sources/"],
+    icon: Network,
+  },
+]
+
+export const retrievalModes: AfsInfoCard[] = [
   {
     title: "Filesystem",
     description: "Normal folders and Markdown files keep the standard inspectable.",
@@ -401,7 +625,8 @@ export const retrievalModes = [
   },
   {
     title: "Semantic",
-    description: "Embeddings can retrieve intent and meaning once vAFS is available.",
+    description:
+      "Embeddings and retrieval tools can index AFS while the filesystem remains the source of truth.",
     icon: NotebookTabs,
   },
 ]

@@ -35,14 +35,13 @@ If the knowledge is useful only as session memory, stop at `learning/`.
 | `audits/` | Reports, ADRs, post-mortems, analytical audits | When the artifact is historical and investigative |
 | `plans/` | Historical implementation plans | When the artifact explains how one change should be executed |
 | `specs/` | Living desired-state behavior contracts | When the rule should remain current, not historical |
-| `sources/` | Monitored URL/source registries | When source monitoring itself is durable knowledge |
+| `sources/` | External docs, source snapshots, monitored URL registries, and provenance | When source material itself is durable knowledge |
 | `lib/` | Generated drafts or support artifacts | When a reusable generated artifact should persist |
 | `references/` | Stable lookup/reference material | When teammates need a factual reference surface |
 | `cookbook/` | Repo-specific technical guidance | When a pattern needs broader documentation in this codebase |
 | `knowledge/` | Timeless maintained knowledge | When the content should compound and stay canonical |
 | `runbooks/` | Exact operational workflows | When the content is a repeatable procedure |
 | `research/` | Ongoing engineering research | When the work is exploratory but still source-of-truth |
-| `official-documentation/` | Copied external official docs | When the repo keeps vendor/source docs locally |
 | `context/` | Goals, roadmap, budget, preferences, values, other contextual docs | When the repo needs current shared context |
 
 ## `AGENTS.md`
@@ -145,7 +144,7 @@ Use the `code-documentation` contract and choose the narrowest correct destinati
 - `cookbook/` for repo-specific technical recipes
 - `knowledge/` for timeless maintained knowledge
 - `runbooks/` for exact repeatable procedures
-- `research/`, `official-documentation/`, `sources/`, `context/`, or `lib/` when those surfaces are the right current home
+- `research/`, `sources/`, `context/`, or `lib/` when those surfaces are the right current home
 
 All timestamped AFS paths follow `*/YYYY/YYYY-MM-DD/*.md`. All living docs should carry `Last updated: YYYY-MM-DD`.
 

@@ -1,0 +1,7 @@
+name: use-afs
+description: Use AFS as the portable filesystem context standard.
+instructions: |
+  Read root AFS files before making durable decisions. Keep external source
+  material in sources/. Do not create official-documentation/. Keep large
+  root-style Markdown files at the workspace root, not in context/. Use
+  skills/use-afs/scripts/validate-afs.mjs to verify structure when available.

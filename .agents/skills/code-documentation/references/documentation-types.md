@@ -109,7 +109,6 @@ These are living docs. Add `Last updated: YYYY-MM-DD` near the top.
 | `knowledge/` | timeless maintained knowledge | living |
 | `runbooks/` | operational procedures | living |
 | `research/` | ongoing research work | living |
-| `official-documentation/` | copied external official docs | living, but not iterated heavily |
 | `context/` | contextual docs such as values, goals, roadmap, budget, preferences | living |
 
 ## Timestamp rule
@@ -166,7 +165,6 @@ Applies to:
 - `knowledge/`
 - `runbooks/`
 - `research/`
-- `official-documentation/`
 - `context/`
 
 ## Time-based vs live conflicts
