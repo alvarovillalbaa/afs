@@ -1,12 +1,12 @@
 ---
 name: code-documentation
-description: This skill should be used when the user asks to write, update, review, scaffold, move, remove, or continuously improve documentation for code, folders, services, repos, workflows, architectural decisions, or operational processes. Trigger for inline docs, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `context/`, MDX docs, JSDoc/TSDoc, docstrings, ADRs, post-mortems, migration guides, documentation cleanups, and documentation-impact reviews.
+description: This skill should be used when the user asks to write, update, review, scaffold, move, remove, or continuously improve documentation for code, folders, services, repos, workflows, architectural decisions, or operational processes. Trigger for inline docs, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `GAPS.md`, `logs/`, `lessons/`, `facts/`, `fixes/`, `steers/`, `models/`, `reflections/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `objects/`, `templates/`, `results/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, `research/`, MDX docs, JSDoc/TSDoc, docstrings, ADRs, post-mortems, migration guides, documentation cleanups, and documentation-impact reviews.
 version: 2.0.0
 ---
 
 # Code Documentation
 
-Last updated: 2026-05-13
+Last updated: 2026-06-30
 
 Write documentation that stays close to the code, stays coherent over time, and gives humans and agents one clear place to look.
 
@@ -25,9 +25,9 @@ Documentation in this repo falls into seven surfaces:
 
 1. **Inline docs** — docstrings, JSDoc/TSDoc, comments, types
 2. **In-folder docs** — `README.md`, `ARCHITECTURE.md`, `TESTS.md`, and related files that explain one folder
-3. **Root instruction docs** — `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`
-4. **Timestamped history** — logs, lessons, items, fixes, audits, raw material, implementation plans
-5. **Living source-of-truth docs** — specs, references, cookbook, knowledge, runbooks, research, context, source registries, generated libraries, copied external docs
+3. **Root instruction docs** — `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `GAPS.md`
+4. **Timestamped history** — logs, lessons, fixes, steers, reflections, audits, implementation plans, and preserved results
+5. **Living source-of-truth docs** — specs, facts, models, references, cookbooks, knowledge, runbooks, research, source registries, generated libraries, copied external docs, and reusable templates
 6. **Domain-specific AFS paths** — `<domain>/<folder>/` only when the repo genuinely needs domain-specific surfaces such as `health/` or `investing/`
 7. **Documentation websites** — Nextra or equivalent sites for projects with external users; generated via the `/docs-site` command after a full project research phase
 
@@ -49,22 +49,24 @@ Default rule: put the doc in the narrowest place that future readers will natura
 | Record the agents' personality and collaboration stance | `SOUL.md` |
 | Record invariants, constraints, and max/min rules | `PRINCIPLES.md` |
 | Record the design system or frontend interaction language | `DESIGN.md` |
-| Append a terse change note | `logs/YYYY/YYYY-MM-DD/*.md` |
-| Record a verified reusable lesson | `lessons/YYYY/YYYY-MM-DD/*.md` |
-| Record a durable fact about the user, company, or project | `items/YYYY/YYYY-MM-DD/*.md` |
-| Record a reusable non-obvious fix | `fixes/YYYY/YYYY-MM-DD/*.md` |
-| Record an analytical report, ADR, post-mortem, or audit | `audits/YYYY/YYYY-MM-DD/` |
-| Store raw material pending ingest | `raw/YYYY/YYYY-MM-DD/` unless the repo already has a different ingest convention |
-| Record an implementation plan or plan-driven-development artifact | `plans/YYYY/YYYY-MM-DD/` |
+| Record unresolved gaps in human or agent understanding | `GAPS.md` |
+| Append a terse change note | `logs/YYYY/MM-DD/changes.md` |
+| Record a verified reusable lesson | `lessons/<domain>/YYYY/MM-DD/*.md` |
+| Record a durable fact about the user, company, or project | `facts/items/<domain>/*.md` |
+| Record a reusable non-obvious fix | `fixes/YYYY/MM-DD/*.md` |
+| Record an analytical report, ADR, post-mortem, or audit | `audits/YYYY/MM-DD/` |
+| Store raw material pending ingest | `raw/` unless the repo already has a different ingest convention |
+| Record an implementation plan or plan-driven-development artifact | `plans/YYYY/MM-DD/` |
 | Record a living desired-state behavior contract | `specs/` |
 | Keep monitored URLs, source registries, copied external docs, and source snapshots | `sources/` |
 | Keep generated drafts, registries, or reusable library artifacts | `lib/` |
+| Store preserved outputs from work that was run | `results/YYYY/MM-DD/*.md` |
 | Keep stable code, API, or URL references | `references/` |
-| Keep "how we actually do this here" technical recipes | `cookbook/` |
+| Keep "how we actually do this here" technical recipes | `cookbooks/` |
 | Keep timeless canonical knowledge | `knowledge/` |
 | Keep operational procedures | `runbooks/` |
 | Keep ongoing research | `research/` |
-| Keep contextual docs such as goals, roadmap, budget, or preferences | `context/` |
+| Keep reusable prompts, emails, scripts, and checklists | `templates/` |
 
 ## Final AFS
 
@@ -72,10 +74,15 @@ The final Agentic File System is:
 
 ### Memory
 
-- `logs/` — brief logs, 2 lines max, append to the latest date file, about every meaningful code or doc change
-- `lessons/` — lessons learned from experience, related to code
-- `items/` — facts about the user, company, customers, environments, or other durable context
-- `fixes/` — reusable error solutions and debugging resolutions
+- `logs/` — brief logs, 2 lines max, appended to the latest dated file under `YYYY/MM-DD/`
+- `lessons/<domain>/` — lessons learned from experience, organized in timestamp folders
+- `facts/items/<domain>/` — live facts about the user, company, customers, environments, or other durable context
+- `facts/episodes/<domain>/` — live episode records derived from facts
+- `facts/triples/<domain>/` — live subject-predicate-object triples derived from facts and episodes
+- `fixes/` — reusable error solutions and debugging resolutions, organized in timestamp folders
+- `steers/` — traces of work redirected by a human or secondary model
+- `models/decisions/`, `models/problems/`, `models/goals/` — live decision, problem, and goal records
+- `reflections/` — detailed reflections organized in timestamp folders
 
 ### Operational
 
@@ -86,43 +93,53 @@ The final Agentic File System is:
 - `specs/` — living specs describing how something should behave
 - `sources/` — external docs, URL registries, source snapshots, and provenance worth monitoring over time
 - `lib/` — generated drafts, registries, support artifacts, or other reusable generated content
+- `objects/<type>/` — structured object records such as clients or employees
+- `templates/` — reusable templates such as AI prompts, emails, scripts, and checklists
+- `results/` — preserved outputs from work that was run, organized in timestamp folders
 
 ### Source of truth
 
-- `references/` — code, URL, API, schema, and factual references
-- `cookbook/` — technical guides for how something is actually done in this codebase
+- `references/` — code, URL, API, schema, and technical references
+- `cookbooks/` — technical guides for how something is actually done in this codebase
 - `knowledge/` — timeless maintained knowledge about the codebase and how to do things
 - `runbooks/` — operational procedures and exact workflows
 - `research/` — continuous research on engineering topics
-- `context/` — contextual docs such as `VALUES.md`, `USER.md`, `PREFERENCES.md`, `context/goals/`, `context/budget/`, `context/roadmap/`
 
 ## Timestamped vs living docs
 
 Use one rule only for timestamped material:
 
-- `*/YYYY/YYYY-MM-DD/*.md`
+- `*/YYYY/MM-DD/*.md`
 
 Default timestamped families:
 
 - `logs/`
 - `lessons/`
-- `items/`
 - `fixes/`
+- `steers/`
+- `reflections/`
 - `audits/`
-- `raw/`
 - `plans/`
+- `results/`
 
 Default living documentation families:
 
 - `specs/`
+- `facts/items/<domain>/`
+- `facts/episodes/<domain>/`
+- `facts/triples/<domain>/`
+- `models/decisions/`
+- `models/problems/`
+- `models/goals/`
 - `sources/`
 - `lib/`
+- `objects/`
+- `templates/`
 - `references/`
-- `cookbook/`
+- `cookbooks/`
 - `knowledge/`
 - `runbooks/`
 - `research/`
-- `context/`
 - root instruction docs
 - in-folder docs
 
@@ -145,9 +162,9 @@ Place it directly under the H1 or immediately after frontmatter. Refresh it when
 
 This applies to:
 
-- `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`
+- `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `GAPS.md`
 - in-folder docs such as `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`
-- living AFS docs in `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, and `context/`
+- living AFS docs in `specs/`, `facts/`, `models/`, `sources/`, `lib/`, `objects/`, `templates/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, and `research/`
 
 ## In-folder documentation contract
 
@@ -205,6 +222,7 @@ Treat these as first-class documentation, not miscellaneous meta files:
 - `SOUL.md` — provide personality to AI agents
 - `PRINCIPLES.md` — customize principles, constraints, and max/min rules that should always hold
 - `DESIGN.md` — define the design system and frontend interaction language
+- `GAPS.md` — track gaps in human or agent understanding so they can be resolved into durable knowledge
 
 When the repo's operating model changes, update these the same way you would update a README or runbook.
 
@@ -220,7 +238,7 @@ Before creating or expanding docs:
 
 Examples:
 
-- If a one-off implementation plan became the durable policy, keep the original under `plans/YYYY/YYYY-MM-DD/` and promote the lasting rule into `PLAN.md`, `SPEC.md`, `runbooks/`, `cookbook/`, or `knowledge/`.
+- If a one-off implementation plan became the durable policy, keep the original under `plans/YYYY/MM-DD/` and promote the lasting rule into `PLAN.md`, `SPEC.md`, `runbooks/`, `cookbooks/`, or `knowledge/`.
 - If an old `docs/memories/` or `docs/guides/` tree conflicts with the final AFS, move or remove it instead of preserving two competing systems.
 
 ## Relationship to other skills
@@ -236,7 +254,7 @@ Examples:
 2. Detect whether the repo already has a working AFS or whether legacy paths conflict with it.
 3. Decide the surface: inline doc, folder doc, root instruction doc, timestamped historical doc, or living source-of-truth doc.
 4. Update the closest existing document before creating a new one.
-5. For timestamped destinations, use `*/YYYY/YYYY-MM-DD/*.md` and normalize directories with `mkdir` if needed.
+5. For timestamped destinations, use `*/YYYY/MM-DD/*.md` and normalize directories with `mkdir` if needed.
 6. For living docs, add or refresh `Last updated: YYYY-MM-DD`.
 7. If durable guidance is buried in a historical note, promote it upstream into the proper living doc.
 8. Move or delete docs that no longer fit the contract.

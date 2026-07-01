@@ -49,7 +49,7 @@ It should contain:
 - pointers to architecture, testing, CI, product context, and runbooks
 - short Always / Ask / Never boundaries
 
-It should not contain full architecture manuals, complete command encyclopedias, code style tutorials, or long framework examples. Move those into `docs/references/`, `docs/cookbook/`, or subsystem-local docs and link to them.
+It should not contain full architecture manuals, complete command encyclopedias, code style tutorials, or long framework examples. Move those into `docs/references/`, `docs/cookbooks/`, or subsystem-local docs and link to them.
 
 For large repos, add subsystem `AGENTS.md` files beside high-risk code. Each local file should state the interface/protocol, critical invariants, anti-patterns, debug paths, and when to load specialized skills. A good subsystem guide prevents agents from inferring invisible rules from nearby code alone.
 

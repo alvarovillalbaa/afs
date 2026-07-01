@@ -10,6 +10,7 @@ Support status: best-effort bridge.
 - Direction: `VISION.md`
 - Recurring loops: `LOOPS.md`
 - Quality judgment: `TASTE.md`
+- Known gaps: `GAPS.md`
 - External source provenance: `sources/`
 - Stable knowledge: `knowledge/`
 

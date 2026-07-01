@@ -13,6 +13,7 @@ entry point. The bridge should point back to:
 - `VISION.md`
 - `LOOPS.md`
 - `TASTE.md`
+- `GAPS.md`
 - `sources/`
 - `knowledge/`
 
@@ -28,6 +29,7 @@ surface that maps back to AFS. The bridge should point to:
 
 - `specs/`
 - `plans/`
+- `GAPS.md`
 - `knowledge/`
 - `research/`
 - `sources/`
@@ -43,4 +45,5 @@ Any harness that can read files and write Markdown can use AFS:
 2. Read relevant path groups.
 3. Write traces into memory folders.
 4. Write external provenance into `sources/`.
-5. Promote stable truth into source-of-truth folders or root files.
+5. Promote stable truth into `knowledge/`, `cookbooks/`, `runbooks/`,
+   `research/`, or root files.

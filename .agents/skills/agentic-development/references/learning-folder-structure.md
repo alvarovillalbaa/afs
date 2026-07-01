@@ -1,6 +1,6 @@
 # Folder Structure
 
-Last updated: 2026-04-25
+Last updated: 2026-06-30
 
 Canonical file layout and schemas for the repo-local `learning/` system.
 
@@ -10,7 +10,7 @@ The learning system has two complementary layers:
 
 **`learning/`** — agent-internal state (machine-readable, structured JSON/JSONL, operated on by scripts). Lives at the repo root. This is the working memory of the agent.
 
-**AFS documentation output** — human-readable markdown for collaborators. Defined by the `code-documentation` skill and routed into `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `plans/`, `specs/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, and related AFS surfaces.
+**AFS documentation output** — human-readable markdown for collaborators. Defined by the `code-documentation` skill and routed into `logs/`, `lessons/`, `facts/`, `fixes/`, `steers/`, `models/`, `reflections/`, `audits/`, `plans/`, `specs/`, `sources/`, `lib/`, `objects/`, `templates/`, `results/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, and related AFS surfaces.
 
 The promotion path: `learning/` artifacts → verified → the correct AFS destination for the content type.
 

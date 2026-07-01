@@ -7,7 +7,7 @@ In command examples below, `<skill-dir>` means the installed `agentic-developmen
 ## Startup Pass
 
 1. Run `python <skill-dir>/scripts/repo_scan.py <repo-root>`.
-2. Read the instruction files it finds. Prefer the hierarchy the repo defines. If the repo exposes `AGENTS.md`, `SOUL.md`, `PRINCIPLES.md`, and `PLANS.md`, treat them as operations, identity, decision heuristics, and planning protocol respectively.
+2. Read the instruction files it finds. Prefer the hierarchy the repo defines. If the repo exposes `AGENTS.md`, `SOUL.md`, `PRINCIPLES.md`, `PLANS.md`, and `GAPS.md`, treat them as operations, identity, decision heuristics, planning protocol, and unresolved understanding respectively.
 3. If the repo uses rule folders or local skill folders such as `.cursor/rules/`, `.claude/`, `.github/instructions/`, `.agents/skills/`, or `.codex/skills/`, read only the files that govern the area you will touch.
 4. Read the nearest docs for the area you will change. Root docs explain global behavior; package, service, or directory docs explain local behavior.
 5. Inspect git context: current branch, dirty files, worktrees, and whether the current task is already tied to a PR.

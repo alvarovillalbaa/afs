@@ -5,9 +5,13 @@ alwaysApply: true
 
 # AFS Cursor Rule
 
-- Read `AGENTS.md`, `BRAIN.md`, `VISION.md`, `LOOPS.md`, and `TASTE.md` when
-  relevant before changing behavior, product direction, or subjective quality.
+- Read `AGENTS.md`, `BRAIN.md`, `VISION.md`, `LOOPS.md`, `TASTE.md`, and
+  `GAPS.md` when relevant before changing behavior, product direction,
+  knowledge, or subjective quality.
 - Put external source material in `sources/`.
 - Do not create `official-documentation/`.
-- Keep large root-style Markdown files out of `context/`.
+- Put live facts in `facts/items/<domain>/`, `facts/episodes/<domain>/`, or
+  `facts/triples/<domain>/`, and technical how-to guides in `cookbooks/`.
+- Keep large root-style Markdown files out of legacy `context/`.
+- Add unresolved knowledge or understanding gaps to `GAPS.md`.
 - Prefer updating durable AFS files over burying reusable context in chat.

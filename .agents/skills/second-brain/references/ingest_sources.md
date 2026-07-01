@@ -360,7 +360,7 @@ When an AI agent should process the entire `raw/` folder and compile everything 
 4. Read BRAIN.md and relevant INDEX.md pages.
 5. Search for existing canonical pages that should absorb the new information.
 6. Update or create canonical pages under knowledge/.
-7. Refresh INDEX.md, logs/YYYY-MM-DD.md, and any synthesis pages.
+7. Refresh INDEX.md, logs/YYYY/MM-DD/changes.md, and any synthesis pages.
 8. Mark each raw/ file as processed.
 9. Report: files processed, pages created, pages updated, contradictions found, open threads.
 ```

@@ -136,41 +136,62 @@ The logical layers are:
 - **Operational**: active work areas such as audits, raw intake, plans, specs, and domain-specific operating folders
 - **Source of truth**: canonical knowledge, references, guides, documentation, research, and monitored sources
 - **Schema**: one `BRAIN.md` file per brain root that tells the assistant how this specific brain maps onto AFS
+- **Gaps**: one `GAPS.md` file per brain root for unresolved human or agent understanding
 
 When the user has no existing structure, default to these top-level areas:
 
 - `BRAIN.md`
+- `GAPS.md`
 - `logs/`
-- `lessons/`
-- `items/`
+- `lessons/<domain>/`
+- `facts/items/<domain>/`
+- `facts/episodes/<domain>/`
+- `facts/triples/<domain>/`
 - `fixes/`
+- `steers/`
+- `models/decisions/`
+- `models/problems/`
+- `models/goals/`
+- `reflections/`
 - `audits/`
 - `raw/`
 - `plans/`
 - `specs/`
+- `sources/`
+- `lib/`
+- `objects/<type>/`
+- `templates/`
+- `results/`
 - `references/`
-- `cookbook/`
+- `cookbooks/`
 - `knowledge/`
 - `runbooks/`
 - `research/`
-- `sources/`
 
 This is the default contract:
 
-- `logs/` holds terse dated logs. Append to the latest `YYYY-MM-DD.md` file and keep each entry to two lines max.
-- `lessons/` stores lessons learned from experience, especially engineering lessons that should change future behavior.
-- `items/` stores durable facts about the user, team, company, customers, environments, and other factual context.
-- `fixes/` stores reusable error solutions and debugging resolutions.
-- `audits/` stores comprehensive reports and analytical audits, usually under timestamped folders such as `audits/YYYY-MM-DD/`.
+- `GAPS.md` stores unresolved gaps in human or agent understanding until they are resolved into durable knowledge.
+- `logs/` holds terse dated logs. Append to the latest `logs/YYYY/MM-DD/changes.md` file and keep each entry to two lines max.
+- `lessons/<domain>/` stores lessons learned from experience under timestamp folders.
+- `facts/items/<domain>/`, `facts/episodes/<domain>/`, and `facts/triples/<domain>/` store live durable facts, episodes, and triples.
+- `fixes/` stores reusable error solutions and debugging resolutions under timestamp folders.
+- `steers/` stores traces of agent work redirected by a human or secondary model.
+- `models/decisions/`, `models/problems/`, and `models/goals/` store live brief records of decisions, problems, and goals.
+- `reflections/` stores detailed reflections under timestamp folders.
+- `audits/` stores comprehensive reports and analytical audits under timestamp folders such as `audits/YYYY/MM-DD/`.
 - `raw/` is the intake queue for unprocessed material to be compiled into the brain.
-- `plans/` stores implementation plans and plan-driven-development artifacts.
+- `plans/` stores implementation plans and plan-driven-development artifacts under timestamp folders.
 - `specs/` stores desired-state documents and spec-driven-development artifacts.
+- `sources/` stores URL-based sources to monitor, source snapshots, registries, and provenance.
+- `lib/` stores generated drafts, registries, and reusable library artifacts.
+- `objects/<type>/` stores structured object records such as clients or employees.
+- `templates/` stores reusable prompts, emails, scripts, and checklists.
+- `results/` stores preserved outputs from work that was run under timestamp folders.
 - `references/` stores code, API, and URL references in a flat non-timestamped layout.
-- `cookbook/` stores "how we actually do this here" guides in a flat non-timestamped layout.
+- `cookbooks/` stores "how we actually do this here" guides in a flat non-timestamped layout.
 - `knowledge/` stores maintained timeless knowledge in a structured non-timestamped layout.
 - `runbooks/` stores operational procedures in a flat non-timestamped layout.
 - `research/` stores continuous research work in a flat non-timestamped layout.
-- `sources/` stores external documentation, source snapshots, URL-based source registries, and provenance worth monitoring over time in a flat non-timestamped layout.
 
 Use top-level domain folders only when the user already has them or when a domain genuinely needs its own operational surface, such as `health/` or `investing/`. Do not use them as a substitute for canonical knowledge when `knowledge/` is the better home.
 
@@ -221,7 +242,7 @@ Rules:
 - use stable human-readable slugs unless the user already has an established naming scheme
 - keep canonical knowledge non-timestamped by default
 - put dated evidence inside files or timeline sections rather than encoding every knowledge file by date
-- keep `references/`, `cookbook/`, `runbooks/`, `research/`, and `sources/` flat unless the user already relies on deeper structure
+- keep `references/`, `cookbooks/`, `runbooks/`, `research/`, and `sources/` flat unless the user already relies on deeper structure
 - when a canonical page does not justify its own folder, a single markdown file is enough inside the appropriate parent directory
 
 Suggested logical subareas inside `knowledge/` when the user wants more structure:
@@ -241,6 +262,7 @@ When the user is starting from zero, keep setup AFS-compliant but still small:
 ```text
 my-second-brain/
   BRAIN.md
+  GAPS.md
   logs/
   raw/
   references/
@@ -252,6 +274,7 @@ Add the rest of the AFS folders lazily as the workflow actually needs them.
 Default meaning of the minimum folders:
 
 - `BRAIN.md` is the discovery file and operating contract for this brain
+- `GAPS.md` tracks unresolved gaps in understanding so they stay visible until resolved
 - `logs/` stores brief dated change logs
 - `raw/` stores unprocessed material waiting for compilation
 - `references/` stores flat references worth reusing directly
@@ -262,6 +285,8 @@ Default meaning of the minimum folders:
 Each second brain should have one `BRAIN.md` at its root.
 
 `BRAIN.md` is the mandatory discovery marker. In partial or full adaptation modes, it can reference `AGENTS.md`, `CLAUDE.md`, `SCHEMA.md`, `SECOND_BRAIN.md`, `README.md`, or another instruction file the user already uses, but `BRAIN.md` should still exist so the assistant can detect the brain boundary reliably.
+
+Each second brain should also have one `GAPS.md` at its root. `GAPS.md` is the shared queue of missing understanding: questions humans know they have, uncertainties agents discover while working, and knowledge gaps that should be resolved into durable `knowledge/`, `references/`, `cookbooks/`, `runbooks/`, `research/`, or `results/`.
 
 Its job is to make the assistant behave like a disciplined knowledge maintainer instead of a generic chatbot.
 
@@ -286,7 +311,7 @@ If the user already has an architecture, `BRAIN.md` should describe that archite
 
 The operating manual should also define the default workflow for three recurring actions:
 
-- ingesting a new source into `raw/` and propagating it into `knowledge/`, `references/`, `cookbook/`, `runbooks/`, or another AFS destination
+- ingesting a new source into `raw/` and propagating it into `knowledge/`, `references/`, `cookbooks/`, `runbooks/`, or another AFS destination
 - answering a question from the maintained canonical knowledge before falling back to raw sources
 - linting or health-checking the brain for contradictions, stale claims, and orphan knowledge
 
@@ -302,15 +327,17 @@ A personal or team second brain about [TOPIC OR DOMAIN].
 strict-afs
 
 ## Structure
-- `logs/` contains brief dated change logs. Append to the current date file and keep entries to two lines max.
+- `GAPS.md` contains unresolved human or agent knowledge gaps.
+- `logs/` contains brief dated change logs. Append to `logs/YYYY/MM-DD/changes.md` and keep entries to two lines max.
 - `raw/` contains incoming source material waiting for compilation.
 - `references/` contains flat code, API, and URL references.
 - `knowledge/` contains canonical maintained knowledge using `knowledge/<domain>/<subject>/<topic>/<case>/...`.
 - `plans/`, `specs/`, and `audits/` are used when the work produces those artifacts.
-- `cookbook/`, `runbooks/`, `research/`, and `sources/` are flat source-of-truth support areas.
+- `cookbooks/`, `runbooks/`, `research/`, and `sources/` are flat source-of-truth support areas.
 
 ## Writing Rules
 - Search before creating a new page.
+- Check `GAPS.md` before research or synthesis work, and add new gaps when important uncertainty remains.
 - Update canonical pages instead of creating near-duplicates.
 - Preserve source references for non-obvious claims.
 - Mark inferred statements explicitly.
@@ -320,7 +347,7 @@ strict-afs
 - Every durable topic gets its own `.md` file or case folder inside `knowledge/`
 - Every canonical knowledge file starts with a short summary paragraph
 - Maintain `knowledge/INDEX.md`
-- Append major operations to `logs/YYYY-MM-DD.md`
+- Append major operations to `logs/YYYY/MM-DD/changes.md`
 - Link related pages using the preferred project link style
 
 ## Focus Areas
@@ -338,11 +365,11 @@ When the system is active and the user wants continuity between sessions, mainta
 Recommended files:
 
 - `knowledge/INDEX.md` — catalog of important pages and major topics
-- `logs/YYYY-MM-DD.md` — append-only dated operation and change log
-- `items/CRITICAL_FACTS.md` — tiny file for current, high-salience facts that matter in many sessions
-- `items/IDENTITY.md` or `items/SOUL.md` — enduring role, preferences, values, and communication context
-- `plans/CURRENT_STATE.md` — active priorities, open threads, and near-term focus
-- `items/PINNED.md` — temporary task-specific facts or schemas that should survive a long working session or context compaction
+- `logs/YYYY/MM-DD/changes.md` — append-only dated operation and change log
+- `facts/items/general/CRITICAL_FACTS.md` — tiny file for current, high-salience facts that matter in many sessions
+- `facts/items/general/IDENTITY.md` or `facts/items/general/SOUL.md` — enduring role, preferences, values, and communication context
+- `models/goals/CURRENT_STATE.md` — active priorities, open threads, and near-term focus
+- `facts/items/general/PINNED.md` — temporary task-specific facts or schemas that should survive a long working session or context compaction
 
 Rules:
 

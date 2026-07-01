@@ -35,6 +35,9 @@ installed and authenticated.
 Validation fails when:
 
 - `official-documentation/` exists.
+- top-level `items/` exists.
+- top-level `cookbook/` exists.
+- domain-first facts such as `facts/company/items/` exist.
 - A root-style Markdown file exists under `context/`.
 - A Markdown file larger than the configured context threshold exists under
   `context/`.
@@ -42,9 +45,15 @@ Validation fails when:
 Validation warns when:
 
 - `sources/` is missing.
-- Recommended root files are missing.
+- `context/` exists.
+- Recommended root files such as `AGENTS.md`, `BRAIN.md`, `VISION.md`,
+  `LOOPS.md`, `TASTE.md`, and `GAPS.md` are missing.
 - `knowledge/INDEX.md`, `raw/PROCESSED.md`, `raw/UNPROCESSED.md`, or
   `sources/INDEX.md` are missing.
+- Recommended `facts/{items,episodes,triples}/general/` or
+  `models/{decisions,problems,goals}/` live folders are missing.
+- Timestamped folder categories, including `results/`, contain Markdown
+  directly at the category root instead of under `YYYY/MM-DD/`.
 
 When validation is run from an application repository that has `docs/BRAIN.md`,
 the validator treats `docs/` as the AFS root.
@@ -54,6 +63,11 @@ the validator treats `docs/` as the AFS root.
 `afs:migrate` moves children of `official-documentation/` into `sources/`
 without overwriting existing files. If a name conflict exists, the migrated file
 or folder receives a `-migrated` suffix.
+
+The same command also moves legacy `items/` into `facts/items/general/`,
+legacy `cookbook/` into `cookbooks/`, and domain-first facts such as
+`facts/general/items/` into `facts/items/general/` with the same no-overwrite
+conflict rule.
 
 ## Hook Usage
 

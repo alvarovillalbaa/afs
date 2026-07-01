@@ -149,7 +149,7 @@ Tables are underused in technical documentation. Use them for:
 | Docstring (complex function) | 5–15 lines | 30 lines |
 | README | 100–300 words | 500 words (then split into ARCHITECTURE.md) |
 | ARCHITECTURE.md | 300–800 words | 1500 words |
-| Root instruction docs (`AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`) | 200–600 words | 1200 words |
+| Root instruction docs (`AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `GAPS.md`) | 200–600 words | 1200 words |
 | Runbook (`runbooks/*.md`, `RUNBOOK.md`) | 300–900 words | 1600 words |
 | Technical report | 500–1500 words | 3000 words |
 | ADR | 200–500 words | 800 words |

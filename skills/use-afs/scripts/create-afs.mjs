@@ -11,10 +11,19 @@ const skillDir = path.resolve(scriptDir, "..")
 const standardDirs = [
   "logs",
   "lessons",
-  "items",
+  "facts",
+  "facts/items",
+  "facts/items/general",
+  "facts/episodes",
+  "facts/episodes/general",
+  "facts/triples",
+  "facts/triples/general",
   "fixes",
   "steers",
   "models",
+  "models/decisions",
+  "models/problems",
+  "models/goals",
   "reflections",
   "audits",
   "raw",
@@ -23,12 +32,13 @@ const standardDirs = [
   "sources",
   "lib",
   "objects",
+  "templates",
+  "results",
   "references",
-  "cookbook",
+  "cookbooks",
   "knowledge",
   "runbooks",
   "research",
-  "context",
 ]
 
 const rootTemplates = [
@@ -38,6 +48,7 @@ const rootTemplates = [
   "VISION.md",
   "LOOPS.md",
   "TASTE.md",
+  "GAPS.md",
   "MEMORY.md",
   "PLAYBOOK.md",
   "PLAN.md",
@@ -224,9 +235,14 @@ async function looksLikeApplicationRepo(directory) {
 function looksLikeAfs(directory) {
   return (
     existsSync(path.join(directory, "BRAIN.md")) ||
+    existsSync(path.join(directory, "GAPS.md")) ||
     existsSync(path.join(directory, "knowledge", "INDEX.md")) ||
     existsSync(path.join(directory, "sources")) ||
-    existsSync(path.join(directory, "logs"))
+    existsSync(path.join(directory, "logs")) ||
+    existsSync(path.join(directory, "facts")) ||
+    existsSync(path.join(directory, "models")) ||
+    existsSync(path.join(directory, "items")) ||
+    existsSync(path.join(directory, "cookbook"))
   )
 }
 

@@ -98,13 +98,13 @@ export const afsPrinciples: AfsInfoCard[] = [
   {
     title: "Trace history is separate from truth",
     description:
-      "Logs, lessons, fixes, and plans preserve work-in-time evidence; specs, runbooks, and knowledge hold current truth.",
+      "Timestamped logs, lessons, fixes, plans, results, and reflections preserve work-in-time evidence; live specs, runbooks, and knowledge hold current truth.",
     icon: History,
   },
   {
     title: "Human intent stays at the root",
     description:
-      "Root files such as AGENTS.md, USER.md, VISION.md, LOOPS.md, and TASTE.md keep direction readable before agents act.",
+      "Root files such as AGENTS.md, USER.md, VISION.md, LOOPS.md, TASTE.md, and GAPS.md keep direction and missing understanding readable before agents act.",
     icon: Brain,
   },
 ]
@@ -141,43 +141,73 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/logs/",
         label: "Logs",
         description:
-          "Brief dated logs for meaningful changes, actions, discoveries, and workflow events.",
+          "Brief change logs, two lines max, appended to the latest dated file under YYYY/MM-DD/ such as logs/2026/06-29/changes.md.",
       },
       {
-        path: "/lessons/",
+        path: "/lessons/<domain>/",
         label: "Lessons",
         description:
-          "Reusable lessons learned from experience, especially lessons related to code, implementation, and user preference.",
+          "Lessons learned from experience, organized by domain and timestamp folders such as YYYY/MM-DD/.",
       },
       {
-        path: "/items/",
-        label: "Items",
+        path: "/facts/",
+        label: "Facts",
         description:
-          "Durable facts about the user, company, customers, environments, priorities, or other reusable context.",
+          "Live factual documentation about the user, companies, items, episodes, and triples; organize by type first, then domain.",
+      },
+      {
+        path: "/facts/items/<domain>/",
+        label: "Fact items",
+        description:
+          "Live atomic fact records and item documentation, grouped by domain. Do not place these under timestamped folders.",
+      },
+      {
+        path: "/facts/episodes/<domain>/",
+        label: "Episodes",
+        description:
+          "Live episode records derived from fact items or user/company history, grouped by domain. Do not place these under timestamped folders.",
+      },
+      {
+        path: "/facts/triples/<domain>/",
+        label: "Triples",
+        description:
+          "Live subject-predicate-object triples derived from fact items and episodes, grouped by domain. Do not place these under timestamped folders.",
       },
       {
         path: "/fixes/",
         label: "Fixes",
         description:
-          "Reusable error solutions and debugging resolutions from problems that were actually fixed.",
+          "Error solutions from issues that were actually fixed, organized in timestamp folders such as YYYY/MM-DD/.",
       },
       {
         path: "/steers/",
         label: "Steers",
         description:
-          "Traces of work that a human or secondary model redirected, including what the agent got wrong or missed.",
+          "Traces of agent work that a human or secondary model redirected, including what the agent got wrong or missed, organized in timestamp folders.",
       },
       {
-        path: "/models/",
-        label: "Models",
+        path: "/models/decisions/",
+        label: "Decisions",
         description:
-          "Brief logs of decisions made, problems encountered, and goals set so reasoning stays inspectable over time.",
+          "Live brief records of decisions made so reasoning remains inspectable.",
+      },
+      {
+        path: "/models/problems/",
+        label: "Problems",
+        description:
+          "Live brief records of problems encountered and their current status.",
+      },
+      {
+        path: "/models/goals/",
+        label: "Goals",
+        description:
+          "Live brief records of goals set, active goals, and goal outcomes.",
       },
       {
         path: "/reflections/",
         label: "Reflections",
         description:
-          "Detailed reflections about a platform, project, workflow, or recurring agent behavior.",
+          "Detailed platform, project, workflow, or agent-behavior reflections, organized in timestamp folders such as YYYY/MM-DD/.",
       },
     ],
   },
@@ -191,13 +221,13 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/audits/",
         label: "Audits",
         description:
-          "Comprehensive reports and analytical audits, usually organized in timestamp folders such as YYYY-MM-DD/.",
+          "Comprehensive reports and analytical audits used for audit-driven development, organized in timestamp folders such as YYYY/MM-DD/.",
       },
       {
         path: "/raw/",
         label: "Raw",
         description:
-          "Raw data waiting to be ingested, defined, promoted into knowledge/ or another canonical destination, and then removed.",
+          "Raw data waiting to be ingested, processed, defined in knowledge/ or another canonical destination, and then removed or marked as done.",
       },
       {
         path: "<domain>/<folder>/",
@@ -209,7 +239,7 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/plans/",
         label: "Plans",
         description:
-          "Implementation plans and plan-driven artifacts describing how work should be executed.",
+          "Implementation plans and plan-driven-development artifacts, organized in timestamp folders such as YYYY/MM-DD/.",
       },
       {
         path: "/specs/",
@@ -218,16 +248,34 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Living desired-state documentation describing how something should be. These are primarily human-defined and not timestamped.",
       },
       {
+        path: "/sources/",
+        label: "Sources",
+        description:
+          "URL-based sources to monitor, extract, compile, and organize into knowledge additions.",
+      },
+      {
         path: "/lib/",
         label: "Library",
         description:
-          "Reusable generated content, drafts, registries, templates, indexes, and other support artifacts.",
+          "A library for generated content, drafts, registries, indexes, and other reusable support artifacts.",
       },
       {
         path: "/objects/<type>/",
         label: "Objects",
         description:
           "Structured object records such as clients, employees, vendors, accounts, projects, or product surfaces.",
+      },
+      {
+        path: "/templates/",
+        label: "Templates",
+        description:
+          "Reusable templates such as AI prompts, emails, scripts, and other repeatable starting points.",
+      },
+      {
+        path: "/results/",
+        label: "Results",
+        description:
+          "Stored results from work that was run and needs to be preserved, organized in timestamp folders such as YYYY/MM-DD/.",
       },
     ],
   },
@@ -238,20 +286,14 @@ export const afsPathGroups: AfsPathGroup[] = [
       "Living documentation that represents the current canonical understanding of the codebase, company, workflows, and sources.",
     paths: [
       {
-        path: "/sources/",
-        label: "Sources",
-        description:
-          "External provider documentation, copied docs, URL registries, source snapshots, provenance notes, and citation material.",
-      },
-      {
         path: "/references/",
         label: "References",
         description:
-          "Code, URL, API, schema, and factual references that need stable lookup.",
+          "Code, URL, API, schema, and technical references that need stable lookup as live documentation.",
       },
       {
-        path: "/cookbook/",
-        label: "Cookbook",
+        path: "/cookbooks/",
+        label: "Cookbooks",
         description:
           "Technical guides for how something is actually done in the codebase or operating environment.",
       },
@@ -272,12 +314,6 @@ export const afsPathGroups: AfsPathGroup[] = [
         label: "Research",
         description:
           "Continuous research related to software engineering, business areas, markets, or other ongoing questions.",
-      },
-      {
-        path: "/context/",
-        label: "Context",
-        description:
-          "Lightweight scoped context by subfolder, such as context/goals/ or context/roadmap/. Large root-style Markdown files such as AGENTS.md, USER.md, VISION.md, LOOPS.md, and TASTE.md stay at the workspace root.",
       },
     ],
   },
@@ -310,6 +346,13 @@ export const rootFiles: AfsRootFile[] = [
     description:
       "Captures high-quality and personalized judgment: what good looks like, preferred examples, anti-patterns, and subjective standards.",
     icon: Sparkles,
+  },
+  {
+    file: "GAPS.md",
+    label: "Gaps",
+    description:
+      "Tracks gaps in human or agent understanding so unresolved questions stay visible until agents can resolve them into durable knowledge.",
+    icon: Search,
   },
   {
     file: "MEMORY.md",
@@ -463,14 +506,14 @@ export const installationOptions: AfsInstallOption[] = [
     title: "Validate an AFS workspace",
     command: "npm run afs:validate -- .",
     description:
-      "Check for removed paths, missing recommended shell files, and misplaced large root-style Markdown files inside context/.",
+      "Check for removed paths, missing recommended shell files, legacy context/ usage, and stale layout names.",
     icon: ShieldCheck,
   },
   {
-    title: "Migrate legacy external docs",
+    title: "Migrate legacy AFS paths",
     command: "npm run afs:migrate -- .",
     description:
-      "Move legacy external documentation contents into sources/ without overwriting existing source material.",
+      "Move legacy official-documentation/, items/, cookbook/, and domain-first facts into sources/, facts/items/general/, cookbooks/, and the type-first facts layout without overwriting existing material.",
     icon: Wrench,
   },
 ]
@@ -480,7 +523,7 @@ export const installationProfiles: AfsInstallProfile[] = [
     title: "Empty or sparse folder",
     placement: "root",
     description:
-      "Create the full shell directly at the folder root, including root Markdown files, knowledge/INDEX.md, raw tracking files, and sources/INDEX.md.",
+      "Create the full shell directly at the folder root, including root Markdown files, knowledge/INDEX.md, raw tracking files, sources/INDEX.md, facts/, models/, and templates/.",
     icon: Archive,
   },
   {
@@ -494,7 +537,7 @@ export const installationProfiles: AfsInstallProfile[] = [
     title: "Application repository",
     placement: "docs/",
     description:
-      "Install AFS under docs/ so agent context, source provenance, and knowledge stay separated from app code.",
+      "Install AFS under docs/ so agent memory, source provenance, and knowledge stay separated from app code.",
     icon: FileText,
   },
   {
@@ -535,7 +578,7 @@ export const agentUsageGuides: AfsAgentUsage[] = [
       "Paste the Notion template into Custom Agent instructions and point it at the pages or databases that mirror AFS root files and folders.",
     setup:
       "Keep durable outputs in Notion pages named after AFS files, then periodically export or sync them into the repository.",
-    files: ["templates/agent/notion-agent-instructions.md", "VISION.md", "LOOPS.md"],
+    files: ["templates/agent/notion-agent-instructions.md", "VISION.md", "LOOPS.md", "GAPS.md"],
     icon: ClipboardList,
   },
   {
@@ -599,7 +642,7 @@ export const compatibilityTargets: AfsCompatibilityTarget[] = [
     status: "Best-effort bridge",
     description:
       "AFS can expose QMD.md as a query and decision bridge that maps QMD-style notes back to specs, plans, knowledge, and source provenance.",
-    files: ["QMD.md", "specs/", "plans/", "knowledge/"],
+    files: ["QMD.md", "GAPS.md", "specs/", "plans/", "knowledge/"],
     icon: FileText,
   },
   {
@@ -607,7 +650,7 @@ export const compatibilityTargets: AfsCompatibilityTarget[] = [
     status: "Native filesystem compatibility",
     description:
       "Any harness that can read files and write Markdown can use AFS without a proprietary database or hosted service.",
-    files: ["AGENTS.md", "VISION.md", "sources/"],
+    files: ["AGENTS.md", "VISION.md", "GAPS.md", "sources/"],
     icon: Network,
   },
 ]

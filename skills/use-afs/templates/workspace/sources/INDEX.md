@@ -1,7 +1,7 @@
 # Sources Index
 
-Track reusable source registries, copied source material, source snapshots, and
-provenance.
+Track URL-based sources to monitor, copied source material, source snapshots,
+and provenance.
 
 ## Source Rules
 

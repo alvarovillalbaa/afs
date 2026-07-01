@@ -42,7 +42,7 @@ It should behave like a lightweight hyperagent, not a one-shot optimizer:
 2. Build a candidate improvement list across these target types:
    - `skill` — a `SKILL.md` file whose instructions caused weak or awkward execution
    - `agent` — an agent definition under `agents/` whose routing, trigger text, or workflow was off
-   - `documentation` — repo docs like `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `writing-style-guide.md`, `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `context/`, or domain-specific AFS doc trees
+   - `documentation` — repo docs like `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `GAPS.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `writing-style-guide.md`, `logs/`, `lessons/`, `facts/`, `fixes/`, `steers/`, `models/`, `reflections/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `objects/`, `templates/`, `results/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, `research/`, or domain-specific AFS doc trees
    - `memory` — memory files under `~/.claude/projects/*/memory/` that are stale, contradictory, or missing key durable facts
    - `conversation` — harvest durable memory or reusable workflows from the current conversation
 
@@ -55,7 +55,7 @@ It should behave like a lightweight hyperagent, not a one-shot optimizer:
 4. Choose the smallest set of targets that fixes the real problem:
    - Sometimes this is one skill.
    - Sometimes it is multiple skills.
-   - Sometimes it is a skill plus one or more agents or docs such as `AGENTS.md`, `PLAN.md`, `SPEC.md`, `DESIGN.md`, or a runbook.
+   - Sometimes it is a skill plus one or more agents or docs such as `AGENTS.md`, `PLAN.md`, `SPEC.md`, `DESIGN.md`, `GAPS.md`, or a runbook.
    - If the failure is mostly "wrong voice" rather than "wrong workflow", prefer a style artifact such as `writing-style-guide.md` plus the consuming skill, not just more drafting rules.
    - Do not improve everything just because you can. Improve everything that the evidence says is necessary.
 
@@ -635,10 +635,10 @@ Bad mutations:
 
 Mutation scope: the frontmatter description, `When to use`, commands/skills tables, workflow steps.
 
-### documentation (`AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `logs/`, `lessons/`, `items/`, `fixes/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, `context/`, `runbooks/**/*.md`)
+### documentation (`AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `GAPS.md`, `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`, `OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`, `CONTRIBUTING.md`, `TESTING.md`, `logs/`, `lessons/`, `facts/`, `fixes/`, `steers/`, `models/`, `reflections/`, `audits/`, `raw/`, `plans/`, `specs/`, `sources/`, `lib/`, `objects/`, `templates/`, `results/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, `research/`, `runbooks/**/*.md`)
 
 Good mutations:
-- Use the `code-documentation` contract consistently: Core docs (`README.md`, `ARCHITECTURE.md`, `TESTS.md`), Conditional docs (`SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`), Rare docs (`OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`), root instruction docs, timestamped AFS docs on `*/YYYY/YYYY-MM-DD/*.md`, and living AFS docs in `specs/`, `sources/`, `lib/`, `references/`, `cookbook/`, `knowledge/`, `runbooks/`, `research/`, and `context/`
+- Use the `code-documentation` contract consistently: Core docs (`README.md`, `ARCHITECTURE.md`, `TESTS.md`), Conditional docs (`SETUP.md`, `RUNBOOK.md`, `CHANGELOG.md`, `SECURITY.md`), Rare docs (`OVERVIEW.md`, `FAQ.md`, `DECISIONS.md`, `DEPENDENCIES.md`), root instruction docs, timestamped AFS docs on `*/YYYY/MM-DD/*.md`, and living AFS docs in `specs/`, `facts/`, `models/`, `sources/`, `lib/`, `objects/`, `templates/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, and `research/`
 - Add missing sections that users repeatedly need to complete the workflow
 - Tighten vague instructions so the next action is obvious and testable
 - Reorder sections so the highest-priority operational guidance appears earlier
@@ -647,7 +647,7 @@ Good mutations:
 - Clarify audience and scope so the doc stops mixing onboarding, policy, and implementation details
 - Promote repo-wide rules into the correct root doc instead of burying them in unrelated READMEs
 - Split workflow procedures into `runbooks/` or `RUNBOOK.md` when they are currently scattered across long docs
-- Treat `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, and `DESIGN.md` as first-class documentation targets that should improve automatically when the repo's operating model changes
+- Treat `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, and `GAPS.md` as first-class documentation targets that should improve automatically when the repo's operating model changes or important unresolved understanding appears
 - Create or refresh `writing-style-guide.md` when repeated draft corrections point to missing voice guidance rather than missing workflow guidance
 
 Bad mutations:
@@ -655,7 +655,7 @@ Bad mutations:
 - Adding guidance that conflicts with the actual codebase or scripts
 - Copying the same instructions into multiple docs without a clear source of truth
 - Expanding the doc beyond its core job instead of linking to the right neighboring doc
-- Leaving `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, or `DESIGN.md` stale after the repo's operating model changes
+- Leaving `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, or `GAPS.md` stale after the repo's operating model changes
 
 Mutation scope: headings, ordering, wording, examples, checklists, cross-links, and stale-content removal inside the target documentation file.
 
@@ -664,7 +664,7 @@ Mutation scope: headings, ordering, wording, examples, checklists, cross-links, 
 - A single task may justify improving multiple skills, multiple agents, or a mix of skills, agents, and documentation.
 - Do not mutate multiple targets at the same time. Finish one target's baseline and loop, then move to the next target.
 - Prefer shared, upstream fixes. If three failures come from one bad skill, improve that skill instead of patching three downstream agents.
-- Prefer `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, or `DESIGN.md` when the missing rule is repo-wide rather than skill-specific.
+- Prefer `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, or `GAPS.md` when the missing rule or missing understanding is repo-wide rather than skill-specific.
 - Prefer `runbooks/` or `RUNBOOK.md` when the missing content is an operational workflow rather than a policy or concept.
 - Skip targets whose issues are incidental, one-off, or already addressed by a better upstream fix.
 - Transfer memory across related targets. If a documentation fix taught a reusable lesson about instruction ordering or examples, seed that lesson into subsequent skill or agent runs.

@@ -3,5 +3,9 @@ description: Use AFS as the portable filesystem context standard.
 instructions: |
   Read root AFS files before making durable decisions. Keep external source
   material in sources/. Do not create official-documentation/. Keep large
-  root-style Markdown files at the workspace root, not in context/. Use
+  root-style Markdown files at the workspace root, not in legacy context/.
+  Use GAPS.md for unresolved gaps in human or agent understanding.
+  Store live facts under facts/items/<domain>/, facts/episodes/<domain>/, or
+  facts/triples/<domain>/; technical guides in cookbooks/; and decisions,
+  problems, and goals under models/. Use
   skills/use-afs/scripts/validate-afs.mjs to verify structure when available.

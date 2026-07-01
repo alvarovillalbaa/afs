@@ -27,11 +27,21 @@ Read these references before acting:
   standard, then run the auto-placement decision tree below.
 - Use `sources/` for external provider docs, URL registries, copied source
   snapshots, and provenance. Do not create `official-documentation/`.
+- Use `facts/items/<domain>/`, `facts/episodes/<domain>/`, and
+  `facts/triples/<domain>/` for live facts. Do not create top-level `items/`.
+- Use `cookbooks/` for technical how-to guides. Do not create `cookbook/`.
+- Use `models/decisions/`, `models/problems/`, and `models/goals/` for live
+  decision, problem, and goal records.
+- Use timestamp folders shaped as `YYYY/MM-DD/` for logs, lessons, fixes,
+  steers, reflections, audits, plans, and results. Files inside those folders
+  should be named by topic, not by timestamp.
 - Keep large root-style Markdown files at the workspace root. Do not put
   `AGENTS.md`, `CLAUDE.md`, `USER.md`, `BRAIN.md`, `VISION.md`, `LOOPS.md`,
-  `TASTE.md`, or similar files under `context/`.
-- Use `context/` only for small scoped context such as `context/goals/`,
-  `context/budget/`, or `context/roadmap/`.
+  `TASTE.md`, `GAPS.md`, or similar files under `context/`.
+- Use `GAPS.md` for unresolved gaps in human or agent understanding. Add gaps
+  when uncertainty blocks good work, and resolve them into durable AFS
+  destinations when the missing knowledge is found.
+- Treat `context/` as a legacy/deprecated path, not an active AFS surface.
 - Prefer portable Markdown and shell-readable folders over platform-specific
   memory stores.
 - When adding third-party compatibility, describe it as a file-based bridge
@@ -81,8 +91,8 @@ not the right choice.
 npm run afs:validate -- .
 ```
 
-Run validation after moving source material, adding root files, or changing
-`context/`.
+Run validation after moving source material, adding root files, migrating legacy
+paths, or changing folder structure.
 
 ### Migrate Removed Documentation Path
 
@@ -90,14 +100,18 @@ Run validation after moving source material, adding root files, or changing
 npm run afs:migrate -- .
 ```
 
-This moves `official-documentation/` contents into `sources/` without
-overwriting existing files.
+This moves legacy `official-documentation/`, `items/`, and `cookbook/` contents
+into `sources/`, `facts/items/general/`, and `cookbooks/` without overwriting
+existing files. It also moves legacy domain-first facts such as
+`facts/general/items/` into `facts/items/general/`.
 
 ## Templates
 
 - `templates/root/` contains root Markdown files.
 - `templates/workspace/` contains shell files such as `knowledge/INDEX.md`,
-  `raw/PROCESSED.md`, `raw/UNPROCESSED.md`, and `sources/INDEX.md`.
+  `raw/PROCESSED.md`, `raw/UNPROCESSED.md`, `sources/INDEX.md`,
+  `facts/items/general/INDEX.md`, `results/README.md`, and
+  `models/decisions/INDEX.md`.
 - `templates/agent/` contains agent-specific instruction templates.
 - `templates/compat/` contains bridge files for Gbrain and QMD.
 - `hooks/` contains hook examples for harnesses that support validation hooks.

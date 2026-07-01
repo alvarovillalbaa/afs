@@ -12,7 +12,7 @@ set -euo pipefail
 
 TODAY=$(date +%Y-%m-%d)
 YEAR=$(date +%Y)
-DATE_DIR=$(date +%Y-%m-%d)
+DATE_DIR=$(date +%m-%d)
 
 find_repo_root() {
     local dir="$PWD"
@@ -56,6 +56,7 @@ print_legacy_conflicts() {
         "$REPO_ROOT/docs/guides" \
         "$REPO_ROOT/docs/references" \
         "$REPO_ROOT/docs/cookbook" \
+        "$REPO_ROOT/docs/cookbooks" \
         "$REPO_ROOT/docs/plans" \
         "$REPO_ROOT/docs/specs" \
         "$REPO_ROOT/docs/audits"
@@ -87,7 +88,7 @@ case "$cmd" in
         else
             echo "No logs/ directory with dated markdown files found in repo root: $REPO_ROOT"
             echo "Create it with: mkdir -p $REPO_ROOT/logs/$YEAR/$DATE_DIR"
-            echo "Then create:    touch $REPO_ROOT/logs/$YEAR/$DATE_DIR/dev.md"
+            echo "Then create:    touch $REPO_ROOT/logs/$YEAR/$DATE_DIR/changes.md"
         fi
         ;;
 
@@ -131,7 +132,7 @@ case "$cmd" in
         echo ""
 
         echo "📝 TIMESTAMPED HISTORY"
-        for dir in logs lessons items fixes audits raw plans; do
+        for dir in logs fixes steers reflections audits plans results; do
             base="$REPO_ROOT/$dir"
             if path=$(latest_timestamped_file "$base" 2>/dev/null); then
                 echo "   $dir: $path"
@@ -139,10 +140,11 @@ case "$cmd" in
                 echo "   $dir: $base/$YEAR/$DATE_DIR/"
             fi
         done
+        echo "   lessons: $REPO_ROOT/lessons/<domain>/$YEAR/$DATE_DIR/"
         echo ""
 
         echo "📚 LIVING DOCS"
-        for dir in specs sources lib references cookbook knowledge runbooks research context; do
+        for dir in specs sources lib objects templates facts models references cookbooks knowledge runbooks research; do
             base="$REPO_ROOT/$dir"
             if [[ -d "$base" ]]; then
                 echo "   ✓ $base"
@@ -153,7 +155,7 @@ case "$cmd" in
         echo ""
 
         echo "🧭 ROOT INSTRUCTION DOCS"
-        for f in AGENTS.md PLAN.md SPEC.md SOUL.md PRINCIPLES.md DESIGN.md; do
+        for f in AGENTS.md PLAN.md SPEC.md SOUL.md PRINCIPLES.md DESIGN.md GAPS.md; do
             [[ -f "$REPO_ROOT/$f" ]] && echo "   ✓ $REPO_ROOT/$f" || echo "   ✗ $REPO_ROOT/$f (missing)"
         done
         echo ""

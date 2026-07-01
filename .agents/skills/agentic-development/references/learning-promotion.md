@@ -1,6 +1,6 @@
 # Identity And Documentation Promotion
 
-Last updated: 2026-04-25
+Last updated: 2026-06-30
 
 Use learning artifacts to improve the right source of truth. Do not promote everything everywhere.
 
@@ -9,7 +9,7 @@ Use learning artifacts to improve the right source of truth. Do not promote ever
 Promote in this order:
 
 1. `learning/` artifacts
-2. Root instruction docs: `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`
+2. Root instruction docs: `AGENTS.md`, `PLAN.md`, `SPEC.md`, `SOUL.md`, `PRINCIPLES.md`, `DESIGN.md`, `GAPS.md`
 3. Human-facing markdown docs that should persist for collaborators
 
 If the knowledge is useful only as session memory, stop at `learning/`.
@@ -24,25 +24,31 @@ If the knowledge is useful only as session memory, stop at `learning/`.
 | `SOUL.md` | Persistent style, tone, or collaboration stance | Rare, identity-level signal |
 | `PRINCIPLES.md` | Decision heuristics, constraints, and trade-off rules | Rare, heuristic clearly needed |
 | `DESIGN.md` | Design-system and frontend interaction rules | Durable design language or interface-system guidance |
+| `GAPS.md` | Unresolved gaps in human or agent understanding | Important uncertainty that should be resolved into durable knowledge |
 | `README.md` | Human-facing overview or usage facts | When a teammate would need it |
 | `ARCHITECTURE.md` | Structural decisions, ownership, boundaries | When architecture changed or was clarified |
 | `TESTS.md` / `TESTING.md` | Durable test workflows and pitfalls | When test strategy or gotchas changed |
 | `SETUP.md` | Environment, setup, bootstrap behavior | When operational steps changed |
 | `logs/` | Development log entries | After any meaningful code or doc change |
-| `lessons/` | Verified reusable insights | When a discovery should change future behavior |
-| `items/` | Stable project/team/user/company facts | When teammates would make wrong assumptions without it |
+| `lessons/<domain>/` | Verified reusable insights | When a discovery should change future behavior |
+| `facts/items/<domain>/` | Stable project/team/user/company facts | When teammates would make wrong assumptions without it |
 | `fixes/` | Error solutions | After solving a non-obvious or recurring problem |
+| `steers/` | Human or secondary-model steering traces | When agent work was redirected and the miss should be remembered |
+| `models/decisions/`, `models/problems/`, `models/goals/` | Live decision, problem, and goal records | When reasoning state should stay inspectable |
+| `reflections/` | Detailed reflections | When the artifact is reflective and platform/workflow-oriented |
 | `audits/` | Reports, ADRs, post-mortems, analytical audits | When the artifact is historical and investigative |
 | `plans/` | Historical implementation plans | When the artifact explains how one change should be executed |
+| `results/` | Preserved work outputs | When a run, evaluation, analysis, or generated result should be retained |
 | `specs/` | Living desired-state behavior contracts | When the rule should remain current, not historical |
 | `sources/` | External docs, source snapshots, monitored URL registries, and provenance | When source material itself is durable knowledge |
 | `lib/` | Generated drafts or support artifacts | When a reusable generated artifact should persist |
+| `objects/<type>/` | Structured object records | When the content is about clients, employees, vendors, or similar entities |
+| `templates/` | Reusable templates | When a prompt, email, script, or checklist should be reused |
 | `references/` | Stable lookup/reference material | When teammates need a factual reference surface |
-| `cookbook/` | Repo-specific technical guidance | When a pattern needs broader documentation in this codebase |
+| `cookbooks/` | Repo-specific technical guidance | When a pattern needs broader documentation in this codebase |
 | `knowledge/` | Timeless maintained knowledge | When the content should compound and stay canonical |
 | `runbooks/` | Exact operational workflows | When the content is a repeatable procedure |
 | `research/` | Ongoing engineering research | When the work is exploratory but still source-of-truth |
-| `context/` | Goals, roadmap, budget, preferences, values, other contextual docs | When the repo needs current shared context |
 
 ## `AGENTS.md`
 
@@ -103,7 +109,19 @@ Update these when the learning changes the repo-wide documentation contract:
 - `SPEC.md` — how specs should be written and what they must define
 - `DESIGN.md` — the design system and frontend interaction language for the repo
 
-Do not use these files for one feature's local content when a timestamped doc in `plans/YYYY/YYYY-MM-DD/` or a living contract in `specs/` is the narrower source of truth.
+Do not use these files for one feature's local content when a timestamped doc in `plans/YYYY/MM-DD/` or a living contract in `specs/` is the narrower source of truth.
+
+## `GAPS.md`
+
+Update when an important gap in human or agent understanding remains unresolved.
+
+Examples:
+
+- A domain concept is unclear but affects implementation quality.
+- A product, user, company, or codebase fact is missing.
+- An agent discovers uncertainty that should be resolved through research, source review, or human input.
+
+Do not use `GAPS.md` for completed research outputs, vague uncertainty with no actionable question, or implementation tasks that belong in plans, problems, or fixes.
 
 ## Other markdown docs
 
@@ -134,19 +152,27 @@ Promote there when the knowledge is for humans first, not just agents.
 Use the `code-documentation` contract and choose the narrowest correct destination:
 
 - `logs/` for terse historical change notes
-- `lessons/` for verified reusable insights
-- `items/` for durable facts about user/company/project context
+- `lessons/<domain>/` for verified reusable insights
+- `facts/items/<domain>/` for durable facts about user/company/project context
 - `fixes/` for reusable debugging resolutions
+- `steers/` for traces of redirected agent work
+- `models/decisions/`, `models/problems/`, and `models/goals/` for live reasoning records
+- `reflections/` for detailed platform, workflow, or agent-behavior reflections
 - `audits/` for reports, ADRs, post-mortems, and analytical history
 - `plans/` for historical implementation plans
+- `results/` for preserved outputs from work that was run
 - `specs/` for living desired-state contracts
+- `sources/` for monitored URLs, source snapshots, and provenance
+- `lib/` for generated drafts or support artifacts
+- `objects/<type>/` for structured object records
+- `templates/` for reusable prompts, emails, scripts, and checklists
 - `references/` for factual lookup docs
-- `cookbook/` for repo-specific technical recipes
+- `cookbooks/` for repo-specific technical recipes
 - `knowledge/` for timeless maintained knowledge
 - `runbooks/` for exact repeatable procedures
-- `research/`, `sources/`, `context/`, or `lib/` when those surfaces are the right current home
+- `research/` when ongoing research is the right current home
 
-All timestamped AFS paths follow `*/YYYY/YYYY-MM-DD/*.md`. All living docs should carry `Last updated: YYYY-MM-DD`.
+All timestamped AFS paths follow `*/YYYY/MM-DD/*.md`. All living docs should carry `Last updated: YYYY-MM-DD`.
 
 ## Conflict handling
 

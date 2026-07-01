@@ -320,7 +320,7 @@ function RootFilesSection() {
       <SectionHeading
         eyebrow="Root MD files"
         title="The files agents should check before making high-impact decisions."
-        description="These files define the user, company, product, agent behavior, specs, plans, taste, loops, risk, and operational state. They should live at the root of an AFS-aware repository or workspace."
+        description="These files define the user, company, product, agent behavior, specs, plans, taste, loops, unresolved knowledge gaps, risk, and operational state. They should live at the root of an AFS-aware repository or workspace."
       />
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         {rootFiles.map((item) => {

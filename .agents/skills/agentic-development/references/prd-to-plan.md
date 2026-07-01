@@ -1,6 +1,6 @@
 # PRD to Implementation Plan (Tracer Bullets)
 
-Break a PRD into a phased implementation plan using vertical slices — tracer bullets that cut through every integration layer end-to-end. Output is a Markdown file in `./plans/`.
+Break a PRD into a phased implementation plan using vertical slices — tracer bullets that cut through every integration layer end-to-end. Output is a Markdown file in `./plans/YYYY/MM-DD/`.
 
 ## Process
 
@@ -52,7 +52,7 @@ Iterate until the user approves the breakdown.
 
 ### 6. Write the plan file
 
-Create `./plans/` if it does not exist. Write the plan as a Markdown file named after the feature (e.g. `./plans/user-onboarding.md`). Use the template below.
+Create `./plans/YYYY/MM-DD/` if it does not exist. Write the plan as a Markdown file named after the feature (e.g. `./plans/2026/06-30/user-onboarding.md`). Use the template below.
 
 ## Plan Template
 

@@ -308,7 +308,7 @@ function RootFiles() {
         <SectionIntro
           eyebrow="Root Markdown files"
           title="Repository-level intent that agents can read first."
-          description="The folder standard stores evidence and knowledge. Root Markdown files define operating rules, product direction, taste, loops, values, risk, and current status."
+          description="The folder standard stores evidence and knowledge. Root Markdown files define operating rules, product direction, taste, loops, values, gaps, risk, and current status."
         />
         <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {rootFiles.slice(0, 12).map((item) => {

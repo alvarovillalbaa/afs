@@ -20,6 +20,7 @@ repository, the agent should:
 - Paste `templates/agent/notion-agent-instructions.md` into the Custom Agent
   instructions.
 - Mirror root files as Notion pages when working primarily in Notion.
+- Mirror `GAPS.md` as a page for unresolved knowledge or understanding gaps.
 - Export or sync durable decisions into the AFS repository.
 - Use Notion activity logs to inspect agent actions, but keep canonical
   long-lived context in AFS.
@@ -31,6 +32,8 @@ repository, the agent should:
 - Use `hooks/claude-settings.example.json` as the starting point for validation
   hooks when the project wants automatic checks around file writes.
 - Store persistent rules in AFS root files, not only Claude-specific settings.
+- Check `GAPS.md` before research, implementation planning, or knowledge
+  synthesis work.
 
 ## Codex
 
@@ -39,6 +42,8 @@ repository, the agent should:
 - Use `hooks/codex-hooks.example.json` as an adapter example for Codex-compatible
   hook runners.
 - Run `npm run afs:validate -- .` before finalizing structural changes.
+- Add unresolved gaps in understanding to `GAPS.md` instead of leaving them only
+  in chat.
 
 ## Cursor
 
@@ -51,6 +56,7 @@ repository, the agent should:
 
 - Use `templates/agent/openclaw-skill.md` as a bridge skill.
 - Point OpenClaw at root files first, then folders.
+- Use `GAPS.md` to keep unresolved knowledge gaps visible across runs.
 - Treat OpenClaw compatibility as file-based adapter guidance unless native AFS
   support is published.
 
@@ -60,7 +66,8 @@ repository, the agent should:
   - read root intent first;
   - write trace history to memory folders;
   - keep external material in `sources/`;
-  - promote stable truth into `knowledge/`, `cookbook/`, `runbooks/`, or root
-    files.
-- Attach `AGENTS.md` and `BRAIN.md` templates until a Hermes-native adapter is
-  available.
+  - promote stable truth into `knowledge/`, `cookbooks/`, `runbooks/`, or root
+    files;
+  - record unresolved knowledge gaps in `GAPS.md`.
+- Attach `AGENTS.md`, `BRAIN.md`, and `GAPS.md` templates until a Hermes-native
+  adapter is available.

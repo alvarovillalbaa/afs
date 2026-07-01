@@ -1,6 +1,6 @@
 # Repo-Local Learning System
 
-Last updated: 2026-04-25
+Last updated: 2026-06-30
 
 Run this reference when: the user says "save what we learned", "update learning", "extract lessons", "mine this session", "remember this repo pattern", or wants a `learning/` folder that stores engineering knowledge; or when a session ends and the learning loop should be run to consolidate discoveries into durable artifacts.
 
@@ -52,11 +52,11 @@ After the learning artifacts are written, check whether the knowledge should als
 - `PRINCIPLES.md` for decision heuristics.
 - Service docs such as `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md` when teammates benefit.
 - AFS documentation destinations for human-readable discoveries:
-  - `lessons/YYYY/YYYY-MM-DD/` — verified insights that should change future behavior
-  - `items/YYYY/YYYY-MM-DD/` — stable facts about team/company/project context
-  - `fixes/YYYY/YYYY-MM-DD/` — solutions to non-obvious errors
-  - `logs/YYYY/YYYY-MM-DD/` — terse historical change notes
-  - `audits/`, `plans/`, `specs/`, `references/`, `cookbook/`, `knowledge/`, or `runbooks/` when that is the correct durable destination
+  - `lessons/<domain>/YYYY/MM-DD/` — verified insights that should change future behavior
+  - `facts/items/<domain>/` — stable facts about team/company/project context
+  - `fixes/YYYY/MM-DD/` — solutions to non-obvious errors
+  - `logs/YYYY/MM-DD/` — terse historical change notes
+  - `audits/YYYY/MM-DD/`, `plans/YYYY/MM-DD/`, `results/YYYY/MM-DD/`, `specs/`, `references/`, `cookbooks/`, `knowledge/`, or `runbooks/` when that is the correct durable destination
 
 **Documentation placement rules** are owned by the `code-documentation` skill. Read `skills/code-documentation/SKILL.md` before writing to AFS docs so the content lands in the right current-vs-historical surface.
 

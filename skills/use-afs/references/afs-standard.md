@@ -41,8 +41,9 @@ markers, root install is acceptable.
 
 If the current folder is a code repository for an application, install the full
 AFS shell inside `docs/`. That keeps AFS separated from application source code.
-In this profile, `docs/BRAIN.md`, `docs/VISION.md`, `docs/LOOPS.md`, and
-`docs/TASTE.md` are the AFS root files for that application.
+In this profile, `docs/BRAIN.md`, `docs/VISION.md`, `docs/LOOPS.md`,
+`docs/TASTE.md`, and `docs/GAPS.md` are the AFS root files for that
+application.
 
 ### Busy Non-Application Folder
 
@@ -55,48 +56,96 @@ If an agent is told to "implement AFS", "implement this AFS standard URL", or
 given the AFS GitHub URL, it should treat the prompt as an installation request,
 inspect the current workspace, and choose the safest profile automatically.
 
-## Removed Path
+## Removed Paths
 
 Do not create or document `official-documentation/`.
 
 External provider documentation, copied docs, source snapshots, URL registries,
 and provenance belong in `sources/`.
 
+Do not create active top-level `items/` or `cookbook/` paths. Legacy `items/`
+content belongs in `facts/items/general/`; legacy `cookbook/` content belongs in
+`cookbooks/`.
+
+Do not create active domain-first fact paths such as `facts/general/items/`.
+Fact paths are type-first: `facts/items/<domain>/`,
+`facts/episodes/<domain>/`, and `facts/triples/<domain>/`.
+
+Do not create active `context/` folders. Root-style Markdown files belong at the
+workspace root, and scoped durable information belongs in the appropriate AFS
+folder below.
+
 ## Core Folders
 
 ### Memory
 
-- `logs/`
-- `lessons/`
-- `items/`
-- `fixes/`
-- `steers/`
-- `models/`
-- `reflections/`
+- `logs/` — brief change logs, two lines max, appended to the latest dated file
+  under `YYYY/MM-DD/`, usually `changes.md`.
+- `lessons/<domain>/` — lessons learned from experience, organized in
+  timestamp folders.
+- `facts/items/<domain>/` — live atomic facts and item records.
+- `facts/episodes/<domain>/` — live episode records derived from facts.
+- `facts/triples/<domain>/` — live subject-predicate-object triples derived
+  from facts and episodes.
+- `fixes/` — error solutions from things actually fixed, organized in timestamp
+  folders.
+- `steers/` — traces of work redirected by a human or secondary model,
+  organized in timestamp folders.
+- `models/decisions/` — live brief records of decisions made.
+- `models/problems/` — live brief records of problems encountered.
+- `models/goals/` — live brief records of goals set.
+- `reflections/` — detailed platform, project, workflow, or agent-behavior
+  reflections, organized in timestamp folders.
 
 ### Operational
 
-- `audits/`
-- `raw/`
-- `plans/`
-- `specs/`
-- `lib/`
-- `objects/<type>/`
-- domain-specific folders when they are justified
+- `audits/` — comprehensive reports and analytical audits, organized in
+  timestamp folders.
+- `raw/` — raw data to be ingested, processed, promoted into `knowledge/` or
+  another canonical destination, then removed or marked as done.
+- `<domain>/<folder>/` — additional domain-specific paths, such as `health/` or
+  `investing/`, when justified.
+- `plans/` — implementation plans and plan-driven-development artifacts,
+  organized in timestamp folders.
+- `specs/` — live desired-state documentation, primarily human-defined.
+- `sources/` — URL-based sources to continuously monitor, extract, compile, and
+  organize into knowledge additions.
+- `lib/` — generated content, drafts, registries, indexes, and reusable support
+  artifacts.
+- `objects/<type>/` — structured object records, such as clients or employees.
+- `templates/` — reusable templates such as prompts, emails, and scripts.
+- `results/` — results from work that was run and needs to be preserved,
+  organized in timestamp folders.
 
 ### Source of Truth
 
-- `sources/`
-- `references/`
-- `cookbook/`
-- `knowledge/`
-- `runbooks/`
-- `research/`
-- `context/`
+- `references/` — code, URL, API, schema, and technical references as live
+  documentation.
+- `cookbooks/` — technical guides for how something is actually done in the
+  codebase or operating environment.
+- `knowledge/` — timeless maintained knowledge about the codebase, business, or
+  how to do something.
+- `runbooks/` — operational procedures for recurring work after it has been
+  performed in a known way.
+- `research/` — continuous research related to software engineering topics.
 
-## Context Rule
+## Timestamp Rule
 
-`context/` is for small scoped context, not large root-style Markdown files.
+Timestamped folders use `YYYY/MM-DD/`. Markdown files inside timestamped folders
+are named by topic rather than by timestamp. For example:
+
+- `logs/2026/06-29/changes.md`
+- `lessons/frontend/2026/06-29/component-boundaries.md`
+- `fixes/2026/06-29/build-cache-error.md`
+- `results/2026/06-29/evaluation-run.md`
+
+Live folders do not use timestamp folders. This includes `specs/`,
+`facts/items/<domain>/`, `facts/episodes/<domain>/`,
+`facts/triples/<domain>/`, `models/decisions/`, `models/problems/`,
+`models/goals/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, and
+`research/`.
+
+## Root File Rule
 
 Keep these at the workspace root:
 
@@ -109,6 +158,7 @@ Keep these at the workspace root:
 - `VISION.md`
 - `LOOPS.md`
 - `TASTE.md`
+- `GAPS.md`
 - `DESIGN.md`
 - `PRODUCT.md`
 - `COMPANY.md`
@@ -136,3 +186,10 @@ conditions, and improvement cycles.
 
 Captures high-quality and personalized judgment: what good looks like,
 preferred examples, anti-patterns, and subjective standards.
+
+### `GAPS.md`
+
+Tracks gaps in human or agent understanding so unresolved questions stay visible
+until an AI agent or human can resolve them into `knowledge/`, `references/`,
+`cookbooks/`, `runbooks/`, `research/`, `results/`, or another durable source
+of truth.

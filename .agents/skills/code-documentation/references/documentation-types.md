@@ -1,6 +1,6 @@
 # Documentation Types Reference
 
-Last updated: 2026-04-25
+Last updated: 2026-06-30
 
 Canonical taxonomy for documentation types, where they live, and whether they are historical or living.
 
@@ -74,6 +74,7 @@ These are first-class documentation:
 | `SOUL.md` | Agent personality and collaboration stance |
 | `PRINCIPLES.md` | Constraints, heuristics, and max/min rules |
 | `DESIGN.md` | Design-system and frontend interaction guidance |
+| `GAPS.md` | Unresolved gaps in human or agent understanding that should be resolved into durable knowledge |
 
 These are living docs. Add `Last updated: YYYY-MM-DD` near the top.
 
@@ -84,20 +85,30 @@ These are living docs. Add `Last updated: YYYY-MM-DD` near the top.
 | Path | Purpose | Default mode |
 |---|---|---|
 | `logs/` | terse change log for meaningful code or doc changes | timestamped |
-| `lessons/` | reusable lessons learned from experience | timestamped |
-| `items/` | durable facts about user, company, project, customers, environments | timestamped |
+| `lessons/<domain>/` | reusable lessons learned from experience | timestamped |
+| `facts/items/<domain>/` | live durable facts about user, company, project, customers, environments | living |
+| `facts/episodes/<domain>/` | live episode records derived from facts | living |
+| `facts/triples/<domain>/` | live subject-predicate-object triples | living |
 | `fixes/` | reusable debugging solutions and error fixes | timestamped |
+| `steers/` | traces of work redirected by a human or secondary model | timestamped |
+| `models/decisions/` | live decisions made | living |
+| `models/problems/` | live problems encountered | living |
+| `models/goals/` | live goals set | living |
+| `reflections/` | detailed platform, project, workflow, or agent-behavior reflections | timestamped |
 
 ### Operational
 
 | Path | Purpose | Default mode |
 |---|---|---|
 | `audits/` | reports, audits, ADRs, post-mortems, investigations | timestamped |
-| `raw/` | raw source material waiting to be ingested | timestamped |
+| `raw/` | raw source material waiting to be ingested | intake |
 | `plans/` | implementation plans and plan-driven-development artifacts | timestamped |
 | `specs/` | living desired-state behavior contracts | living |
 | `sources/` | monitored URL/source registries | living |
 | `lib/` | generated drafts, registries, support artifacts | living |
+| `objects/<type>/` | structured object records such as clients or employees | living |
+| `templates/` | reusable prompts, emails, scripts, and checklists | living |
+| `results/` | preserved outputs from work that was run | timestamped |
 | `<domain>/<folder>/` | domain-specific surfaces only when truly needed | repo-defined |
 
 ### Source of truth
@@ -105,40 +116,40 @@ These are living docs. Add `Last updated: YYYY-MM-DD` near the top.
 | Path | Purpose | Default mode |
 |---|---|---|
 | `references/` | factual code, API, schema, or URL references | living |
-| `cookbook/` | "how we actually do this here" recipes | living |
+| `cookbooks/` | "how we actually do this here" recipes | living |
 | `knowledge/` | timeless maintained knowledge | living |
 | `runbooks/` | operational procedures | living |
 | `research/` | ongoing research work | living |
-| `context/` | contextual docs such as values, goals, roadmap, budget, preferences | living |
 
 ## Timestamp rule
 
 Timestamped doc families use one layout only:
 
 ```text
-*/YYYY/YYYY-MM-DD/*.md
+*/YYYY/MM-DD/*.md
 ```
 
 Default timestamped families:
 
 - `logs/`
 - `lessons/`
-- `items/`
 - `fixes/`
+- `steers/`
+- `reflections/`
 - `audits/`
-- `raw/`
 - `plans/`
+- `results/`
 
 Examples:
 
 ```text
-logs/2026/2026-04-25/dev.md
-lessons/2026/2026-04-25/retry-budget.md
-items/2026/2026-04-25/acme-contracting-rules.md
-fixes/2026/2026-04-25/postgres-socket-timeout.md
-audits/2026/2026-04-25/release-audit.md
-plans/2026/2026-04-25/queue-backpressure.md
-raw/2026/2026-04-25/vendor-export.md
+logs/2026/04-25/changes.md
+lessons/backend/2026/04-25/retry-budget.md
+facts/items/company/acme-contracting-rules.md
+fixes/2026/04-25/postgres-socket-timeout.md
+audits/2026/04-25/release-audit.md
+plans/2026/04-25/queue-backpressure.md
+results/2026/04-25/evaluation-run.md
 ```
 
 ## Living-doc rule
@@ -158,14 +169,21 @@ Applies to:
 - root instruction docs
 - in-folder docs
 - `specs/`
+- `facts/items/<domain>/`
+- `facts/episodes/<domain>/`
+- `facts/triples/<domain>/`
+- `models/decisions/`
+- `models/problems/`
+- `models/goals/`
 - `sources/`
 - `lib/`
+- `objects/`
+- `templates/`
 - `references/`
-- `cookbook/`
+- `cookbooks/`
 - `knowledge/`
 - `runbooks/`
 - `research/`
-- `context/`
 
 ## Time-based vs live conflicts
 
@@ -204,15 +222,15 @@ Use this routing sequence:
 
 | Scenario | Destination |
 |---|---|
-| Daily change note | `logs/YYYY/YYYY-MM-DD/*.md` |
-| Durable lesson from repeated debugging | `lessons/YYYY/YYYY-MM-DD/*.md` |
-| Fact about user/company/project | `items/YYYY/YYYY-MM-DD/*.md` |
-| Non-obvious recurring fix | `fixes/YYYY/YYYY-MM-DD/*.md` |
-| Release audit or architecture report | `audits/YYYY/YYYY-MM-DD/` |
-| New feature implementation plan | `plans/YYYY/YYYY-MM-DD/` |
+| Daily change note | `logs/YYYY/MM-DD/changes.md` |
+| Durable lesson from repeated debugging | `lessons/<domain>/YYYY/MM-DD/*.md` |
+| Fact about user/company/project | `facts/items/<domain>/*.md` |
+| Non-obvious recurring fix | `fixes/YYYY/MM-DD/*.md` |
+| Release audit or architecture report | `audits/YYYY/MM-DD/` |
+| New feature implementation plan | `plans/YYYY/MM-DD/` |
+| Preserved output from completed work | `results/YYYY/MM-DD/*.md` |
 | Repo-wide behavior contract | `specs/` |
 | Stable API mapping | `references/` |
-| Repo-specific technical recipe | `cookbook/` |
+| Repo-specific technical recipe | `cookbooks/` |
 | Timeless engineering knowledge | `knowledge/` |
 | Exact operational workflow | `runbooks/` |
-| Context such as roadmap, budget, goals, preferences | `context/` |

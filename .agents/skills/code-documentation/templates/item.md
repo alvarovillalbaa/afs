@@ -2,7 +2,7 @@
 
 **Date:** YYYY-MM-DD
 **Category:** user | company | customer | infrastructure | business | process
-**Location:** `items/YYYY/YYYY-MM-DD/[slug].md`
+**Location:** `facts/items/<domain>/[slug].md`
 
 ## Fact
 

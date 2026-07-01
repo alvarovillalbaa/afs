@@ -28,6 +28,7 @@ const rootStyleMarkdown = new Set([
   "VISION.md",
   "LOOPS.md",
   "TASTE.md",
+  "GAPS.md",
 ])
 
 const recommendedRootFiles = [
@@ -36,6 +37,7 @@ const recommendedRootFiles = [
   "VISION.md",
   "LOOPS.md",
   "TASTE.md",
+  "GAPS.md",
 ]
 
 const recommendedWorkspaceFiles = [
@@ -43,7 +45,51 @@ const recommendedWorkspaceFiles = [
   "raw/PROCESSED.md",
   "raw/UNPROCESSED.md",
   "sources/INDEX.md",
+  "facts/INDEX.md",
+  "facts/items/general/INDEX.md",
+  "facts/episodes/general/INDEX.md",
+  "facts/triples/general/INDEX.md",
+  "models/decisions/INDEX.md",
+  "models/problems/INDEX.md",
+  "models/goals/INDEX.md",
+  "cookbooks/INDEX.md",
+  "templates/INDEX.md",
 ]
+
+const recommendedWorkspaceDirs = [
+  "logs",
+  "lessons",
+  "facts",
+  "fixes",
+  "steers",
+  "models",
+  "reflections",
+  "audits",
+  "raw",
+  "plans",
+  "specs",
+  "lib",
+  "objects",
+  "templates",
+  "results",
+  "references",
+  "cookbooks",
+  "knowledge",
+  "runbooks",
+  "research",
+]
+
+const timestampedRoots = [
+  "logs",
+  "fixes",
+  "steers",
+  "reflections",
+  "audits",
+  "plans",
+  "results",
+]
+
+const ignoredRootMarkdown = new Set(["README.md", "INDEX.md"])
 
 function resolveValidationRoot(input) {
   const target = path.resolve(process.cwd(), input ?? ".")
@@ -90,6 +136,99 @@ async function walkMarkdown(root) {
   return results
 }
 
+async function directMarkdownFiles(directory) {
+  if (!existsSync(directory)) {
+    return []
+  }
+
+  const entries = await readdir(directory, { withFileTypes: true })
+  return entries
+    .filter(
+      (entry) =>
+        entry.isFile() &&
+        entry.name.endsWith(".md") &&
+        !ignoredRootMarkdown.has(entry.name)
+    )
+    .map((entry) => path.join(directory, entry.name))
+}
+
+async function warnDirectTimestampMarkdown(root, warnings) {
+  for (const timestampedRoot of timestampedRoots) {
+    const files = await directMarkdownFiles(path.join(root, timestampedRoot))
+
+    for (const file of files) {
+      warnings.push(
+        `${path.relative(root, file)} should be under ${timestampedRoot}/YYYY/MM-DD/.`
+      )
+    }
+  }
+
+  const lessonsRoot = path.join(root, "lessons")
+  const lessonRootFiles = await directMarkdownFiles(lessonsRoot)
+
+  for (const file of lessonRootFiles) {
+    warnings.push(
+      `${path.relative(root, file)} should be under lessons/<domain>/YYYY/MM-DD/.`
+    )
+  }
+
+  if (!existsSync(lessonsRoot)) {
+    return
+  }
+
+  const lessonEntries = await readdir(lessonsRoot, { withFileTypes: true })
+
+  for (const entry of lessonEntries) {
+    if (!entry.isDirectory()) {
+      continue
+    }
+
+    const domainRoot = path.join(lessonsRoot, entry.name)
+    const files = await directMarkdownFiles(domainRoot)
+
+    for (const file of files) {
+      warnings.push(
+        `${path.relative(root, file)} should be under lessons/${entry.name}/YYYY/MM-DD/.`
+      )
+    }
+  }
+}
+
+async function findDomainFirstFacts(root) {
+  const factsRoot = path.join(root, "facts")
+
+  if (!existsSync(factsRoot)) {
+    return []
+  }
+
+  const factTypes = new Set(["items", "episodes", "triples"])
+  const matches = []
+  const domainEntries = await readdir(factsRoot, { withFileTypes: true })
+
+  for (const domainEntry of domainEntries) {
+    if (!domainEntry.isDirectory() || factTypes.has(domainEntry.name)) {
+      continue
+    }
+
+    const domainRoot = path.join(factsRoot, domainEntry.name)
+    const typeEntries = await readdir(domainRoot, { withFileTypes: true })
+    let foundTypeDirectory = false
+
+    for (const typeEntry of typeEntries) {
+      if (typeEntry.isDirectory() && factTypes.has(typeEntry.name)) {
+        foundTypeDirectory = true
+        matches.push(`facts/${domainEntry.name}/${typeEntry.name}`)
+      }
+    }
+
+    if (!foundTypeDirectory && typeEntries.length > 0) {
+      matches.push(`facts/${domainEntry.name}`)
+    }
+  }
+
+  return matches
+}
+
 async function main() {
   const validation = resolveValidationRoot(process.argv[2])
   const target = validation.target
@@ -103,8 +242,30 @@ async function main() {
     errors.push("Remove official-documentation/ and move its contents to sources/.")
   }
 
+  if (existsSync(path.join(target, "items"))) {
+    errors.push(
+      "Remove top-level items/ and move its contents to facts/items/general/."
+    )
+  }
+
+  if (existsSync(path.join(target, "cookbook"))) {
+    errors.push("Remove cookbook/ and move its contents to cookbooks/.")
+  }
+
+  if (existsSync(path.join(target, "context"))) {
+    warnings.push("context/ is a legacy path and is not an active AFS surface.")
+  }
+
   if (!existsSync(path.join(target, "sources"))) {
     warnings.push("sources/ is missing.")
+  }
+
+  const domainFirstFacts = await findDomainFirstFacts(target)
+
+  for (const legacyPath of domainFirstFacts) {
+    errors.push(
+      `Move ${legacyPath}/ to facts/<type>/<domain>/, for example facts/items/general/.`
+    )
   }
 
   for (const file of recommendedRootFiles) {
@@ -118,6 +279,14 @@ async function main() {
       warnings.push(`${file} is recommended in a complete AFS shell.`)
     }
   }
+
+  for (const dir of recommendedWorkspaceDirs) {
+    if (!existsSync(path.join(target, dir))) {
+      warnings.push(`${dir}/ is recommended in a complete AFS shell.`)
+    }
+  }
+
+  await warnDirectTimestampMarkdown(target, warnings)
 
   const contextMarkdown = await walkMarkdown(path.join(target, "context"))
 

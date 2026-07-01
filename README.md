@@ -12,19 +12,25 @@ Hermes Agent, and plain local tools.
 
 AFS organizes context into three broad surfaces:
 
-- Memory: `logs/`, `lessons/`, `items/`, `fixes/`, `steers/`, `models/`,
-  `reflections/`.
+- Memory: `logs/`, `lessons/<domain>/`, `facts/items/<domain>/`,
+  `facts/episodes/<domain>/`, `facts/triples/<domain>/`,
+  `fixes/`, `steers/`, `models/decisions/`, `models/problems/`,
+  `models/goals/`, and `reflections/`.
 - Operational work: `audits/`, `raw/`, `plans/`, `specs/`, `lib/`, `objects/`,
-  and justified domain folders.
-- Source of truth: `sources/`, `references/`, `cookbook/`, `knowledge/`,
-  `runbooks/`, `research/`, `context/`.
+  `sources/`, `templates/`, `results/`, and justified domain folders.
+- Source of truth: `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, and
+  `research/`.
 
 External provider docs, copied source material, URLs, source snapshots, and
 provenance belong in `sources/`.
 
-`context/` is only for lightweight scoped context. Large root-style Markdown
-files such as `AGENTS.md`, `USER.md`, `VISION.md`, `LOOPS.md`, and `TASTE.md`
-belong at the root of an AFS workspace.
+Timestamped memory and operational folders use `YYYY/MM-DD/` directories. The
+Markdown files inside those directories are named by topic, not by timestamp.
+Live folders such as `specs/`, `facts/items/<domain>/`,
+`models/decisions/`, and `knowledge/` are not timestamped.
+
+Large root-style Markdown files such as `AGENTS.md`, `USER.md`, `VISION.md`,
+`LOOPS.md`, `TASTE.md`, and `GAPS.md` belong at the root of an AFS workspace.
 
 ## use-afs
 

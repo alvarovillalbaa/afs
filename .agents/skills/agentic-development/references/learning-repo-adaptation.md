@@ -34,7 +34,7 @@ Likely promotion targets:
 - service `README.md`
 - `ARCHITECTURE.md`
 - `TESTS.md`
-- `cookbook/`
+- `cookbooks/`
 
 ### Frontend repo
 
@@ -123,6 +123,7 @@ Do not let one `patterns.md` turn into an unsearchable dump.
 Use this rule of thumb after consolidation:
 
 - Agent behavior change: `AGENTS.md`, `SOUL.md`, `PRINCIPLES.md`
+- Missing understanding or unresolved knowledge gaps: `GAPS.md`
 - Human-facing repo knowledge: `README.md`, `ARCHITECTURE.md`, `TESTS.md`, `SETUP.md`
 - Historical session knowledge: `learning/episodes/`, `learning/decision-traces/`
 - Stable atomic facts: `learning/triples/facts.jsonl`
