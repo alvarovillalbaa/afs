@@ -6,6 +6,10 @@ Define the product, users, value proposition, boundaries, and direction.
 
 - 
 
+## Vision
+
+Define the product-specific direction when supplied by its owner.
+
 ## Users
 
 - 

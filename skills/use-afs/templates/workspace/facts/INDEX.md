@@ -5,9 +5,7 @@ triples.
 
 ## Shape
 
-- `facts/items/<domain>/` contains atomic facts and item records.
-- `facts/episodes/<domain>/` contains episode records derived from facts.
-- `facts/triples/<domain>/` contains subject-predicate-object triples.
+- `facts/<domain>/` contains living factual records, grouped by domain.
 
 Use domain folders such as `general/`, `company/`, `customers/`, or `product/`.
 Do not put facts under timestamped folders.

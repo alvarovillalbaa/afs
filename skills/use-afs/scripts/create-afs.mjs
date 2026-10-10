@@ -4,68 +4,10 @@ import { existsSync } from "node:fs"
 import { execFileSync } from "node:child_process"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { standardDirs, rootTemplates } from "./standard.mjs"
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const skillDir = path.resolve(scriptDir, "..")
-
-const standardDirs = [
-  "logs",
-  "lessons",
-  "facts",
-  "facts/items",
-  "facts/items/general",
-  "facts/episodes",
-  "facts/episodes/general",
-  "facts/triples",
-  "facts/triples/general",
-  "fixes",
-  "steers",
-  "models",
-  "models/decisions",
-  "models/problems",
-  "models/goals",
-  "reflections",
-  "audits",
-  "raw",
-  "plans",
-  "specs",
-  "sources",
-  "lib",
-  "objects",
-  "templates",
-  "results",
-  "references",
-  "cookbooks",
-  "knowledge",
-  "runbooks",
-  "research",
-]
-
-const rootTemplates = [
-  "AGENTS.md",
-  "BRAIN.md",
-  "CLAUDE.md",
-  "VISION.md",
-  "LOOPS.md",
-  "TASTE.md",
-  "GAPS.md",
-  "MEMORY.md",
-  "PLAYBOOK.md",
-  "PLAN.md",
-  "SPEC.md",
-  "SOUL.md",
-  "USER.md",
-  "DESIGN.md",
-  "PRODUCT.md",
-  "COMPANY.md",
-  "VALUES.md",
-  "ICP.md",
-  "VOICE.md",
-  "FRICTION.md",
-  "PREDICTION.md",
-  "REGRESSIONS.md",
-  "HEARTBEAT.md",
-]
 
 const compatTemplates = {
   gbrain: "GBRAIN.md",
@@ -234,7 +176,7 @@ async function looksLikeApplicationRepo(directory) {
 
 function looksLikeAfs(directory) {
   return (
-    existsSync(path.join(directory, "BRAIN.md")) ||
+    existsSync(path.join(directory, "SOURCES.md")) ||
     existsSync(path.join(directory, "GAPS.md")) ||
     existsSync(path.join(directory, "knowledge", "INDEX.md")) ||
     existsSync(path.join(directory, "sources")) ||
@@ -433,6 +375,7 @@ async function main() {
 
   const placement = await resolveInstallTarget(args)
   const target = placement.target
+  const instructionRoot = placement.profile === "docs" ? path.dirname(target) : target
   const created = []
 
   await mkdir(target, { recursive: true })
@@ -444,7 +387,7 @@ async function main() {
   for (const template of rootTemplates) {
     await copyIfMissing(
       path.join(skillDir, "templates", "root", template),
-      path.join(target, template),
+      path.join(instructionRoot, template),
       created
     )
   }
@@ -453,10 +396,18 @@ async function main() {
 
   if (args.sourceUrl) {
     await writeIfMissing(
-      path.join(target, "sources", "afs-standard-source.md"),
-      `# AFS Standard Source\n\n- URL: ${args.sourceUrl}\n- Capture status: install source recorded\n`,
+      path.join(instructionRoot, "SOURCES.md"),
+      `# Sources\n\n- AFS standard: ${args.sourceUrl}\n- Capture status: install source recorded; content not ingested.\n`,
       created
     )
+  }
+
+  if (args.sourceUrl) {
+    const { readFile, appendFile } = await import("node:fs/promises")
+    const registry = path.join(instructionRoot, "SOURCES.md")
+    if (!(await readFile(registry, "utf8")).includes(args.sourceUrl)) {
+      await appendFile(registry, `\n- AFS install source: ${args.sourceUrl} (recorded; content not ingested).\n`)
+    }
   }
 
   for (const compat of args.compat) {

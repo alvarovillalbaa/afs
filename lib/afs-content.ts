@@ -17,7 +17,6 @@ import {
   PlaySquare,
   Radar,
   Search,
-  ShieldAlert,
   ShieldCheck,
   Sparkles,
   Target,
@@ -104,7 +103,7 @@ export const afsPrinciples: AfsInfoCard[] = [
   {
     title: "Human intent stays at the root",
     description:
-      "Root files such as AGENTS.md, USER.md, VISION.md, LOOPS.md, TASTE.md, and GAPS.md keep direction and missing understanding readable before agents act.",
+      "AGENTS.md, USER.md, COMPANY.md, PRODUCT.md, ROADMAP.md, TASTE.md, and GAPS.md keep direction and missing understanding readable before agents act.",
     icon: Brain,
   },
 ]
@@ -150,28 +149,10 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Lessons learned from experience, organized by domain and timestamp folders such as YYYY/MM-DD/.",
       },
       {
-        path: "/facts/",
+        path: "/facts/<domain>/",
         label: "Facts",
         description:
-          "Live factual documentation about the user, companies, items, episodes, and triples; organize by type first, then domain.",
-      },
-      {
-        path: "/facts/items/<domain>/",
-        label: "Fact items",
-        description:
-          "Live atomic fact records and item documentation, grouped by domain. Do not place these under timestamped folders.",
-      },
-      {
-        path: "/facts/episodes/<domain>/",
-        label: "Episodes",
-        description:
-          "Live episode records derived from fact items or user/company history, grouped by domain. Do not place these under timestamped folders.",
-      },
-      {
-        path: "/facts/triples/<domain>/",
-        label: "Triples",
-        description:
-          "Live subject-predicate-object triples derived from fact items and episodes, grouped by domain. Do not place these under timestamped folders.",
+          "Living factual documentation grouped by domain, without timestamp folders.",
       },
       {
         path: "/fixes/",
@@ -186,22 +167,16 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Traces of agent work that a human or secondary model redirected, including what the agent got wrong or missed, organized in timestamp folders.",
       },
       {
-        path: "/models/decisions/",
+        path: "/decisions/",
         label: "Decisions",
         description:
           "Live brief records of decisions made so reasoning remains inspectable.",
       },
       {
-        path: "/models/problems/",
+        path: "/problems/",
         label: "Problems",
         description:
           "Live brief records of problems encountered and their current status.",
-      },
-      {
-        path: "/models/goals/",
-        label: "Goals",
-        description:
-          "Live brief records of goals set, active goals, and goal outcomes.",
       },
       {
         path: "/reflections/",
@@ -215,19 +190,13 @@ export const afsPathGroups: AfsPathGroup[] = [
     id: "operational",
     title: "Operational",
     summary:
-      "Work products, raw material, plans, specs, generated libraries, and domain-specific operating surfaces.",
+      "Work products, plans, specs, generated libraries, and domain-specific operating surfaces.",
     paths: [
       {
         path: "/audits/",
         label: "Audits",
         description:
           "Comprehensive reports and analytical audits used for audit-driven development, organized in timestamp folders such as YYYY/MM-DD/.",
-      },
-      {
-        path: "/raw/",
-        label: "Raw",
-        description:
-          "Raw data waiting to be ingested, processed, defined in knowledge/ or another canonical destination, and then removed or marked as done.",
       },
       {
         path: "<domain>/<folder>/",
@@ -248,10 +217,10 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Living desired-state documentation describing how something should be. These are primarily human-defined and not timestamped.",
       },
       {
-        path: "/sources/",
+        path: "SOURCES.md",
         label: "Sources",
         description:
-          "URL-based sources to monitor, extract, compile, and organize into knowledge additions.",
+          "One source registry with provenance, capture status, monitoring context, and verified Drive artifact links. Raw data lives in the correct personal or Clous Google Drive.",
       },
       {
         path: "/lib/",
@@ -264,12 +233,6 @@ export const afsPathGroups: AfsPathGroup[] = [
         label: "Objects",
         description:
           "Structured object records such as clients, employees, vendors, accounts, projects, or product surfaces.",
-      },
-      {
-        path: "/templates/",
-        label: "Templates",
-        description:
-          "Reusable templates such as AI prompts, emails, scripts, and other repeatable starting points.",
       },
       {
         path: "/results/",
@@ -286,10 +249,10 @@ export const afsPathGroups: AfsPathGroup[] = [
       "Living documentation that represents the current canonical understanding of the codebase, company, workflows, and sources.",
     paths: [
       {
-        path: "/references/",
+        path: "REFERENCES.md",
         label: "References",
         description:
-          "Code, URL, API, schema, and technical references that need stable lookup as live documentation.",
+          "One labeled reference catalog for code, systems, URLs, APIs, schemas, and canonical artifacts.",
       },
       {
         path: "/cookbooks/",
@@ -301,7 +264,7 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/knowledge/",
         label: "Knowledge",
         description:
-          "Timeless maintained knowledge about the codebase, business, or how to do something. It can be defined by humans or compiled from raw/.",
+          "Unique knowledge, original perspectives, and source-backed synthesis that generalizes across areas. Operational definitions belong in runbooks or cookbooks.",
       },
       {
         path: "/runbooks/",
@@ -310,10 +273,10 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Operational procedures for how recurring work should be done after it has been performed in a known way.",
       },
       {
-        path: "/research/",
+        path: "/research/<unit>/",
         label: "Research",
         description:
-          "Continuous research related to software engineering, business areas, markets, or other ongoing questions.",
+          "Continuous research units, each defining ordered questions, hypotheses, reasoning, method, evidence, current status, and next questions.",
       },
     ],
   },
@@ -321,16 +284,16 @@ export const afsPathGroups: AfsPathGroup[] = [
 
 export const rootFiles: AfsRootFile[] = [
   {
-    file: "BRAIN.md",
-    label: "Brain",
-    description: "Decides how the AFS should be managed.",
+    file: "REFERENCES.md",
+    label: "References",
+    description: "One labeled catalog of reference links and navigation anchors.",
     icon: Brain,
   },
   {
-    file: "VISION.md",
-    label: "Vision",
+    file: "SOURCES.md",
+    label: "Sources",
     description:
-      "Defines the north star, current direction, non-goals, strategic constraints, and what agents should protect over time.",
+      "Records source origin, capture and ingestion status, monitoring context, and verified Drive artifacts.",
     icon: Compass,
   },
   {
@@ -444,25 +407,25 @@ export const rootFiles: AfsRootFile[] = [
     icon: MessageSquareText,
   },
   {
-    file: "FRICTION.md",
-    label: "Friction",
+    file: "ROADMAP.md",
+    label: "Roadmap",
     description:
-      "Documents user, customer, developer, or operational friction points, repeated complaints, blockers, inefficiencies, adoption barriers, and pain to reduce.",
+      "Defines short to long term direction and sequencing, with links to canonical Notion goals.",
     icon: Wrench,
   },
   {
-    file: "PREDICTION.md",
-    label: "Prediction",
+    file: "BEHAVIOR.md",
+    label: "Behavior",
     description:
-      "Captures expected future risks, opportunities, user behaviors, market shifts, technical bottlenecks, and product bets.",
+      "Defines agent action, collaboration, escalation, and stopping behavior.",
     icon: Radar,
   },
   {
-    file: "REGRESSIONS.md",
-    label: "Regressions",
+    file: "IEP.md",
+    label: "Ideal employee",
     description:
-      "Tracks known failures, recurring bugs, fragile assumptions, broken flows, previous fixes, test gaps, and regression traps.",
-    icon: ShieldAlert,
+      "Defines role-relevant capabilities, values, working expectations, and non-fit criteria.",
+    icon: Users,
   },
   {
     file: "HEARTBEAT.md",
@@ -485,7 +448,7 @@ export const installationOptions: AfsInstallOption[] = [
     title: "Install from a standard URL",
     command: "npm run afs:create -- https://example.com/afs-standard",
     description:
-      "Record the provided standard or GitHub URL in sources/ and still choose the safest install placement automatically.",
+      "Record the standard or GitHub URL in SOURCES.md and choose install placement automatically.",
     icon: Network,
   },
   {
@@ -499,7 +462,7 @@ export const installationOptions: AfsInstallOption[] = [
     title: "Install inside an application repo",
     command: "npm run afs:create -- --mode docs",
     description:
-      "Create the full AFS shell inside docs/ so the application source tree stays separate from agent context.",
+      "Create AFS folders inside docs/ and keep root instruction files at the repository root.",
     icon: FileText,
   },
   {
@@ -513,7 +476,7 @@ export const installationOptions: AfsInstallOption[] = [
     title: "Migrate legacy AFS paths",
     command: "npm run afs:migrate -- .",
     description:
-      "Move legacy official-documentation/, items/, cookbook/, and domain-first facts into sources/, facts/items/general/, cookbooks/, and the type-first facts layout without overwriting existing material.",
+      "Consolidate retired root files and text registries while preserving content. Report material requiring verified Drive export or an explicit content owner.",
     icon: Wrench,
   },
 ]
@@ -523,7 +486,7 @@ export const installationProfiles: AfsInstallProfile[] = [
     title: "Empty or sparse folder",
     placement: "root",
     description:
-      "Create the full shell directly at the folder root, including root Markdown files, knowledge/INDEX.md, raw tracking files, sources/INDEX.md, facts/, models/, and templates/.",
+      "Create root instruction files, REFERENCES.md, SOURCES.md, GAPS.md, and the current memory, operational, knowledge, and research folders.",
     icon: Archive,
   },
   {
@@ -560,13 +523,13 @@ export const githubRepoExamples: AfsInfoCard[] = [
   {
     title: "alvarovillalbaa/agents-fs",
     description:
-      "Private personal AFS repo using BRAIN.md, knowledge/INDEX.md, raw processing files, sources/, and canonical knowledge pages.",
+      "Personal AFS: AGENTS.md management, unique knowledge, SOURCES.md provenance, and raw data in personal Google Drive.",
     icon: Brain,
   },
   {
     title: "clous-ai/agents-fs",
     description:
-      "Private company AFS repo using BRAIN.md as the root marker, raw/ as intake, and knowledge/INDEX.md as the maintained navigation surface.",
+      "Company AFS: AGENTS.md management, REFERENCES.md navigation, continuous research units, and raw data in Clous Google Drive.",
     icon: Building2,
   },
 ]
@@ -578,7 +541,7 @@ export const agentUsageGuides: AfsAgentUsage[] = [
       "Paste the Notion template into Custom Agent instructions and point it at the pages or databases that mirror AFS root files and folders.",
     setup:
       "Keep durable outputs in Notion pages named after AFS files, then periodically export or sync them into the repository.",
-    files: ["templates/agent/notion-agent-instructions.md", "VISION.md", "LOOPS.md", "GAPS.md"],
+    files: ["templates/agent/notion-agent-instructions.md", "ROADMAP.md", "LOOPS.md", "GAPS.md"],
     icon: ClipboardList,
   },
   {
@@ -611,19 +574,19 @@ export const agentUsageGuides: AfsAgentUsage[] = [
   {
     agent: "OpenClaw",
     usage:
-      "Use the OpenClaw template as a bridge skill that points the agent to AFS root files, sources/, logs/, and validation scripts.",
+      "Use the OpenClaw template as a file bridge to root instructions, SOURCES.md, logs/, and validation scripts.",
     setup:
       "Treat the bridge as adapter guidance unless the OpenClaw project adds a native AFS integration.",
-    files: ["templates/agent/openclaw-skill.md", "AGENTS.md", "BRAIN.md"],
+    files: ["templates/agent/openclaw-skill.md", "AGENTS.md", "SOURCES.md"],
     icon: Network,
   },
   {
     agent: "Hermes Agent",
     usage:
-      "Use the generic AFS operating contract: read root intent first, write trace history into memory folders, and keep external material in sources/.",
+      "Read root instructions, write history to memory folders, and keep external artifacts in Drive with provenance in SOURCES.md.",
     setup:
-      "Attach the AGENTS.md and BRAIN.md templates to Hermes until a native adapter is available.",
-    files: ["AGENTS.md", "BRAIN.md", "sources/"],
+      "Attach AGENTS.md, REFERENCES.md, SOURCES.md, and GAPS.md until a native adapter is available.",
+    files: ["AGENTS.md", "SOURCES.md", "REFERENCES.md"],
     icon: MessageSquareText,
   },
 ]
@@ -633,8 +596,8 @@ export const compatibilityTargets: AfsCompatibilityTarget[] = [
     name: "Gbrain by Garry Tan",
     status: "Best-effort bridge",
     description:
-      "AFS can expose GBRAIN.md and BRAIN.md as adapter surfaces so Gbrain-style knowledge can point back to portable files and sources.",
-    files: ["GBRAIN.md", "BRAIN.md", "sources/"],
+      "GBRAIN.md bridges Gbrain-style knowledge to AGENTS.md and portable source registries.",
+    files: ["GBRAIN.md", "AGENTS.md", "SOURCES.md"],
     icon: Brain,
   },
   {
@@ -650,7 +613,7 @@ export const compatibilityTargets: AfsCompatibilityTarget[] = [
     status: "Native filesystem compatibility",
     description:
       "Any harness that can read files and write Markdown can use AFS without a proprietary database or hosted service.",
-    files: ["AGENTS.md", "VISION.md", "GAPS.md", "sources/"],
+    files: ["AGENTS.md", "ROADMAP.md", "GAPS.md", "SOURCES.md"],
     icon: Network,
   },
 ]

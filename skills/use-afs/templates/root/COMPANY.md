@@ -6,6 +6,10 @@ Define company-level context that agents should understand.
 
 - 
 
+## Vision
+
+Define the company-specific direction when supplied by its owner.
+
 ## Operating Context
 
 - 
