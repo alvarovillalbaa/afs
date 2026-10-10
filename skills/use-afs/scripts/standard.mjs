@@ -19,7 +19,7 @@ export const removedRootFiles = [
   "FOCUS.md", "RUNBOOK.md", "DECISIONS.md",
 ]
 
-export const removedDirs = ["raw", "sources", "references", "templates", "goals", "models/goals"]
+export const removedDirs = ["raw", "sources", "templates", "goals", "models/goals"]
 
 export function resolveWorkspace(input = ".") {
   const originalTarget = path.resolve(input)

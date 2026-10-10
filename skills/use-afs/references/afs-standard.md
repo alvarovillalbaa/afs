@@ -126,13 +126,18 @@ with their owning content/component.
 | goals/ and models/goals/ | Canonical Notion goals and ROADMAP.md links |
 | raw/ | The correct personal or Clous Google Drive |
 | sources/ | SOURCES.md; copied artifacts move to Drive |
-| references/ | REFERENCES.md for the AFS reference catalog |
+| External reference registries in references/ | REFERENCES.md for the AFS reference catalog |
 | templates/ | The folder that owns the generated content |
 
 Do not delete unread source entries or remove local artifacts before a verified,
 recoverable Drive copy exists. Preserve contents, original paths, external URLs,
 status tags, and source identifiers. Do not move application assets merely
 because their folder name resembles an AFS surface.
+
+Existing technical owner guides may retain repository-native paths such as
+`docs/references/`. REFERENCES.md catalogs those guides; a technical contract
+or cookbook is different from a duplicate external-link registry. Do not move
+code/CI-pinned guides merely to match a directory name.
 
 ## Dates and provenance
 

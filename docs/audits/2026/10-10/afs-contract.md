@@ -1,5 +1,9 @@
 # AFS contract revision
 
+Technical owner guides may keep established paths such as docs/references;
+REFERENCES.md catalogs them. The validator rejects retired raw/source/goal/global
+template surfaces without rejecting technical guide directories by name.
+
 Source: owner's requested AFS changes, 2026-10-10.
 
 The standard, website catalog, scaffolder, validator, templates, and harness
