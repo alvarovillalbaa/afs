@@ -1,4 +1,4 @@
-import { existsSync } from "node:fs"
+import { existsSync, statSync } from "node:fs"
 import path from "node:path"
 
 export const standardDirs = [
@@ -26,7 +26,14 @@ export function resolveWorkspace(input = ".") {
   const docs = path.join(originalTarget, "docs")
   const hasShell = (root) => existsSync(path.join(root, "knowledge", "INDEX.md")) ||
     ["SOURCES.md", "REFERENCES.md", "BRAIN.md"].some((file) => existsSync(path.join(root, file)))
-  if (!existsSync(path.join(originalTarget, "knowledge", "INDEX.md")) && hasShell(docs)) {
+  const hasApplicationMarker = ["package.json", "pyproject.toml", "manage.py", "Cargo.toml", "go.mod", "Package.swift"]
+    .some((file) => existsSync(path.join(originalTarget, file)))
+  const hasDocsSurface = standardDirs.some((name) => {
+    const candidate = path.join(docs, name)
+    return existsSync(candidate) && statSync(candidate).isDirectory()
+  })
+  if (!existsSync(path.join(originalTarget, "knowledge", "INDEX.md")) &&
+      (hasShell(docs) || (hasApplicationMarker && hasDocsSurface))) {
     return { target: docs, instructionRoot: originalTarget, profile: "docs" }
   }
   return { target: originalTarget, instructionRoot: originalTarget, profile: "root" }

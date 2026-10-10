@@ -6,10 +6,25 @@ import { mkdtemp, mkdir, readFile, writeFile } from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { resolveWorkspace } from "../skills/use-afs/scripts/standard.mjs"
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const script = (name) => path.join(root, "skills/use-afs/scripts", `${name}-afs.mjs`)
 const run = (name, args) => execFileSync(process.execPath, [script(name), ...args], { encoding: "utf8" })
+
+test("application profile detects a docs shell while catalogs stay at the instruction root", async () => {
+  const target = await mkdtemp(path.join(os.tmpdir(), "afs-application-"))
+  await writeFile(path.join(target, "package.json"), "{}\n")
+  await writeFile(path.join(target, "REFERENCES.md"), "# References\n")
+  await mkdir(path.join(target, "docs", "audits"), { recursive: true })
+  await mkdir(path.join(target, "context")) // application code, outside its AFS shell
+  assert.deepEqual(resolveWorkspace(target), {
+    target: path.join(target, "docs"), instructionRoot: target, profile: "docs",
+  })
+  await mkdir(path.join(target, "knowledge"))
+  await writeFile(path.join(target, "knowledge", "INDEX.md"), "# Standalone knowledge\n")
+  assert.equal(resolveWorkspace(target).profile, "root")
+})
 
 test("fresh root and application profiles create the current contract and preserve existing instructions", async () => {
   for (const mode of ["root", "docs"]) {

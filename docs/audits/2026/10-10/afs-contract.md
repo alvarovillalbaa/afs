@@ -16,7 +16,11 @@ Root instruction files stay at the repository root in the application profile.
 Facts use living domain folders; decisions use decisions/. Retired root templates
 and global raw/source/template/goal scaffolds are removed.
 
-Validation: three focused Node contract tests pass, covering fresh profiles,
+Application detection recognizes application manifests with a populated docs
+shell while keeping instruction catalogs at the repository root. This prevents
+application code directories from being classified as AFS intake.
+
+Validation: four focused Node contract tests pass, covering application detection, fresh profiles,
 existing-file preservation, URL capture, link rebasing, repeat runs, retained
 unread raw data, and rejection of retired surfaces or undefined research units.
 git diff --check and a focused TypeScript syntax check of the website catalog
