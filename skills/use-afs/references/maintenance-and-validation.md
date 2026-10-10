@@ -1,76 +1,38 @@
 # Maintenance and Validation
 
-## Commands
+Last updated: 2026-10-10
 
-```bash
-npm run afs:create
-npm run afs:create -- https://example.com/afs-standard
-npm run afs:create -- --mode standalone --github
-npm run afs:create -- ../agents-fs --compat gbrain,qmd
-npm run afs:create -- --mode docs
-npm run afs:validate -- .
-npm run afs:migrate -- .
-```
+## Create
 
-## Create Rules
+`npm run afs:create` chooses root, application `docs/`, or standalone
+`agents-fs/` placement. Root instruction files stay at the repository root in
+every profile. Existing files are preserved. A URL argument is recorded in
+`SOURCES.md`. Standalone workspaces can use `--github` after the user
+authorizes repository publication.
 
-`afs:create` defaults to auto-placement:
+## Validate
 
-- empty target folder: install the full AFS shell at root;
-- application repository: install the full AFS shell inside `docs/`;
-- existing AFS-like folder: update root without overwriting files;
-- populated non-application folder: create a nested `agents-fs/`;
-- explicit `--mode root`, `--mode docs`, or `--mode standalone` overrides the
-  heuristic.
-- HTTP and GitHub URL arguments are treated as installation source URLs. The URL
-  is recorded in `sources/afs-standard-source.md`; placement remains automatic.
+`npm run afs:validate -- .` checks the detected AFS shell. It rejects removed
+root files and global raw, source, reference, goal, and template surfaces.
+It requires root `AGENTS.md`, `REFERENCES.md`, `SOURCES.md`, and `GAPS.md`.
+Each research unit must define ordered questions, hypotheses, reasoning, method,
+and evidence/status. Missing optional shell folders and undated history produce
+warnings; a warning is not proof of completed migration.
 
-Standalone personal and company AFS installs should normally be initialized as a
-GitHub repository named `agents-fs`. The script initializes local Git for
-standalone installs and can create the GitHub repo with `--github` when `gh` is
-installed and authenticated.
+## Migrate
 
-## Validation Rules
+`npm run afs:migrate -- .` consolidates obsolete root files and text registries
+without overwriting content. Conflicting names receive a migration suffix.
+The command reports blockers for raw/binary material needing verified Drive
+export, goals needing Notion routing, or templates needing a content owner.
+Review these blockers; do not treat a partial migration as complete.
 
-Validation fails when:
+After a verified export, record its artifact link, original source paths,
+checksums, account, and capture status in `SOURCES.md` before removing the
+corresponding local material. Never label preservation as ingestion.
 
-- `official-documentation/` exists.
-- top-level `items/` exists.
-- top-level `cookbook/` exists.
-- domain-first facts such as `facts/company/items/` exist.
-- A root-style Markdown file exists under `context/`.
-- A Markdown file larger than the configured context threshold exists under
-  `context/`.
+## Hooks
 
-Validation warns when:
-
-- `sources/` is missing.
-- `context/` exists.
-- Recommended root files such as `AGENTS.md`, `BRAIN.md`, `VISION.md`,
-  `LOOPS.md`, `TASTE.md`, and `GAPS.md` are missing.
-- `knowledge/INDEX.md`, `raw/PROCESSED.md`, `raw/UNPROCESSED.md`, or
-  `sources/INDEX.md` are missing.
-- Recommended `facts/{items,episodes,triples}/general/` or
-  `models/{decisions,problems,goals}/` live folders are missing.
-- Timestamped folder categories, including `results/`, contain Markdown
-  directly at the category root instead of under `YYYY/MM-DD/`.
-
-When validation is run from an application repository that has `docs/BRAIN.md`,
-the validator treats `docs/` as the AFS root.
-
-## Migration Rule
-
-`afs:migrate` moves children of `official-documentation/` into `sources/`
-without overwriting existing files. If a name conflict exists, the migrated file
-or folder receives a `-migrated` suffix.
-
-The same command also moves legacy `items/` into `facts/items/general/`,
-legacy `cookbook/` into `cookbooks/`, and domain-first facts such as
-`facts/general/items/` into `facts/items/general/` with the same no-overwrite
-conflict rule.
-
-## Hook Usage
-
-Hooks are optional. Use them only in harnesses that support local validation
-commands. The examples in `hooks/` are deliberately stored as examples because
-each harness can evolve its hook schema independently.
+Hooks remain optional harness adapters. Run structural validation after changes
+and inspect the output. Do not change a harness's permissions or security gates
+to make a structural check pass.

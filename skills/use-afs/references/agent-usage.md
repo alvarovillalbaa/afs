@@ -8,11 +8,11 @@ If a user tells an agent to implement the AFS standard from a URL or GitHub
 repository, the agent should:
 
 1. Inspect the current folder.
-2. Record the URL in `sources/afs-standard-source.md`.
+2. Record the URL in root `SOURCES.md`.
 3. Choose the install profile automatically.
 4. Prefer a standalone GitHub repo named `agents-fs` for personal or company
    brains.
-5. Use `docs/` when the current folder is an application code repository.
+5. Use `docs/` for AFS folders in an application, keeping instruction files at the repository root.
 6. Validate with `npm run afs:validate -- .` after installation.
 
 ## Notion Agents
@@ -65,9 +65,9 @@ repository, the agent should:
 - Use the generic AFS contract:
   - read root intent first;
   - write trace history to memory folders;
-  - keep external material in `sources/`;
+  - keep external artifacts in Google Drive and provenance in `SOURCES.md`;
   - promote stable truth into `knowledge/`, `cookbooks/`, `runbooks/`, or root
     files;
   - record unresolved knowledge gaps in `GAPS.md`.
-- Attach `AGENTS.md`, `BRAIN.md`, and `GAPS.md` templates until a Hermes-native
+- Attach `AGENTS.md`, `REFERENCES.md`, `SOURCES.md`, and `GAPS.md` templates until a Hermes-native
   adapter is available.

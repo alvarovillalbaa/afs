@@ -27,6 +27,6 @@ Move resolved entries here with a link to the resulting source of truth.
 
 - Humans and AI agents may add gaps.
 - Prefer concrete questions over vague uncertainty.
-- Link to `knowledge/`, `references/`, `cookbooks/`, `runbooks/`, `research/`,
+- Link to `knowledge/`, `REFERENCES.md`, `cookbooks/`, `runbooks/`, `research/`,
   or `results/` when a gap is resolved.
 - Keep gaps visible until the missing understanding has a durable home.

@@ -1,45 +1,22 @@
 # AFS
 
-AFS is the Agentic FileSystem Standard: a portable filesystem and Markdown
-structure for agent context, traces, source provenance, and durable knowledge.
+AFS is the Agentic FileSystem Standard: portable instructions, unique knowledge,
+work history, and source provenance shared across agent harnesses.
 
-The problem is simple: agent harnesses and platforms keep useful information in
-disconnected places. AFS gives agents one shared way to read and write context
-that can move between Codex, Claude Code, Cursor, Notion Agents, OpenClaw,
-Hermes Agent, and plain local tools.
+The [standard](skills/use-afs/references/afs-standard.md) defines the current
+contract. Root instructions stay at the repository root; an application's AFS
+folders live in `docs/`.
 
-## Standard
+- Memory: logs, domain facts and lessons, fixes, and living decisions.
+- Operational: audits, plans, specs, generated libraries, objects, and results.
+- Source of truth: cookbooks, unique knowledge, runbooks, and continuous research units.
+- References: one `REFERENCES.md`; source provenance: one `SOURCES.md`.
+- Raw material: the correct personal or Clous Google Drive.
+- Goals: Notion, guided by `ROADMAP.md`.
+- Templates: beside the content they generate.
 
-AFS organizes context into three broad surfaces:
-
-- Memory: `logs/`, `lessons/<domain>/`, `facts/items/<domain>/`,
-  `facts/episodes/<domain>/`, `facts/triples/<domain>/`,
-  `fixes/`, `steers/`, `models/decisions/`, `models/problems/`,
-  `models/goals/`, and `reflections/`.
-- Operational work: `audits/`, `raw/`, `plans/`, `specs/`, `lib/`, `objects/`,
-  `sources/`, `templates/`, `results/`, and justified domain folders.
-- Source of truth: `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, and
-  `research/`.
-
-External provider docs, copied source material, URLs, source snapshots, and
-provenance belong in `sources/`.
-
-Timestamped memory and operational folders use `YYYY/MM-DD/` directories. The
-Markdown files inside those directories are named by topic, not by timestamp.
-Live folders such as `specs/`, `facts/items/<domain>/`,
-`models/decisions/`, and `knowledge/` are not timestamped.
-
-Large root-style Markdown files such as `AGENTS.md`, `USER.md`, `VISION.md`,
-`LOOPS.md`, `TASTE.md`, and `GAPS.md` belong at the root of an AFS workspace.
-
-## use-afs
-
-The standard ships with a repo skill at `skills/use-afs`:
-
-- `SKILL.md` and references for agents.
-- Scaffold, validation, and migration scripts.
-- Root templates, agent templates, bridge templates, and hook examples.
-- Best-effort compatibility bridges for Gbrain and QMD.
+`AGENTS.md` owns AFS management. Company/product/customer vision belongs in
+the matching root file. Friction goes into logs; regression prevention into fixes.
 
 ## Commands
 
@@ -53,22 +30,12 @@ npm run afs:validate -- .
 npm run afs:migrate -- .
 ```
 
-Install behavior:
-
-- Empty or sparse folders get the full AFS shell at root.
-- Application repositories get the full AFS shell inside `docs/`.
-- Personal or company AFS workspaces should normally be standalone private
-  GitHub repos named `agents-fs`.
-- Busy non-application folders get a nested `agents-fs/` folder.
-- Agents given the AFS standard URL or GitHub URL should treat it as an
-  installation request and choose the safest profile automatically.
+The creator selects root, application `docs/`, or standalone `agents-fs/`
+placement and preserves existing files. Migration preserves source content and
+reports material requiring verified Drive export or a content-specific owner.
 
 ## Website
 
-This repository also contains the AFS website.
-
-```bash
-npm run dev
-npm run lint
-npm run build
-```
+The website's catalog is maintained in `lib/afs-content.ts`.
+Use `npm run dev`, `npm run lint`, and `npm run build` when explicitly
+requested. Structural script checks use Node without application dependencies.

@@ -1,195 +1,145 @@
 # AFS Standard
 
-AFS is a filesystem and Markdown standard for portable agent context.
+Last updated: 2026-10-10
 
-## Problem
+AFS is a portable filesystem and Markdown standard for agent instructions,
+durable knowledge, work history, and source provenance.
 
-Agent harnesses and platforms store instructions, traces, context, and memory in
-different places. That makes useful knowledge hard to move between Codex, Claude
-Code, Cursor, Notion Agents, OpenClaw, Hermes, and local tools.
+## Placement
 
-AFS solves the problem by giving agents one portable file structure for:
+Personal and company workspaces use a standalone private `agents-fs` repository.
+Application repositories put the AFS folders in `docs/`; their root instruction
+files, including `AGENTS.md`, `REFERENCES.md`, `SOURCES.md`, and `GAPS.md`,
+stay at the repository root. Empty folders use the root. Busy non-application
+folders may use a nested `agents-fs/`.
 
-- Trace history.
-- Durable facts and lessons.
-- External source provenance.
-- Current source-of-truth knowledge.
-- Human intent and judgment.
+## Folder documentation
 
-## Installation Profiles
+Use the smallest set that explains the folder.
 
-### Standalone `agents-fs`
+- Core: `README.md`, `ARCHITECTURE.md`, `TESTS.md`.
+- Conditional: `SETUP.md`, `CHANGELOG.md`, `SECURITY.md`.
+- Rare: `OVERVIEW.md`, `FAQ.md`, `DEPENDENCIES.md`.
 
-For a personal brain, company brain, or cross-project operating filesystem, the
-default shape is a standalone repository named `agents-fs`. It should normally
-be on GitHub so multiple agents and machines can share the same filesystem,
-unless the user explicitly says not to use GitHub.
+Recurring procedures belong in `runbooks/`; decisions belong in `decisions/`.
+Do not create folder-level `RUNBOOK.md` or `DECISIONS.md`.
 
-The existing private `alvarovillalbaa/agents-fs` and `clous-ai/agents-fs`
-repositories both follow this intent: `BRAIN.md` marks the root, `knowledge/`
-contains maintained canonical knowledge, `knowledge/INDEX.md` is the navigation
-surface, `raw/` is intake or residual source material, and `sources/` stores
-reusable source registries or captured source artifacts.
+## Root files
 
-### Empty or Sparse Folder
+| File | Ownership |
+|---|---|
+| AGENTS.md | Agent operating rules, repository conventions, AFS management, source priority, architecture boundaries, verification, and human collaboration |
+| SOUL.md | Personality, attitude, tone, decision posture, collaboration principles, and risk tolerance |
+| USER.md | User context, preferences, goals, constraints, and working style |
+| DESIGN.md | Visual and interaction principles, component rules, typography, color, spacing, states, and UX standards |
+| PRODUCT.md | Product vision, users, value proposition, use cases, boundaries, and direction |
+| COMPANY.md | Company vision, mission, positioning, operating context, business model, culture, and priorities |
+| VALUES.md | Values for the user, company, product, and codebase |
+| ICP.md | Customer vision, segments, buyer personas, pains, outcomes, triggers, objections, qualification, and non-fit |
+| VOICE.md | Communication style, vocabulary, messaging, banned phrases, and examples |
+| HEARTBEAT.md | Current status, priorities, blockers, recent progress, next actions, health, and reporting cadence |
+| ROADMAP.md | Short to long term direction, sequencing, and links to canonical Notion goals |
+| TASTE.md | Judgment, examples of quality, preferences, and anti-patterns |
+| BEHAVIOR.md | Agent behavior, action and stopping rules, collaboration, and escalation |
+| IEP.md | Ideal employee profile, capabilities, values, and non-fit |
+| REFERENCES.md | One reference catalog with labeled links, navigation anchors, and lookup context |
+| SOURCES.md | One provenance and source-monitoring registry, including origin, source URL or Drive artifact, capture status, and compiled destinations |
+| GAPS.md | Unresolved gaps in understanding, their impact, owners, and resolution evidence |
 
-If the target folder is empty, install the full AFS shell directly at the root.
-If the target folder has only a few non-application files and no application
-markers, root install is acceptable.
+Existing harness bridges such as `CLAUDE.md` and supplementary `LOOPS.md`,
+`MEMORY.md`, `PLAYBOOK.md`, `PLAN.md`, and `SPEC.md` may remain when useful.
+They must route into the current owners rather than duplicate them.
 
-### Existing Application Repository
+## Memory
 
-If the current folder is a code repository for an application, install the full
-AFS shell inside `docs/`. That keeps AFS separated from application source code.
-In this profile, `docs/BRAIN.md`, `docs/VISION.md`, `docs/LOOPS.md`,
-`docs/TASTE.md`, and `docs/GAPS.md` are the AFS root files for that
-application.
+- `logs/`: entries of at most two lines per change, appended to the latest
+  dated topic file. Also records conversational/action history, patterns, and friction.
+- `lessons/<domain>/`: lessons from experience, in timestamp folders.
+- `facts/<domain>/`: living factual documentation, without timestamp folders.
+- `fixes/`: actual errors, solutions, regression risks, and prevention evidence,
+  in timestamp folders.
+- `decisions/`: brief living decision records, without timestamp folders.
 
-### Busy Non-Application Folder
+Existing `steers/`, `problems/`, and `reflections/` may remain as scoped
+history or problem records. They do not create a separate goal system.
 
-If the folder is already populated but is not an application repo and is not
-clearly an AFS root, create a nested `agents-fs/` folder.
+## Operational
 
-### URL or GitHub Prompt
+- `audits/`: comprehensive reports and analytical audits, in timestamp folders.
+- `<domain>/<folder>/`: justified domain-specific content, such as health or investing.
+- `plans/`: implementation plans, in timestamp folders.
+- `specs/`: living desired-state specifications, mainly human-defined; AI edits
+  require task authority.
+- `lib/`: generated content, drafts, and reusable support artifacts.
+- `objects/<type>/`: structured records such as clients or employees.
+- `results/`: preserved results of completed work, in timestamp folders.
 
-If an agent is told to "implement AFS", "implement this AFS standard URL", or
-given the AFS GitHub URL, it should treat the prompt as an installation request,
-inspect the current workspace, and choose the safest profile automatically.
+## Source of truth
 
-## Removed Paths
+- `cookbooks/`: technical guides explaining how something is actually done.
+- `knowledge/`: unique knowledge, original perspectives, and source-backed
+  synthesis that generalizes across areas. It is not a mirror of online material
+  and does not define operations. Procedures belong in runbooks or cookbooks;
+  product, company, user, and audience intent belongs in the matching root file.
+- `runbooks/`: recurring operational procedures grounded in prior execution.
+- `research/<unit>/`: continuous research organized as distinct research units.
 
-Do not create or document `official-documentation/`.
+Each research unit has a `README.md` defining:
+1. Questions and their order of investigation.
+2. Hypotheses, with uncertainty stated.
+3. Reasoning and motivation.
+4. Method, scope, evidence criteria, and stopping/review conditions.
+5. Evidence, results, status, next questions, and an owner when known.
 
-External provider documentation, copied docs, source snapshots, URL registries,
-and provenance belong in `sources/`.
+Research folders are living, not organized primarily by dates. Dated observations
+can remain within a unit as evidence. Do not invent hypotheses or claim research
+was performed to fill a template.
 
-Do not create active top-level `items/` or `cookbook/` paths. Legacy `items/`
-content belongs in `facts/items/general/`; legacy `cookbook/` content belongs in
-`cookbooks/`.
+## External owners
 
-Do not create active domain-first fact paths such as `facts/general/items/`.
-Fact paths are type-first: `facts/items/<domain>/`,
-`facts/episodes/<domain>/`, and `facts/triples/<domain>/`.
+Raw data and source captures live in Google Drive: personal material in
+`alvaro.villalbaperez@gmail.com`; Clous material in `avillalba@clous.app`.
+`SOURCES.md` records verified artifact links, source identity, capture status,
+checksums when migrated, and destinations of any unique synthesis. An archived
+copy is preservation evidence, not proof of ingestion.
 
-Do not create active `context/` folders. Root-style Markdown files belong at the
-workspace root, and scoped durable information belongs in the appropriate AFS
-folder below.
+Goals live in Notion, guided by `ROADMAP.md`. The roadmap links to those goal
+records rather than maintaining a competing goal database.
 
-## Core Folders
+Templates live beside the content they generate, such as
+`lib/videos/template.md`, or within the corresponding Drive/Figma content
+folder. Application runtime templates and skill-local template assets remain
+with their owning content/component.
 
-### Memory
+## Removed surfaces and migration
 
-- `logs/` — brief change logs, two lines max, appended to the latest dated file
-  under `YYYY/MM-DD/`, usually `changes.md`.
-- `lessons/<domain>/` — lessons learned from experience, organized in
-  timestamp folders.
-- `facts/items/<domain>/` — live atomic facts and item records.
-- `facts/episodes/<domain>/` — live episode records derived from facts.
-- `facts/triples/<domain>/` — live subject-predicate-object triples derived
-  from facts and episodes.
-- `fixes/` — error solutions from things actually fixed, organized in timestamp
-  folders.
-- `steers/` — traces of work redirected by a human or secondary model,
-  organized in timestamp folders.
-- `models/decisions/` — live brief records of decisions made.
-- `models/problems/` — live brief records of problems encountered.
-- `models/goals/` — live brief records of goals set.
-- `reflections/` — detailed platform, project, workflow, or agent-behavior
-  reflections, organized in timestamp folders.
+| Removed surface | Current owner |
+|---|---|
+| FRICTION.md | Brief dated logs |
+| PREDICTION.md | Relevant research unit, plan, spec, or roadmap |
+| REGRESSIONS.md | Dated fixes with regression-prevention evidence |
+| BRAIN.md | AGENTS.md |
+| VISION.md | COMPANY.md, PRODUCT.md, ICP.md, or another relevant owner |
+| FOCUS.md | ROADMAP.md |
+| RUNBOOK.md | runbooks/ |
+| DECISIONS.md | decisions/ |
+| goals/ and models/goals/ | Canonical Notion goals and ROADMAP.md links |
+| raw/ | The correct personal or Clous Google Drive |
+| sources/ | SOURCES.md; copied artifacts move to Drive |
+| references/ | REFERENCES.md for the AFS reference catalog |
+| templates/ | The folder that owns the generated content |
 
-### Operational
+Do not delete unread source entries or remove local artifacts before a verified,
+recoverable Drive copy exists. Preserve contents, original paths, external URLs,
+status tags, and source identifiers. Do not move application assets merely
+because their folder name resembles an AFS surface.
 
-- `audits/` — comprehensive reports and analytical audits, organized in
-  timestamp folders.
-- `raw/` — raw data to be ingested, processed, promoted into `knowledge/` or
-  another canonical destination, then removed or marked as done.
-- `<domain>/<folder>/` — additional domain-specific paths, such as `health/` or
-  `investing/`, when justified.
-- `plans/` — implementation plans and plan-driven-development artifacts,
-  organized in timestamp folders.
-- `specs/` — live desired-state documentation, primarily human-defined.
-- `sources/` — URL-based sources to continuously monitor, extract, compile, and
-  organize into knowledge additions.
-- `lib/` — generated content, drafts, registries, indexes, and reusable support
-  artifacts.
-- `objects/<type>/` — structured object records, such as clients or employees.
-- `templates/` — reusable templates such as prompts, emails, and scripts.
-- `results/` — results from work that was run and needs to be preserved,
-  organized in timestamp folders.
+## Dates and provenance
 
-### Source of Truth
+Timestamp folders use `YYYY/MM-DD/`; topic files have descriptive names.
+Timestamped: logs, lessons, fixes, audits, plans, results, and existing steering
+or reflection records. Living: facts, decisions, specs, cookbooks, knowledge,
+runbooks, research, and root files.
 
-- `references/` — code, URL, API, schema, and technical references as live
-  documentation.
-- `cookbooks/` — technical guides for how something is actually done in the
-  codebase or operating environment.
-- `knowledge/` — timeless maintained knowledge about the codebase, business, or
-  how to do something.
-- `runbooks/` — operational procedures for recurring work after it has been
-  performed in a known way.
-- `research/` — continuous research related to software engineering topics.
-
-## Timestamp Rule
-
-Timestamped folders use `YYYY/MM-DD/`. Markdown files inside timestamped folders
-are named by topic rather than by timestamp. For example:
-
-- `logs/2026/06-29/changes.md`
-- `lessons/frontend/2026/06-29/component-boundaries.md`
-- `fixes/2026/06-29/build-cache-error.md`
-- `results/2026/06-29/evaluation-run.md`
-
-Live folders do not use timestamp folders. This includes `specs/`,
-`facts/items/<domain>/`, `facts/episodes/<domain>/`,
-`facts/triples/<domain>/`, `models/decisions/`, `models/problems/`,
-`models/goals/`, `references/`, `cookbooks/`, `knowledge/`, `runbooks/`, and
-`research/`.
-
-## Root File Rule
-
-Keep these at the workspace root:
-
-- `AGENTS.md`
-- `CLAUDE.md`
-- `USER.md`
-- `BRAIN.md`
-- `MEMORY.md`
-- `PLAYBOOK.md`
-- `VISION.md`
-- `LOOPS.md`
-- `TASTE.md`
-- `GAPS.md`
-- `DESIGN.md`
-- `PRODUCT.md`
-- `COMPANY.md`
-- `VALUES.md`
-- `ICP.md`
-- `VOICE.md`
-- `FRICTION.md`
-- `PREDICTION.md`
-- `REGRESSIONS.md`
-- `HEARTBEAT.md`
-
-## New Root Files
-
-### `VISION.md`
-
-Defines the north star, current direction, non-goals, strategic constraints,
-and what agents should protect over time.
-
-### `LOOPS.md`
-
-Defines recurring agent loops, triggers, cadence, review gates, stop
-conditions, and improvement cycles.
-
-### `TASTE.md`
-
-Captures high-quality and personalized judgment: what good looks like,
-preferred examples, anti-patterns, and subjective standards.
-
-### `GAPS.md`
-
-Tracks gaps in human or agent understanding so unresolved questions stay visible
-until an AI agent or human can resolve them into `knowledge/`, `references/`,
-`cookbooks/`, `runbooks/`, `research/`, `results/`, or another durable source
-of truth.
+Every non-obvious claim needs evidence. Record unread or inaccessible sources
+as such in `SOURCES.md` and unresolved understanding in `GAPS.md`.
