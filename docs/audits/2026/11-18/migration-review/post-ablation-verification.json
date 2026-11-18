@@ -1,0 +1,41 @@
+{
+  "at": "2026-11-18T12:22:45.162624+00:00",
+  "node_version": "v26.8.2",
+  "command": "node --test tests/afs-contract.test.mjs",
+  "exit_code": 0,
+  "stdout": "\u2714 application profile detects a docs shell while catalogs stay at the instruction root (5.87125ms)\n\u2714 fresh root and application profiles create the current contract and preserve existing instructions (242.07575ms)\n\u2714 migration preserves text, rebases links, and refuses to discard unread raw material (89.250167ms)\n\u2714 validation rejects a retired surface and research without a unit definition (102.397041ms)\n\u2714 migration never traverses symlinked registry or legacy directory roots (242.070833ms)\n\u2714 migration rejects dangling destination and ancestor symlinks without changing source bytes (85.356083ms)\n\u2714 creator rejects linked source registries including dangling links (86.973875ms)\n\u2714 unreviewed Markdown snapshots and repository technical guides are retained (48.056792ms)\n\u2714 reviewed registry content under skills is not silently skipped (43.503458ms)\n\u2714 invalid UTF-8 is retained byte for byte instead of consolidated (47.621667ms)\n\u2714 an interrupted append can be retried without duplicate instructions (83.7045ms)\n\u2714 a partial migration marker blocks retry without deleting or duplicating source (82.145084ms)\n\u2714 recorded placement is reused and conflicting explicit profiles stop before creating folders (151.906958ms)\n\u2714 application instructions prefix owned folders and source URL entries match completely (165.667875ms)\n\u2714 generic docs catalogs and an application manifest do not select an AFS docs workspace (39.898ms)\n\u2714 legacy docs root files are consolidated at the instruction root without losing conflicts (46.578459ms)\n\u2714 directory relocation rebases inbound links, nested links and actual conflict destinations (43.890833ms)\n\u2714 consolidated entries retain distinct anchors, titled links and heading fragments (44.849708ms)\n\u2714 empty legacy registry directories still create both required catalogs (77.521458ms)\n\u2714 directory planning reserves destinations already owned by root consolidation (44.248792ms)\n\u2714 legacy type-first facts and models/problems cannot be certified as current (258.110125ms)\n\u2714 validation checks root legacy documentation, domain lesson dates and all unscoped research files (36.421209ms)\n\u2139 tests 22\n\u2139 suites 0\n\u2139 pass 22\n\u2139 fail 0\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 2173.815167\n",
+  "stderr": "",
+  "new_fixture_residue": [],
+  "syntax": [
+    {
+      "path": "skills/use-afs/scripts/create-afs.mjs",
+      "exit_code": 0,
+      "sha256": "24e1ff0c3e6fdfdd7ae6f3cc0d3f0dd5d89f21c3bd84ec74eb66170d4e670361"
+    },
+    {
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "exit_code": 0,
+      "sha256": "4ad24bbfe5a6a3ba38c3d7389729e26ea02ed0ab12c47f6b91195c847f0cad5f"
+    },
+    {
+      "path": "skills/use-afs/scripts/standard.mjs",
+      "exit_code": 0,
+      "sha256": "56564bf32793fdf00b524cc620be4f33ba95a3b292ccad4a99685694a982532c"
+    },
+    {
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "exit_code": 0,
+      "sha256": "2d575bc5000a55355b5dee1f4af00f1d5b2890bfedc4897d1e199b34b05b5d96"
+    }
+  ],
+  "git_diff_check_exit_code": 0,
+  "ablation_proved_four_safety_regressions": true,
+  "post_review_cases": [
+    "Planned directory destination conflicts with a root consolidation destination",
+    "Partial append retry retains both source and partial destination",
+    "Recorded profile reuse and explicit profile conflict"
+  ],
+  "real_workspace_migration_run": false,
+  "dependencies_installed": false,
+  "app_build_or_browser_smoke_run": false
+}

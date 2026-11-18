@@ -10,6 +10,13 @@ every profile. Existing files are preserved. A URL argument is recorded in
 `SOURCES.md`. Standalone workspaces can use `--github` after the user
 authorizes repository publication.
 
+New installs record their placement in `.afs-profile.json`. Detection also
+recognizes an existing AFS knowledge index or the legacy docs instruction shell;
+a generic docs catalog or application manifest alone is insufficient. Use
+`--mode=docs` or `--mode=root` with validation/migration after inspecting an
+otherwise ambiguous workspace. Generated application instructions prefix AFS
+folders with `docs/` while keeping root registries at the repository root.
+
 ## Validate
 
 `npm run afs:validate -- .` checks the detected AFS shell. It rejects removed
@@ -26,6 +33,24 @@ without overwriting content. Conflicting names receive a migration suffix.
 The command reports blockers for raw/binary material needing verified Drive
 export, goals needing Notion routing, or templates needing a content owner.
 Review these blockers; do not treat a partial migration as complete.
+
+Registry content is selected explicitly after review, for example:
+`npm run afs:migrate -- . --registry=references/external-links.md`.
+Repeat `--registry=...` for additional files, using paths relative to the
+instruction root (`docs/references/...` in the application profile).
+Unselected Markdown snapshots and repository-native technical guides remain
+in place with blockers. A Markdown suffix does not establish registry ownership
+or verified external preservation. Type-first `facts/items`, `facts/episodes`
+and `facts/triples` also remain blocked for content-owner review.
+
+The scripts reject symlink sources, destinations and path components within
+the selected workspace, including dangling links. Migration refuses invalid
+UTF-8 rather than replacing source bytes. Consolidated entries retain stable
+anchors, heading targets and retry markers; a partial or changed marked entry
+requires review before source retirement. Directory moves rebase inbound and
+internal Markdown links using their actual conflict-resolved destinations.
+Run these tools with exclusive workspace ownership: path checks and moves do
+not provide isolation from concurrent writers.
 
 After a verified export, record its artifact link, original source paths,
 checksums, account, and capture status in `SOURCES.md` before removing the

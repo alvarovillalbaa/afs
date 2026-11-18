@@ -33,6 +33,9 @@ npm run afs:migrate -- .
 The creator selects root, application `docs/`, or standalone `agents-fs/`
 placement and preserves existing files. Migration preserves source content and
 reports material requiring verified Drive export or a content-specific owner.
+Only reviewed registry files explicitly selected with `--registry=...` are
+consolidated; technical guides and source snapshots remain in place otherwise.
+See [migration and validation](skills/use-afs/references/maintenance-and-validation.md).
 
 ## Website
 

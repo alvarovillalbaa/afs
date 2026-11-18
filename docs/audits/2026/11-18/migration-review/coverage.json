@@ -1,0 +1,206 @@
+{
+  "at": "2026-11-18T12:26:31.964Z",
+  "reviewed_head": "c0173467b840cf7dd1491ccbfb3ea5b568208aaf",
+  "findings": [
+    {
+      "comment_id": 4238809892,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809892",
+      "tests": [
+        "migration never traverses symlinked registry or legacy directory roots"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809895,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809895",
+      "tests": [
+        "directory relocation rebases inbound links, nested links and actual conflict destinations"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809899,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809899",
+      "tests": [
+        "reviewed registry content under skills is not silently skipped"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809904,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809904",
+      "tests": [
+        "legacy type-first facts and models/problems cannot be certified as current"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809906,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809906",
+      "tests": [
+        "migration rejects dangling destination and ancestor symlinks without changing source bytes"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809910,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809910",
+      "tests": [
+        "application instructions prefix owned folders and source URL entries match completely"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809913,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809913",
+      "tests": [
+        "legacy type-first facts and models/problems cannot be certified as current"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809916,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809916",
+      "tests": [
+        "legacy docs root files are consolidated at the instruction root without losing conflicts"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809921,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809921",
+      "tests": [
+        "application instructions prefix owned folders and source URL entries match completely"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809927,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809927",
+      "tests": [
+        "generic docs catalogs and an application manifest do not select an AFS docs workspace"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809932,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809932",
+      "tests": [
+        "unreviewed Markdown snapshots and repository technical guides are retained"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809935,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809935",
+      "tests": [
+        "an interrupted append can be retried without duplicate instructions",
+        "a partial migration marker blocks retry without deleting or duplicating source"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238809938,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809938",
+      "tests": [
+        "validation checks root legacy documentation, domain lesson dates and all unscoped research files"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238858713,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858713",
+      "tests": [
+        "migration never traverses symlinked registry or legacy directory roots"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238858718,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858718",
+      "tests": [
+        "unreviewed Markdown snapshots and repository technical guides are retained"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238858722,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858722",
+      "tests": [
+        "directory relocation rebases inbound links, nested links and actual conflict destinations",
+        "consolidated entries retain distinct anchors, titled links and heading fragments"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238858728,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858728",
+      "tests": [
+        "validation checks root legacy documentation, domain lesson dates and all unscoped research files"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238858733,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858733",
+      "tests": [
+        "validation checks root legacy documentation, domain lesson dates and all unscoped research files"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238912814,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912814",
+      "tests": [
+        "creator rejects linked source registries including dangling links"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238912817,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912817",
+      "tests": [
+        "empty legacy registry directories still create both required catalogs"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238912818,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912818",
+      "tests": [
+        "consolidated entries retain distinct anchors, titled links and heading fragments"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    },
+    {
+      "comment_id": 4238912820,
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912820",
+      "tests": [
+        "invalid UTF-8 is retained byte for byte instead of consolidated"
+      ],
+      "file": "tests/afs-contract.test.mjs",
+      "local_status": "addressed and checked; remote thread state not claimed"
+    }
+  ]
+}

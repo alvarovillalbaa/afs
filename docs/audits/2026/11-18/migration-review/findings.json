@@ -1,0 +1,140 @@
+{
+  "at": "2026-11-18T12:09:44.257Z",
+  "repository": "alvarovillalbaa/afs",
+  "pull_request": 1,
+  "reviewed_head": "c0173467b840cf7dd1491ccbfb3ea5b568208aaf",
+  "findings": [
+    {
+      "id": 4238809892,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809892",
+      "summary": "Reject symlinked registries before traversing them"
+    },
+    {
+      "id": 4238809895,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809895",
+      "summary": "Rebase links for directory migrations"
+    },
+    {
+      "id": 4238809899,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809899",
+      "summary": "Preserve registry subdirectories named skills"
+    },
+    {
+      "id": 4238809904,
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809904",
+      "summary": "Reject the legacy models/problems surface"
+    },
+    {
+      "id": 4238809906,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809906",
+      "summary": "Reject dangling and ancestor destination symlinks"
+    },
+    {
+      "id": 4238809910,
+      "path": "skills/use-afs/templates/root/AGENTS.md",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809910",
+      "summary": "Prefix workspace paths in application-profile instructions"
+    },
+    {
+      "id": 4238809913,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809913",
+      "summary": "Migrate the previous type-first fact layout"
+    },
+    {
+      "id": 4238809916,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809916",
+      "summary": "Relocate legacy docs-profile root instructions"
+    },
+    {
+      "id": 4238809921,
+      "path": "skills/use-afs/scripts/create-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809921",
+      "summary": "Match source URLs as complete registry entries"
+    },
+    {
+      "id": 4238809927,
+      "path": "skills/use-afs/scripts/standard.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809927",
+      "summary": "Require an unambiguous marker before selecting docs"
+    },
+    {
+      "id": 4238809932,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809932",
+      "summary": "Block source snapshots until external preservation is verified"
+    },
+    {
+      "id": 4238809935,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809935",
+      "summary": "Make append-and-delete migrations retry-safe"
+    },
+    {
+      "id": 4238809938,
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238809938",
+      "summary": "Restore timestamp validation for lessons"
+    },
+    {
+      "id": 4238858713,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858713",
+      "summary": "Reject symlinked legacy directory roots"
+    },
+    {
+      "id": 4238858718,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858718",
+      "summary": "Preserve repository-native reference guides"
+    },
+    {
+      "id": 4238858722,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858722",
+      "summary": "Rebase Markdown links that include titles"
+    },
+    {
+      "id": 4238858728,
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858728",
+      "summary": "Validate root legacy documentation in the docs profile"
+    },
+    {
+      "id": 4238858733,
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238858733",
+      "summary": "Reject all unscoped research files"
+    },
+    {
+      "id": 4238912814,
+      "path": "skills/use-afs/scripts/create-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912814",
+      "summary": "Reject symlinked source registries before appending"
+    },
+    {
+      "id": 4238912817,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912817",
+      "summary": "Create required registries before deleting empty legacy folders"
+    },
+    {
+      "id": 4238912818,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912818",
+      "summary": "Retain per-entry targets when consolidating registries"
+    },
+    {
+      "id": 4238912820,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4238912820",
+      "summary": "Reject non-UTF-8 inputs before destructive consolidation"
+    }
+  ]
+}
