@@ -1,0 +1,53 @@
+{
+  "at": "2026-11-18T15:39:07.544245+00:00",
+  "source_parent": "05fdef18603a7b9d9c34a5d3545becfedd14091d",
+  "unit_command": "node --test tests/afs-contract.test.mjs",
+  "unit_tests_passed": 53,
+  "unit_process_exit_code": 0,
+  "unit_result_evidence": {
+    "exec_session": 13132,
+    "final_output_chunk": "407576",
+    "summary": "tests 53; pass 53; fail 0; cancelled 0; skipped 0"
+  },
+  "syntax": [
+    {
+      "path": "skills/use-afs/scripts/create-afs.mjs",
+      "sha256": "24e1ff0c3e6fdfdd7ae6f3cc0d3f0dd5d89f21c3bd84ec74eb66170d4e670361",
+      "exit_code": 0
+    },
+    {
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "sha256": "f42b33baf4526a919483a54344855495acd18e19c7d091dd7e199ea1860ede7b",
+      "exit_code": 0
+    },
+    {
+      "path": "skills/use-afs/scripts/standard.mjs",
+      "sha256": "f73d846c02d4dfe4b73b0db71c5c5f7e7fb13e31feef26b781cb3bbd13b3e06e",
+      "exit_code": 0
+    },
+    {
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "sha256": "8c1cf3d33624e6eefee29472a4495f9aed1b653d9ed81348f97b97608733180e",
+      "exit_code": 0
+    },
+    {
+      "path": "skills/use-afs/scripts/character-references.mjs",
+      "sha256": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58",
+      "exit_code": 0
+    },
+    {
+      "path": "tests/afs-contract.test.mjs",
+      "sha256": "eb7cc662ce6e9af1259b8ebf15089cf11a92ebb54d6c967ce19481da1b51b8eb",
+      "exit_code": 0
+    }
+  ],
+  "git_diff_check_exit_code": 0,
+  "primary_fingerprints": {
+    "head": "76caffaaaea6766cffbbd2b1153bd950be1acb54",
+    "status_sha256": "5394eb062ea2d80027d49fd927079dc77b7b65edb51aae14dfdbe701d7b9e3e3",
+    "tracked_diff_sha256": "ac935e3c0c837f69ed83df76d5a73b78113c8ba1104e48f5aae15861fe283d70",
+    "index_sha256": "0e07addd8799fb8248acedcab10de6af12f50dcb57ba61dca7a39e6c68874b72"
+  },
+  "dirty_primary_fingerprints_unchanged": true,
+  "real_workspace_migration_build_install_or_database": false
+}

@@ -38,6 +38,12 @@ The subsequent [heading-display correction](followup-7/README.md) decodes
 prose entities when generating targets while retaining escaped/code literals
 and duplicate suffixes. Its final focused run passes 51 tests.
 
+The [emphasis and retained-evidence correction](followup-8/README.md) preserves
+literal underscores while removing matched emphasis from heading targets, and
+keeps unselected source captures byte-identical during inbound updates. Its
+focused run passes 53 tests; GitHub GFM rendering checks 20 heading displays and
+their prefixed targets.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.
