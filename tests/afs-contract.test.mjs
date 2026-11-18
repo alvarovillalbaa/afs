@@ -367,7 +367,9 @@ test("reference-style definitions keep entry anchors, fragments and optional tit
   assert.ok(index.includes(`[detail]: <REFERENCES.md#${definition[1]}-detail> 'Detail title'`))
   assert.ok(index.includes(`[nextline]:\n  REFERENCES.md#${definition[1]} (Next title)`))
   assert.ok(index.includes(`[crlf]: REFERENCES.md#${definition[1]} "Windows title"\r\n`))
-  assert.ok(registry.includes('[home]: README.md "Home title"'))
+  const home = registry.match(/^\[([^\]]+)\]: README.md "Home title"$/m)
+  assert.ok(home, registry)
+  assert.ok(registry.includes(`[Home][${home[1]}]`))
   assert.ok(index.includes('[external]: https://example.com/source "External title"'))
   assert.ok(!existsSync(path.join(target, "references", "a.md")))
 })
@@ -404,4 +406,179 @@ test("mandatory root documents must be regular files", async () => {
     assert.match(result.stderr, /regular file/)
     assert.equal(await readFile(path.join(target, required, "keep.txt"), "utf8"), "Keep directory content\n")
   }
+})
+
+test("consolidated reference labels retain each document's destinations", async () => {
+  const target = await fixture("afs-reference-labels-")
+  await mkdir(path.join(target, "references"))
+  for (const [name, url] of [["a", "https://example.com/a"], ["b", "https://example.com/b"]]) {
+    await writeFile(path.join(target, "references", `${name}.md`), `# ${name}\n## [Source][source]\n[Source][source]\n[Source \`code\`][source]\n[SOURCE][]\n[source]\n![Logo][source]\nNote[^note]\n\n[source]: ${url} "${name} title"\n[^note]: Note ${name}\n\n\`[source]\`\n~~~md\n[source]: https://example.com/code\n[Source][source]\n~~~\n`)
+  }
+  await writeFile(path.join(target, "README.md"), "[Heading a](references/a.md#source)\n[Heading b](references/b.md#source)\n")
+  run("migrate", [target, "--registry=references/a.md", "--registry=references/b.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const definitions = [...text.matchAll(/^\[([^\]]+)\]: (https:\/\/example.com\/([ab])) "[ab] title"$/gm)]
+  assert.equal(definitions.length, 2)
+  assert.notEqual(definitions[0][1].toLowerCase(), definitions[1][1].toLowerCase())
+  for (const definition of definitions) {
+    const start = text.indexOf(`## Migrated context: references/${definition[3]}.md`)
+    const end = text.indexOf("<!-- /afs-migration -->", start)
+    const entry = text.slice(start, end)
+    assert.ok(entry.includes(`[Source][${definition[1]}]`), entry)
+    assert.ok(entry.includes(`[Source \`code\`][${definition[1]}]`), entry)
+    assert.ok(entry.includes(`[SOURCE][${definition[1]}]`), entry)
+    assert.ok(entry.includes(`[source][${definition[1]}]`), entry)
+    assert.ok(entry.includes(`![Logo][${definition[1]}]`), entry)
+    assert.ok(entry.includes("`[source]`"), entry)
+    assert.ok(entry.includes("~~~md\n[source]: https://example.com/code\n[Source][source]\n~~~"), entry)
+  }
+  const footnotes = [...text.matchAll(/^\[\^([^\]]+)\]: Note ([ab])$/gm)]
+  assert.equal(footnotes.length, 2)
+  assert.notEqual(footnotes[0][1], footnotes[1][1])
+  for (const footnote of footnotes) {
+    const start = text.indexOf(`## Migrated context: references/${footnote[2]}.md`)
+    const end = text.indexOf("<!-- /afs-migration -->", start)
+    assert.ok(text.slice(start, end).includes(`Note[^${footnote[1]}]`))
+  }
+  const index = await readFile(path.join(target, "README.md"), "utf8")
+  for (const link of index.matchAll(/\[Heading [ab]\]\(REFERENCES.md#([^)]*)\)/g)) assert.ok(text.includes(`<a id="${link[1]}"></a>`))
+})
+
+test("rebased path segments escape filename characters instead of creating URL fragments", async () => {
+  const target = await fixture("afs-reserved-filenames-")
+  await mkdir(path.join(target, "models", "decisions"), { recursive: true })
+  const names = [["C#.md", "C%23.md"], ["why?.md", "why%3F.md"], ["one).md", "one%29.md"]]
+  for (const [name] of names) await writeFile(path.join(target, "models", "decisions", name), "Keep decision\n")
+  await writeFile(path.join(target, "README.md"), names.map(([, encoded]) => `[Decision](models/decisions/${encoded})`).join("\n") + "\n[Raw](models/decisions/C%23.md?raw=1)\n")
+  run("migrate", [target])
+  const index = await readFile(path.join(target, "README.md"), "utf8")
+  for (const [name, encoded] of names) {
+    assert.ok(index.includes(`[Decision](decisions/${encoded})`), index)
+    assert.equal(await readFile(path.join(target, "decisions", name), "utf8"), "Keep decision\n")
+  }
+  assert.ok(index.includes("[Raw](decisions/C%23.md?raw=1)"), index)
+})
+
+test("consolidated explicit HTML anchors keep incoming and local fragment targets", async () => {
+  const target = await fixture("afs-html-anchors-")
+  await mkdir(path.join(target, "references"))
+  await writeFile(path.join(target, "references", "entry.md"), '<a id="custom"></a>\n<span id=other></span>\n<a name=legacy></a>\n<a href="#custom">Local custom</a>\n[Local](#custom)\n<a\n  id="multiline"\n></a>\n`<a id="example"></a>`\n~~~html\n<a id="example"></a>\n~~~\n')
+  await writeFile(path.join(target, "README.md"), "[Custom](references/entry.md#custom)\n[Other](references/entry.md#other)\n[Legacy](references/entry.md#legacy)\n[Multi](references/entry.md#multiline)\n")
+  run("migrate", [target, "--registry=references/entry.md"])
+  const index = await readFile(path.join(target, "README.md"), "utf8")
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const incoming = index.match(/\[Custom\]\(REFERENCES.md#([^)]*)-custom\)/)
+  assert.ok(incoming, index)
+  const prefix = incoming[1]
+  assert.ok(text.includes(`<a id="${prefix}-custom"></a>`), text)
+  assert.ok(text.includes(`<span id=${prefix}-other></span>`), text)
+  assert.ok(text.includes(`<a name=${prefix}-legacy></a>`), text)
+  assert.ok(text.includes(`<a href="#${prefix}-custom">Local custom</a>`), text)
+  assert.ok(text.includes(`[Local](REFERENCES.md#${prefix}-custom)`), text)
+  assert.ok(text.includes(`id="${prefix}-multiline"`), text)
+  assert.ok(text.includes('`<a id="example"></a>`'), text)
+  assert.ok(text.includes('~~~html\n<a id="example"></a>\n~~~'), text)
+})
+
+test("reference namespacing preserves inline destinations, titles and escaped literals", async () => {
+  const target = await fixture("afs-reference-literals-")
+  await mkdir(path.join(target, "references"))
+  const slash = String.fromCharCode(92)
+  const literal = "Literal " + slash + "[source]"
+  const even = "Even " + slash.repeat(2) + "[source]"
+  const external = '[Document](https://example.com/[source] "Title [source]")'
+  await writeFile(path.join(target, "references", "entry.md"), `[source]: https://example.com/actual\n\n${external}\n${literal}\n${even}\n`)
+  run("migrate", [target, "--registry=references/entry.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const label = text.match(/^\[([^\]]+)\]: https:\/\/example.com\/actual$/m)[1]
+  assert.ok(text.includes(external), text)
+  assert.equal(text.split("\n").find((line) => line.startsWith("Literal ")), literal)
+  assert.ok(text.includes(even + `[${label}]`), text)
+})
+
+test("list and footnote prose references are distinguished from indented code", async () => {
+  const target = await fixture("afs-reference-continuations-")
+  await mkdir(path.join(target, "references"))
+  await writeFile(path.join(target, "references", "entry.md"), '- Source:\n\n    [List][source]\n\n[^note]: Note\n\n    [Note][source]\n\nOrdinary paragraph\n\n    [source]\n\n[source]: https://example.com/continuation\n')
+  run("migrate", [target, "--registry=references/entry.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const label = text.match(/^\[([^\]]+)\]: https:\/\/example.com\/continuation$/m)[1]
+  assert.ok(text.includes(`    [List][${label}]`), text)
+  assert.ok(text.includes(`    [Note][${label}]`), text)
+  assert.ok(text.includes("\n    [source]\n"), text)
+})
+
+test("HTML namespacing preserves quoted contents of unrelated attributes", async () => {
+  const target = await fixture("afs-html-attribute-values-")
+  await mkdir(path.join(target, "references"))
+  const title = 'title="The id=\'document\' value"'
+  const data = 'data-example=\'name="other" href="#fake"\''
+  await writeFile(path.join(target, "references", "entry.md"), `<a id="target" ${title} ${data}>Target</a>\n`)
+  await writeFile(path.join(target, "README.md"), "[Target](references/entry.md#target)\n")
+  run("migrate", [target, "--registry=references/entry.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  assert.ok(text.includes(title), text)
+  assert.ok(text.includes(data), text)
+  const fragment = (await readFile(path.join(target, "README.md"), "utf8")).match(/REFERENCES.md#([^)]*)/)[1]
+  assert.ok(text.includes(`id="${fragment}"`), text)
+})
+
+test("block quote reference definitions retain document-wide ownership", async () => {
+  const target = await fixture("afs-reference-quote-definitions-")
+  await mkdir(path.join(target, "references"))
+  for (const [name, prefix] of [["a", "> "], ["b", "> > "]]) {
+    await writeFile(path.join(target, `asset-${name}.md`), "Keep target\n")
+    const local = name === "a" ? `${prefix}[local]: ../asset-${name}.md` : `${prefix}[local]:\n${prefix}  ../asset-${name}.md`
+    await writeFile(path.join(target, "references", `${name}.md`), `[Source][source]\n[Local][local]\n\n${prefix}[source]: https://example.com/${name}\n${local}\n`)
+  }
+  run("migrate", [target, "--registry=references/a.md", "--registry=references/b.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const definitions = [...text.matchAll(/^(?:> )+\[([^\]]+)\]: https:\/\/example.com\/([ab])$/gm)]
+  assert.equal(definitions.length, 2)
+  assert.notEqual(definitions[0][1], definitions[1][1])
+  for (const definition of definitions) {
+    const start = text.indexOf(`## Migrated context: references/${definition[2]}.md`)
+    const end = text.indexOf("<!-- /afs-migration -->", start)
+    assert.ok(text.slice(start, end).includes(`[Source][${definition[1]}]`), text)
+  }
+  const localDefinitions = [...text.matchAll(/^(?:> )+\[([^\]]+)\]:[ \t]*(?:\n(?:> )+[ \t]*)?(asset-[ab]\.md)$/gm)]
+  assert.equal(localDefinitions.length, 2, text)
+  for (const definition of localDefinitions) assert.ok(existsSync(path.join(target, definition[2])))
+})
+
+test("angle-delimited inline destinations are not mistaken for shortcut references", async () => {
+  const target = await fixture("afs-angle-inline-target-")
+  await mkdir(path.join(target, "references"))
+  const inline = '[source](<https://example.com/foo(bar>)'
+  await writeFile(path.join(target, "references", "entry.md"), `[source]: https://example.com/reference\n\n${inline}\n`)
+  run("migrate", [target, "--registry=references/entry.md"])
+  assert.ok((await readFile(path.join(target, "REFERENCES.md"), "utf8")).includes(inline))
+})
+
+test("continued definition data and multiline code remain literal", async () => {
+  const target = await fixture("afs-continued-reference-data-")
+  await mkdir(path.join(target, "references"))
+  const continuedTitle = '  "title [source]"'
+  const continuedDestination = '  https://example.com/continued "other [source]"'
+  const code = '`literal\n[source]\ncode`'
+  await writeFile(path.join(target, "references", "entry.md"), `[source]: https://source.example\n[doc]: https://example.com\n${continuedTitle}\n[other]:\n${continuedDestination}\n\n[doc] [other]\n\n${code}\n`)
+  run("migrate", [target, "--registry=references/entry.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  assert.ok(text.includes(continuedTitle), text)
+  assert.ok(text.includes(continuedDestination), text)
+  assert.ok(text.includes(code), text)
+})
+
+test("namespaced labels stay valid at the label limit and match Unicode case folds", async () => {
+  const target = await fixture("afs-reference-label-limits-")
+  await mkdir(path.join(target, "references"))
+  const longLabel = "L".repeat(999)
+  await writeFile(path.join(target, "references", "entry.md"), `[Long][${longLabel}]\n[German][ẞ]\n\n[${longLabel}]: https://example.com/long\n[SS]: https://example.com/german\n`)
+  run("migrate", [target, "--registry=references/entry.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const long = text.match(/^\[([^\]]+)\]: https:\/\/example.com\/long$/m)[1]
+  const german = text.match(/^\[([^\]]+)\]: https:\/\/example.com\/german$/m)[1]
+  assert.ok(long.length <= 999)
+  assert.ok(text.includes(`[Long][${long}]`))
+  assert.ok(text.includes(`[German][${german}]`))
 })

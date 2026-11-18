@@ -53,6 +53,10 @@ requires review before source retirement. Directory moves rebase inbound and
 internal Markdown links using their actual conflict-resolved destinations.
 Reference-style definitions are rebased alongside inline links, retaining titles
 and consolidated-entry anchors. Required root documents must be regular files.
+Consolidation gives each entry its own reference/footnote labels and explicit
+HTML anchor IDs, including local fragment links. Filename path segments retain
+URL escaping for reserved characters. Review the resulting navigation after
+migration; these checks do not replace content-specific review.
 Run these tools with exclusive workspace ownership: path checks and moves do
 not provide isolation from concurrent writers.
 

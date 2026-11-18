@@ -35,28 +35,292 @@ async function files(root, instructionRoot, scan = false, blockers = []) {
   return result
 }
 
-function rebase(text, source, destination, mappings) {
-  const rewrite = (match, before, url, title = "", after) => {
+function rebaseUrl(url, source, destination, mappings) {
     const angle = url.startsWith("<")
     const value = angle ? url.slice(1, -1) : url
-    if (/^(?:[a-z]+:|\/)/i.test(value)) return match
+    if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(value)) return url
     const separator = value.indexOf("#")
-    const pathname = separator < 0 ? value : value.slice(0, separator)
+    const pathAndQuery = separator < 0 ? value : value.slice(0, separator)
+    const queryIndex = pathAndQuery.indexOf("?")
+    const pathname = queryIndex < 0 ? pathAndQuery : pathAndQuery.slice(0, queryIndex)
+    const query = queryIndex < 0 ? "" : pathAndQuery.slice(queryIndex)
     const fragment = separator < 0 ? "" : value.slice(separator + 1)
     let decodedPath
     try { decodedPath = decodeURIComponent(pathname) } catch { decodedPath = pathname }
     const oldTarget = pathname ? path.resolve(path.dirname(source), decodedPath) : source
     const mapped = mappings.get(oldTarget)
-    if (!mapped && source === destination) return match
+    if (!mapped && source === destination) return url
     const newTarget = mapped?.destination ?? oldTarget
     const relative = path.relative(path.dirname(destination), newTarget).split(path.sep).join("/") || path.basename(destination)
     const anchor = mapped?.anchor ? `${mapped.anchor}${fragment ? `-${fragment}` : ""}` : fragment
-    const result = `${encodeURI(relative)}${anchor ? `#${anchor}` : ""}`
-    return `${before}${angle ? `<${result}>` : result}${title}${after}`
-  }
+    const encoded = relative.split("/").map((part) => encodeURIComponent(part).replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)).join("/")
+    const result = `${encoded}${query}${anchor ? `#${anchor}` : ""}`
+    return angle ? `<${result}>` : result
+}
+
+function rebase(text, source, destination, mappings) {
+  const rewrite = (match, before, url, title = "", after) => `${before}${rebaseUrl(url, source, destination, mappings)}${title}${after}`
   return text
     .replace(/(!?\[[^\]\n]*\]\()(<[^>\n]+>|[^\s()]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?(\))/g, rewrite)
-    .replace(/^([ ]{0,3}\[[^\]\n]+\]:[ \t]*(?:\r?\n[ \t]*)?)(<[^>\n]+>|[^\s]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?([ \t]*\r?$)/gm, rewrite)
+    .replace(/^([ ]{0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(?:\r?\n[ \t]*)?)(<[^>\n]+>|[^\s]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?([ \t]*\r?$)/gm, rewrite)
+}
+
+function namespaceReferences(text, anchor, source, destination, mappings) {
+  const normalize = (label) => label.replace(/^[ \t\r\n]+|[ \t\r\n]+$/g, "").replace(/[ \t\r\n]+/g, " ").toLowerCase().toUpperCase().toLowerCase()
+  const labels = new Map()
+  const definition = /^((?:(?:[ \t]*>[ \t]?)|(?:[ \t]*(?:[-+*]|\d{1,9}[.)])[ \t]+))*[ \t]*)\[((?:\\.|[^\]\\\n])+)\](:)/
+  const outsideCode = (value, transform, literal = (line) => line) => {
+    let fence, footnote = false, afterBlank = true
+    const lists = []
+    return value.split("\n").map((line) => {
+      const content = line.replace(/^(?: {0,3}>[ \t]?)+/, "")
+      const spaces = content.match(/^[ \t]*/)[0].replace(/\t/g, "    ").length
+      if (fence) {
+        const marker = content.slice(Math.min(spaces, fence.base)).match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
+        if (marker && marker[1][0] === fence.marker[0] && marker[1].length >= fence.marker.length && !marker[2].trim()) { fence = undefined; afterBlank = true }
+        return literal(line)
+      }
+      if (!content.trim()) { afterBlank = true; return literal(line) }
+      const list = content.match(/^([ \t]*)(?:[-+*]|\d{1,9}[.)])([ \t]+)(.*)$/)
+      if (list) {
+        while (lists.length && lists.at(-1) > spaces) lists.pop()
+        lists.push(content.slice(0, content.length - list[3].length).replace(/\t/g, "    ").length)
+      } else if (afterBlank || /^\s*#{1,6}\s/.test(content)) {
+        while (lists.length && lists.at(-1) > spaces) lists.pop()
+        if (spaces < 4) footnote = false
+      }
+      const isFootnote = /^\s*\[\^[^\]]+\]:/.test(content)
+      const base = lists.at(-1) ?? (footnote ? 4 : 0)
+      const logical = list ? list[3] : content.slice(Math.min(spaces, base))
+      const marker = logical.match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
+      if (marker) { fence = { marker: marker[1], base }; return literal(line) }
+      if (afterBlank && spaces >= base + 4) return literal(line)
+      if (isFootnote) footnote = true
+      afterBlank = false
+      return transform(line)
+    }).join("\n")
+  }
+  const slash = String.fromCharCode(92)
+  const tick = String.fromCharCode(96)
+  const codeEnd = (value, start) => {
+    let length = 1
+    while (value[start + length] === tick) length++
+    const delimiter = tick.repeat(length)
+    let end = value.indexOf(delimiter, start + length)
+    while (end >= 0) {
+      if (value[end - 1] !== tick && value[end + length] !== tick) return end + length
+      end = value.indexOf(delimiter, end + length)
+    }
+    return -1
+  }
+  const angleEnd = (value, start, attributes = false) => {
+    let quote
+    for (let index = start + 1; index < value.length; index++) {
+      const char = value[index]
+      if (char === slash) { index++; continue }
+      if (!attributes && (char === "\n" || char === "\r")) return -1
+      if (quote) { if (char === quote) quote = undefined }
+      else if (attributes && (char === '"' || char === "'")) quote = char
+      else if (char === ">") return index
+    }
+    return -1
+  }
+  const close = (value, start, opening, ending) => {
+    let depth = 1, quote
+    for (let index = start + 1; index < value.length; index++) {
+      const char = value[index]
+      if (char === slash) { index++; continue }
+      if (quote) { if (char === quote) quote = undefined; continue }
+      if (opening === "(" && (char === '"' || char === "'") && /\s/.test(value[index - 1])) { quote = char; continue }
+      if (opening === "(" && char === "<") { const end = angleEnd(value, index); if (end >= 0) { index = end; continue } }
+      if (char === tick) { const end = codeEnd(value, index); if (end >= 0) { index = end - 1; continue } }
+      if (char === opening) depth++
+      else if (char === ending && --depth === 0) return index
+    }
+    return -1
+  }
+  const rewriteUses = (value, allowLinks = true) => {
+    let result = "", index = 0
+    while (index < value.length) {
+      const char = value[index]
+      if (char === slash) { result += value.slice(index, index + 2); index += 2; continue }
+      if (char === tick) {
+        const end = codeEnd(value, index)
+        if (end >= 0) { result += value.slice(index, end); index = end; continue }
+      }
+      if (char === "<") {
+        const end = angleEnd(value, index, /^<\/?[a-z][\w:-]*(?:\s|\/?>)/i.test(value.slice(index)))
+        if (end >= 0) { result += value.slice(index, end + 1); index = end + 1; continue }
+      }
+      const atWordStart = index === 0 || !/[a-z0-9+.-]/i.test(value[index - 1])
+      const url = atWordStart && /[a-z]/i.test(char) ? value.slice(index).match(/^(?:[a-z][a-z0-9+.-]*:\/\/|mailto:)[^\s<>]+/i) : null
+      if (url) { result += url[0]; index += url[0].length; continue }
+      const image = char === "!" && value[index + 1] === "["
+      const start = image ? index + 1 : index
+      if (value[start] === "[") {
+        const end = close(value, start, "[", "]")
+        if (end >= 0) {
+          const display = value.slice(start + 1, end)
+          const inlineEnd = value[end + 1] === "(" ? close(value, end + 1, "(", ")") : -1
+          if (inlineEnd >= 0) {
+            result += `${image ? "!" : ""}[${image ? display : rewriteUses(display, false)}]${value.slice(end + 1, inlineEnd + 1)}`
+            index = inlineEnd + 1
+            continue
+          }
+          const explicitEnd = value[end + 1] === "[" ? close(value, end + 1, "[", "]") : -1
+          const explicit = explicitEnd >= 0 ? value.slice(end + 2, explicitEnd) : undefined
+          const normalized = normalize(explicit || display)
+          const destination = labels.get(normalized)
+          if (destination && (image || allowLinks)) {
+            result += !image && explicit === undefined && normalized.startsWith("^") ? `[${destination}]` : `${image ? "!" : ""}[${display}][${destination}]`
+            index = explicitEnd >= 0 ? explicitEnd + 1 : end + 1
+            continue
+          }
+          const shortcut = labels.get(normalize(display))
+          if (shortcut && (image || allowLinks)) {
+            result += `${image ? "!" : ""}[${display}][${shortcut}]`
+            index = end + 1
+            continue
+          }
+        }
+      }
+      result += char
+      index++
+    }
+    return result
+  }
+  let tokenPrefix = `AFSLITERAL${hash(text)}X`
+  while (text.includes(tokenPrefix)) tokenPrefix += "X"
+  const literals = []
+  const literal = (render) => { const index = literals.push(typeof render === "function" ? render : () => render) - 1; return `${tokenPrefix}${index}END` }
+  const definitionEnd = (value, start) => {
+    const gap = (index) => value.slice(index).match(/^[ \t]*(?:\r?\n(?:[ \t]*>[ \t]?)*[ \t]*)?/)[0].length
+    let index = start + gap(start)
+    const destinationStart = index
+    if (value[index] === "<") {
+      const end = angleEnd(value, index)
+      if (end < 0) return -1
+      index = end + 1
+    } else {
+      let depth = 0
+      while (index < value.length && !/\s/.test(value[index])) {
+        if (value[index] === slash) { index += 2; continue }
+        if (value[index] === "(") depth++
+        else if (value[index] === ")" && --depth < 0) return -1
+        index++
+      }
+      if (depth !== 0 || index === destinationStart) return -1
+    }
+    const destinationEnd = index
+    let end = index
+    const titleStart = index + gap(index)
+    const opener = value[titleStart]
+    if (titleStart > index && ['"', "'", "("].includes(opener)) {
+      const closer = opener === "(" ? ")" : opener
+      for (let cursor = titleStart + 1; cursor < value.length; cursor++) {
+        if (value[cursor] === slash) { cursor++; continue }
+        if (/^\r?\n[ \t]*(?:>[ \t]*)?\r?\n/.test(value.slice(cursor))) break
+        if (value[cursor] === closer) {
+          if (!value.slice(cursor + 1).split("\n", 1)[0].trim()) end = cursor + 1
+          break
+        }
+      }
+    }
+    return value.slice(end).split("\n", 1)[0].trim() ? null : { end, destinationStart, destinationEnd }
+  }
+  const protect = (value) => {
+    let result = "", index = 0
+    while (index < value.length) {
+      if (index === 0 || value[index - 1] === "\n") {
+        const match = value.slice(index).match(definition)
+        if (match) {
+          const label = normalize(match[2])
+          const data = label.startsWith("^") ? null : definitionEnd(value, index + match[0].length)
+          const end = label.startsWith("^") ? index + match[0].length : data?.end
+          if (end !== undefined) {
+            if (!labels.has(label)) labels.set(label, `${label.startsWith("^") ? "^" : ""}${anchor}-ref-${labels.size + 1}`)
+            let original = value.slice(index, end)
+            // Simple root definitions were rebased already; container definitions were not.
+            if (data && (/[>\t]/.test(match[1]) || match[1].length > 3 || /(?:[-+*]|\d[.)])/.test(match[1]))) {
+              const start = data.destinationStart - index, finish = data.destinationEnd - index
+              original = original.slice(0, start) + rebaseUrl(original.slice(start, finish), source, destination, mappings) + original.slice(finish)
+            }
+            result += literal(() => original.replace(definition, (_, indent, raw, colon) => `${indent}[${labels.get(normalize(raw))}]${colon}`))
+            index = end
+            continue
+          }
+        }
+      }
+      const char = value[index]
+      if (char === slash) { result += literal(value.slice(index, index + 2)); index += 2; continue }
+      if (char === tick) {
+        const end = codeEnd(value, index)
+        if (end >= 0) { result += literal(value.slice(index, end)); index = end; continue }
+      }
+      if (char === "<") {
+        const end = angleEnd(value, index, /^<\/?[a-z][\w:-]*(?:\s|\/?>)/i.test(value.slice(index)))
+        if (end >= 0) { result += literal(value.slice(index, end + 1)); index = end + 1; continue }
+      }
+      const atWordStart = index === 0 || !/[a-z0-9+.-]/i.test(value[index - 1])
+      const url = atWordStart && /[a-z]/i.test(char) ? value.slice(index).match(/^(?:[a-z][a-z0-9+.-]*:\/\/|mailto:)[^\s<>]+/i) : null
+      if (url) { result += literal(url[0]); index += url[0].length; continue }
+      const image = char === "!" && value[index + 1] === "["
+      const start = image ? index + 1 : index
+      if (value[start] === "[") {
+        const end = close(value, start, "[", "]")
+        const inlineEnd = end >= 0 && value[end + 1] === "(" ? close(value, end + 1, "(", ")") : -1
+        if (inlineEnd >= 0) {
+          const display = value.slice(start + 1, end)
+          const destination = value.slice(end + 1, inlineEnd + 1)
+          result += literal(() => `${image ? "!" : ""}[${image ? display : rewriteUses(display, false)}]${destination}`)
+          index = inlineEnd + 1
+          continue
+        }
+      }
+      result += char
+      index++
+    }
+    return result
+  }
+  const pieces = []
+  let pending = []
+  const flush = () => { if (pending.length) { pieces.push({ code: false, text: protect(pending.join("\n")) }); pending = [] } }
+  outsideCode(text, (line) => { pending.push(line); return line }, (line) => { flush(); pieces.push({ code: true, text: line }); return line })
+  flush()
+  if (!labels.size) return text
+  const rewritten = pieces.map((piece) => piece.code ? piece.text : rewriteUses(piece.text)).join("\n")
+  const restored = rewritten.replace(new RegExp(`${tokenPrefix}(\\d+)END`, "g"), (_, index) => literals[Number(index)]())
+  if (restored.includes(tokenPrefix)) throw new Error("Reference literal restoration failed; source retained")
+  return restored
+}
+
+function namespaceHtmlAnchors(text, anchor) {
+  const transform = (chunk) => chunk.replace(/(?<!`)(`+)(?!`)[\s\S]*?(?<!`)\1(?!`)|<([A-Za-z][\w:-]*)(?:[^"'<>]|"[^"]*"|'[^']*')*>/g, (tag, code, name, offset) => {
+    if (code || /^(?: {4}|\t)/.test(chunk.slice(chunk.lastIndexOf("\n", offset) + 1, offset))) return tag
+    return tag.replace(/(\s)([^\s"'<>/=]+)(\s*=\s*)(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g, (attribute, space, key, equal, double, single, bare) => {
+      const value = double ?? single ?? bare
+      const kind = key.toLowerCase()
+      let updated
+      if (value && (kind === "id" || (kind === "name" && name.toLowerCase() === "a"))) updated = `${anchor}-${value}`
+      else if ((kind === "href" || kind === "xlink:href") && value.startsWith("#")) updated = `#${anchor}${value.length > 1 ? `-${value.slice(1)}` : ""}`
+      else return attribute
+      const quote = double !== undefined ? '"' : single !== undefined ? "'" : ""
+      return `${space}${key}${equal}${quote}${updated}${quote}`
+    })
+  })
+  let fence, pending = "", result = ""
+  for (const line of text.split(/(?<=\n)/)) {
+    const marker = line.match(/^ {0,3}(`{3,}|~{3,})(.*?)(?:\r?\n)?$/)
+    if (fence) {
+      result += line
+      if (marker && marker[1][0] === fence[0] && marker[1].length >= fence.length && !marker[2].trim()) fence = undefined
+    } else if (marker) {
+      result += transform(pending) + line
+      pending = ""
+      fence = marker[1]
+    } else pending += line
+  }
+  return result + transform(pending)
 }
 
 function headingAnchors(text, anchor) {
@@ -70,7 +334,7 @@ function headingAnchors(text, anchor) {
     const heading = line.match(/^ {0,3}#{1,6}\s+(.+?)(?:\s+#+)?\s*$/) ??
       (line.trim() && /^ {0,3}(?:=+|-+)\s*$/.test(lines[index + 1] ?? "") ? [line, line.trim()] : null)
     if (!heading) return line
-    const slug = heading[1].toLowerCase().replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/<[^>]*>/g, "").replace(/[^\p{L}\p{N}_\-\s]/gu, "").replace(/\s/g, "-")
+    const slug = heading[1].toLowerCase().replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/!?\[([^\]]+)\]\[[^\]]*\]/g, "$1").replace(/<[^>]*>/g, "").replace(/[^\p{L}\p{N}_\-\s]/gu, "").replace(/\s/g, "-")
     const count = counts.get(slug) ?? 0
     counts.set(slug, count + 1)
     return `<a id="${anchor}-${slug}${count ? `-${count}` : ""}"></a>\n${line}`
@@ -214,7 +478,7 @@ async function main() {
     const origin = path.relative(instructionRoot, job.source)
     const marker = `<!-- afs-migration:${hash(origin + "\0" + hash(job.bytes))} -->`
     const anchor = mappings.get(job.source).anchor
-    const section = `\n\n${marker}\n<a id="${anchor}"></a>\n## Migrated context: ${origin}\n\nOriginal content retained for review. Current AFS routing supersedes any retired paths below.\n\n${headingAnchors(rebase(job.text, job.source, job.destination, mappings), anchor)}\n<!-- /afs-migration -->\n`
+    const section = `\n\n${marker}\n<a id="${anchor}"></a>\n## Migrated context: ${origin}\n\nOriginal content retained for review. Current AFS routing supersedes any retired paths below.\n\n${headingAnchors(namespaceHtmlAnchors(namespaceReferences(rebase(job.text, job.source, job.destination, mappings), anchor, job.source, job.destination, mappings), anchor), anchor)}\n<!-- /afs-migration -->\n`
     const existing = decode(await readFile(job.destination))
     if (existing.includes(`<a id="${anchor}"></a>`) && !existing.includes(marker)) throw new Error(`Changed migration source; preserve both versions for review: ${job.source}`)
     if (existing.includes(marker) && !existing.includes(section)) throw new Error(`Partial or changed migration entry; source retained for review: ${job.destination}`)
