@@ -2,11 +2,12 @@ import { after, test } from "node:test"
 import assert from "node:assert/strict"
 import { execFileSync, spawnSync } from "node:child_process"
 import { existsSync } from "node:fs"
-import { mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises"
+import { copyFile, mkdtemp, mkdir, readFile, rm, symlink, writeFile } from "node:fs/promises"
 import os from "node:os"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { resolveWorkspace } from "../skills/use-afs/scripts/standard.mjs"
+import { decodeUrlCharacters } from "../skills/use-afs/scripts/character-references.mjs"
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..")
 const script = (name) => path.join(root, "skills/use-afs/scripts", `${name}-afs.mjs`)
@@ -655,7 +656,7 @@ test("heading anchors respect opening fence length and closing delimiter rules",
   assert.match(text, /<a id="afs-migrated-[a-f0-9]+-actual-heading"><\/a>\n# Actual heading/)
 })
 
-test("HTML destination entities retain resource identity or block source retirement", async () => {
+test("HTML destination entities retain resource identity and quoted attribute contents", async () => {
   const target = await fixture("afs-html-url-entities-")
   await mkdir(path.join(target, "references"))
   await writeFile(path.join(target, "asset&icon.png"), "Synthetic image\n")
@@ -663,14 +664,12 @@ test("HTML destination entities retain resource identity or block source retirem
   run("migrate", [target, "--registry=references/entry.md"])
   assert.ok((await readFile(path.join(target, "REFERENCES.md"), "utf8")).includes('src="asset%26icon.png?first=1&amp;second=2"'))
   assert.ok((await readFile(path.join(target, "REFERENCES.md"), "utf8")).includes('href="asset%26icon.png?two words"'))
-  const blocked = await fixture("afs-html-url-entity-block-")
-  await mkdir(path.join(blocked, "references"))
-  const original = '<a href="../asset&copy;.md">Unsupported named entity</a>\n'
-  await writeFile(path.join(blocked, "references", "entry.md"), original)
-  const result = spawnSync(process.execPath, [script("migrate"), blocked, "--registry=references/entry.md"], { encoding: "utf8" })
-  assert.notEqual(result.status, 0)
-  assert.match(result.stderr, /HTML URL entity requires content review; source retained/)
-  assert.equal(await readFile(path.join(blocked, "references", "entry.md"), "utf8"), original)
+  const named = await fixture("afs-html-url-named-entity-")
+  await mkdir(path.join(named, "references"))
+  await writeFile(path.join(named, "asset©.md"), "# Named target\n")
+  await writeFile(path.join(named, "references", "entry.md"), '<a href="../asset&copy;.md">Named entity</a>\n')
+  run("migrate", [named, "--registry=references/entry.md"])
+  assert.ok((await readFile(path.join(named, "REFERENCES.md"), "utf8")).includes('href="asset%C2%A9.md"'))
 })
 
 test("unmatched backticks in separate blocks cannot suppress actual link rebasing", async () => {
@@ -690,15 +689,23 @@ test("transformation failures retain all earlier sources so a corrected retry ca
   const target = await fixture("afs-transform-preflight-")
   await mkdir(path.join(target, "references"))
   const a = "# A\n"
-  const b = '<a href="../asset&copy;.md">B</a>\n'
+  const b = "# B\n"
+  await writeFile(path.join(target, "references", "b.md"), b)
+  run("migrate", [target, "--registry=references/b.md"])
+  const complete = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const partial = complete.slice(0, complete.indexOf("# B") + 2)
+  await writeFile(path.join(target, "REFERENCES.md"), partial)
+  await mkdir(path.join(target, "references"), { recursive: true })
   await writeFile(path.join(target, "references", "a.md"), a)
   await writeFile(path.join(target, "references", "b.md"), b)
   await writeFile(path.join(target, "README.md"), "[A](references/a.md)\n")
   const result = spawnSync(process.execPath, [script("migrate"), target, "--registry=references/a.md", "--registry=references/b.md"], { encoding: "utf8" })
   assert.notEqual(result.status, 0)
+  assert.match(result.stderr, /Partial or changed migration entry/)
   assert.equal(await readFile(path.join(target, "references", "a.md"), "utf8"), a)
   assert.equal(await readFile(path.join(target, "references", "b.md"), "utf8"), b)
-  await writeFile(path.join(target, "references", "b.md"), "# B corrected\n")
+  assert.equal(await readFile(path.join(target, "REFERENCES.md"), "utf8"), partial)
+  await writeFile(path.join(target, "REFERENCES.md"), complete)
   run("migrate", [target, "--registry=references/a.md", "--registry=references/b.md"])
   assert.match(await readFile(path.join(target, "README.md"), "utf8"), /\[A\]\(REFERENCES.md#afs-migrated-[a-f0-9]+\)/)
 })
@@ -726,4 +733,72 @@ test("EOF-terminated code fences are closed before the next consolidated entry",
     assert.ok(text.includes(`${original}\n${char.repeat(4)}\n\n<!-- /afs-migration -->`), text)
     assert.match(text, /<a id="afs-migrated-[a-f0-9]+-b"><\/a>\n# B/)
   }
+})
+
+test("workspace skills follow migrated targets while installed AFS templates stay out of the scan", async () => {
+  const target = await fixture("afs-workspace-skill-links-")
+  await mkdir(path.join(target, "references"))
+  await mkdir(path.join(target, "skills", "foo"), { recursive: true })
+  for (const relative of ["scripts/migrate-afs.mjs", "scripts/standard.mjs", "scripts/character-references.mjs", "references/html-named-character-references.json"]) {
+    const destination = path.join(target, "skills", "use-afs", relative)
+    await mkdir(path.dirname(destination), { recursive: true })
+    await copyFile(path.join(root, "skills", "use-afs", relative), destination)
+  }
+  const template = path.join(target, "skills", "use-afs", "templates", "root", "README.md")
+  await mkdir(path.dirname(template), { recursive: true })
+  const templateText = "[Entry](../../../../references/a.md)\n"
+  await writeFile(template, templateText)
+  await writeFile(path.join(target, "references", "a.md"), "# Entry\n")
+  await writeFile(path.join(target, "skills", "foo", "SKILL.md"), "[Entry](../../references/a.md)\n")
+  execFileSync(process.execPath, [path.join(target, "skills/use-afs/scripts/migrate-afs.mjs"), target, "--registry=references/a.md"], { encoding: "utf8" })
+  assert.match(await readFile(path.join(target, "skills", "foo", "SKILL.md"), "utf8"), /^\[Entry\]\(\.\.\/\.\.\/REFERENCES.md#afs-migrated-[a-f0-9]+\)\n$/)
+  assert.equal(await readFile(template, "utf8"), templateText)
+})
+
+test("Markdown destination character references follow cmark URL cleanup and preserve encoded filenames", async () => {
+  const target = await fixture("afs-markdown-destination-entities-")
+  await mkdir(path.join(target, "references"))
+  const slash = String.fromCharCode(92)
+  await writeFile(path.join(target, "references", "a.md"), `[Target](a&amp;b.md)\n[Numeric](a&#38;b.md)\n[Named](a&copy;b.md)\n[Escaped](a${slash}&amp;b.md)\n[Encoded](a%26amp%3Bb.md)\n[Query](a&amp;b.md?name=${slash}&copy;)\n[Reference][ref]\n\n[ref]: a&amp;b.md\n`)
+  for (const name of ["a&b.md", "a©b.md", "a&amp;b.md"]) await writeFile(path.join(target, "references", name), `# ${name}\n`)
+  run("migrate", [target, "--registry=references/a.md", ...["a&b.md", "a©b.md", "a&amp;b.md"].map((name) => `--registry=references/${name}`)])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const links = Object.fromEntries([...text.matchAll(/\[(Target|Numeric|Named|Escaped|Encoded)\]\(REFERENCES.md#([^)]*)\)/g)].map((m) => [m[1], m[2]]))
+  assert.ok(links.Target && links.Numeric && links.Named && links.Escaped && links.Encoded, text)
+  assert.equal(links.Target, links.Numeric)
+  assert.notEqual(links.Target, links.Named)
+  assert.equal(links.Target, links.Escaped)
+  assert.notEqual(links.Target, links.Encoded)
+  for (const anchor of Object.values(links)) assert.ok(text.includes(`<a id="${anchor}"></a>`), text)
+  assert.ok(text.includes(`[Query](REFERENCES.md?name=%5C©#${links.Target})`), text)
+  assert.match(text, new RegExp(`^\\[[^\\]]+\\]: REFERENCES.md#${links.Target}$`, "m"))
+})
+
+test("URL character references respect Markdown escapes and HTML attribute rules", () => {
+  assert.equal(decodeUrlCharacters("&NotEqualTilde;&CounterClockwiseContourIntegral;"), "\u2242\u0338\u2233")
+  assert.equal(decodeUrlCharacters("\\&copy;"), "\\©")
+  assert.equal(decodeUrlCharacters("\\&amp;"), "&")
+  assert.equal(decodeUrlCharacters("\\&amp;", false), "\\&")
+  assert.equal(decodeUrlCharacters("&amp;copy;"), "&copy;")
+  assert.equal(decodeUrlCharacters("&MadeUpEntity;"), "&MadeUpEntity;")
+  assert.equal(decodeUrlCharacters("&copy"), "&copy")
+  assert.equal(decodeUrlCharacters("&copy", false), "©")
+  assert.equal(decodeUrlCharacters("&notit;", false), "&notit;")
+  assert.equal(decodeUrlCharacters("&amp=", false), "&amp=")
+  assert.equal(decodeUrlCharacters("&#128;"), "\u0080")
+  assert.equal(decodeUrlCharacters("&#128;", false), "€")
+  assert.equal(decodeUrlCharacters("&#0;&#xD800;"), "\uFFFD\uFFFD")
+  assert.equal(decodeUrlCharacters("&#12345678;"), "&#12345678;")
+})
+
+test("entity-decoded URL whitespace preserves external destinations and resolves local targets", async () => {
+  const target = await fixture("afs-entity-url-whitespace-")
+  await mkdir(path.join(target, "references"))
+  const external = '<a href="&Tab;https://example.com/path">External</a>\n[External](<&Tab;https://example.com/path>)\n'
+  await writeFile(path.join(target, "references", "a.md"), external + "[Local](b&Tab;.md)\n")
+  await writeFile(path.join(target, "references", "b.md"), "# B\n")
+  run("migrate", [target, "--registry=references/a.md", "--registry=references/b.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  assert.ok(text.includes(external), text)
+  assert.match(text, /\[Local\]\(REFERENCES.md#afs-migrated-[a-f0-9]+\)/)
 })

@@ -61,9 +61,13 @@ Link rebasing shares the literal-aware reference traversal: inline, fenced and
 indented code examples remain unchanged in the exercised cases. Actual inline
 destinations support balanced or escaped parentheses, preserving their titles.
 Relative HTML `href`, `src`, `poster` and `xlink:href` attributes use the same
-relocation mappings. Rewritten attributes are quoted; basic/numeric character
-references are decoded once and re-escaped. Other named entities require owner
-review and retain the source. Comments remain literal during link rebasing.
+relocation mappings. Rewritten attributes are quoted. Markdown and HTML URL
+character references use the [complete bundled reference data](html-character-references.md),
+with their respective escape/semicolon rules and one-pass decoding. Unknown
+names remain literal; decoded URL whitespace is normalized before classification.
+Comments remain literal during link rebasing. Workspace skill documents and
+their templates are included in inbound navigation updates; only the installed
+AFS package's own template tree and generated dependencies are excluded.
 Heading anchors respect the opening fence's character, length and closing rules.
 Text transformations and retry-marker checks are prepared for the full plan
 before source retirement, including directory content and inbound documents.

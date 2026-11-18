@@ -1,12 +1,15 @@
 #!/usr/bin/env node
-import { appendFile, mkdir, readFile, readdir, rename, rmdir, unlink, writeFile } from "node:fs/promises"
-import { existsSync } from "node:fs"
+import { appendFile, mkdir, readFile, readdir, realpath, rename, rmdir, unlink, writeFile } from "node:fs/promises"
+import { existsSync, realpathSync } from "node:fs"
 import { createHash } from "node:crypto"
 import path from "node:path"
+import { fileURLToPath } from "node:url"
+import { decodeUrlCharacters } from "./character-references.mjs"
 import { rootTemplates, safePath, resolveWorkspace } from "./standard.mjs"
 
 const hash = (bytes) => createHash("sha256").update(bytes).digest("hex")
 const decode = (bytes) => new TextDecoder("utf-8", { fatal: true, ignoreBOM: true }).decode(bytes)
+const bundledTemplates = path.resolve(realpathSync(fileURLToPath(new URL(".", import.meta.url))), "../templates")
 
 function uniqueDestination(destination, reserved) {
   if (!existsSync(destination) && !reserved.has(destination)) { reserved.add(destination); return destination }
@@ -25,8 +28,8 @@ async function files(root, instructionRoot, scan = false, blockers = []) {
   if (!info.isDirectory()) throw new Error(`Expected directory: ${root}`)
   const result = []
   for (const entry of await readdir(root, { withFileTypes: true })) {
-    if (scan && [".git", "node_modules", ".next", ".venv", "skills"].includes(entry.name)) continue
     const current = path.join(root, entry.name)
+    if (scan && ([".git", "node_modules", ".next", ".venv"].includes(entry.name) || (entry.isDirectory() && entry.name === "templates" && await realpath(current) === bundledTemplates))) continue
     if (entry.isSymbolicLink()) {
       if (!scan) blockers.push(`${current} is a symlink; its owner must migrate it.`)
     } else if (entry.isDirectory()) result.push(...await files(current, instructionRoot, scan, blockers))
@@ -38,7 +41,8 @@ async function files(root, instructionRoot, scan = false, blockers = []) {
 function rebaseUrl(url, source, destination, mappings, markdown = true) {
     const angle = markdown && url.startsWith("<")
     const raw = angle ? url.slice(1, -1) : url
-    const value = markdown ? raw.replace(/\\([!-\x2F:-@\[-\x60{-~])/g, "$1") : raw
+    if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(raw)) return url
+    const value = decodeUrlCharacters(raw, markdown).replace(/^[\u0000-\u0020]+|[\u0000-\u0020]+$/g, "").replace(/[\t\r\n]/g, "")
     if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(value)) return url
     const separator = value.indexOf("#")
     const pathAndQuery = separator < 0 ? value : value.slice(0, separator)
@@ -56,7 +60,8 @@ function rebaseUrl(url, source, destination, mappings, markdown = true) {
     const anchor = mapped?.anchor ? `${mapped.anchor}${fragment ? `-${fragment}` : ""}` : fragment
     const encoded = relative.split("/").map((part) => encodeURIComponent(part).replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)).join("/")
     const result = `${encoded}${pathname.endsWith("/") ? "/" : ""}${query}${anchor ? `#${anchor}` : ""}`
-    return angle ? `<${result}>` : result
+    const serialized = markdown ? result.replace(/[\u0000-\u0020\u007f\s<>"'`()\\]/g, (char) => encodeURIComponent(char).replace(/[!'()*]/g, (part) => `%${part.charCodeAt(0).toString(16).toUpperCase()}`)).replace(/&/g, "&amp;") : result
+    return angle ? `<${serialized}>` : serialized
 }
 
 function rebaseHtmlTag(tag, source, destination, mappings) {
@@ -65,16 +70,8 @@ function rebaseHtmlTag(tag, source, destination, mappings) {
     if (!["href", "src", "poster", "xlink:href"].includes(key.toLowerCase())) return attribute
     const original = double ?? single ?? bare
     if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(original)) return attribute
-    const entities = { amp: "&", AMP: "&", quot: '"', QUOT: '"', apos: "'", lt: "<", LT: "<", gt: ">", GT: ">" }
-    const value = original.replace(/&(#(?:[xX][0-9a-fA-F]+|\d+)|[a-zA-Z][a-zA-Z0-9]+);/g, (entity, name) => {
-      if (Object.hasOwn(entities, name)) return entities[name]
-      if (name[0] !== "#") throw new Error("HTML URL entity requires content review; source retained")
-      const point = name[1].toLowerCase() === "x" ? parseInt(name.slice(2), 16) : Number(name.slice(1))
-      if (!(point > 0 && point <= 0x10ffff && !(point >= 0xd800 && point <= 0xdfff))) throw new Error("Invalid HTML URL character reference; source retained")
-      return String.fromCodePoint(point)
-    })
-    const updated = rebaseUrl(value, source, destination, mappings, false)
-    if (updated === value) return attribute
+    const updated = rebaseUrl(original, source, destination, mappings, false)
+    if (updated === original) return attribute
     const quote = single !== undefined ? "'" : '"'
     const escaped = updated.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;")
     return `${space}${key}${equal}${quote}${escaped}${quote}`
