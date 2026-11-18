@@ -44,6 +44,11 @@ keeps unselected source captures byte-identical during inbound updates. Its
 focused run passes 53 tests; GitHub GFM rendering checks 20 heading displays and
 their prefixed targets.
 
+The [heading-ID allocation correction](followup-9/README.md) prevents duplicate
+suffixes from colliding with literal numbered headings. Its six-heading
+regression checks every incoming target and unique generated ID; all 54 focused
+tests pass.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.
