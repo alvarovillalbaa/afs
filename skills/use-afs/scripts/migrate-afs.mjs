@@ -36,7 +36,7 @@ async function files(root, instructionRoot, scan = false, blockers = []) {
 }
 
 function rebase(text, source, destination, mappings) {
-  return text.replace(/(!?\[[^\]\n]*\]\()(<[^>\n]+>|[^\s()]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?(\))/g, (match, before, url, title = "", after) => {
+  const rewrite = (match, before, url, title = "", after) => {
     const angle = url.startsWith("<")
     const value = angle ? url.slice(1, -1) : url
     if (/^(?:[a-z]+:|\/)/i.test(value)) return match
@@ -53,7 +53,10 @@ function rebase(text, source, destination, mappings) {
     const anchor = mapped?.anchor ? `${mapped.anchor}${fragment ? `-${fragment}` : ""}` : fragment
     const result = `${encodeURI(relative)}${anchor ? `#${anchor}` : ""}`
     return `${before}${angle ? `<${result}>` : result}${title}${after}`
-  })
+  }
+  return text
+    .replace(/(!?\[[^\]\n]*\]\()(<[^>\n]+>|[^\s()]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?(\))/g, rewrite)
+    .replace(/^([ ]{0,3}\[[^\]\n]+\]:[ \t]*(?:\r?\n[ \t]*)?)(<[^>\n]+>|[^\s]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?([ \t]*\r?$)/gm, rewrite)
 }
 
 function headingAnchors(text, anchor) {
@@ -78,6 +81,16 @@ async function main() {
   const args = process.argv.slice(2)
   const { target, instructionRoot, profile } = resolveWorkspace(args.find((arg) => !arg.startsWith("--")), args.find((arg) => arg.startsWith("--mode="))?.slice(7))
   await safePath(instructionRoot, target)
+  const profilePath = path.join(instructionRoot, ".afs-profile.json")
+  const profileInfo = await safePath(instructionRoot, profilePath)
+  if (profileInfo) {
+    if (!profileInfo.isFile()) throw new Error("AFS profile marker must be a regular file")
+    const saved = JSON.parse(await readFile(profilePath, "utf8"))
+    if (saved.version !== 1 || saved.profile !== profile) throw new Error("Existing AFS profile differs; review placement before migration")
+  } else if (profile === "docs") {
+    // Retiring legacy root documents must not erase the selected workspace.
+    await writeFile(profilePath, JSON.stringify({ version: 1, profile }) + "\n", { flag: "wx" })
+  }
   const mappings = new Map()
   const jobs = []
   const directoryJobs = []

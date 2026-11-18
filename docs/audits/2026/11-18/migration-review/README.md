@@ -5,6 +5,11 @@ review findings on `c0173467b840cf7dd1491ccbfb3ea5b568208aaf`.
 The correction preserves the intended ownership migration while retaining
 unreviewed source material and refusing unsafe filesystem destinations.
 
+A subsequent [three-finding follow-up](followup-1/README.md) reproduces and fixes
+reference definitions, persistence of legacy docs detection and mandatory
+document types. Its latest verification passes 27 focused tests; the original
+24-test run below remains preserved as historical evidence.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.

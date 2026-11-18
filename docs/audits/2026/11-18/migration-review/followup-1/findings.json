@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-18T12:38:58.594Z",
+  "reviewed_head": "1bcf8d95895d926cc783af1b42ff058816c7a8d1",
+  "findings": [
+    {
+      "thread_id": "PRRT_kwDOSKaOPs649CI2",
+      "comment_id": 4613946464,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4613946464",
+      "test": "reference-style definitions keep entry anchors, fragments and optional titles",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Rebase reference-style Markdown link definitions**\n\nWhen a workspace uses reference-style Markdown links, such as `[Entry][entry]` with `[entry]: references/a.md`, this regex leaves the definition unchanged. Migrating with `--registry=references/a.md` then deletes the original file and exits successfully, leaving the rendered link pointing to a nonexistent path. Rebase reference definitions as well as inline links, preserving optional titles and mapping the destination to its consolidated entry anchor.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "thread_id": "PRRT_kwDOSKaOPs649CI-",
+      "comment_id": 4613946484,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4613946484",
+      "test": "legacy docs detection persists across blocked migration retries",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Persist the docs profile before retiring its detection markers**\n\nWhen a legacy docs workspace is detected through `docs/AGENTS.md`, `docs/BRAIN.md`, and `docs/GAPS.md`, but has neither `.afs-profile.json` nor `docs/knowledge/INDEX.md`, migration removes all three detection markers without recording the selected profile. Subsequent automatic migration and validation therefore inspect the repository root instead of `docs/`. Reproducing this with `docs/raw/source.md` produces a raw-preservation blocker on the first migration, but the second migration exits successfully and validation passes while that same retired surface remains. Persist the detected docs profile before retiring its markers so subsequent commands continue checking the actual workspace.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "thread_id": "PRRT_kwDOSKaOPs649CJL",
+      "comment_id": 4613946500,
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4613946500",
+      "test": "mandatory root documents must be regular files",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Require regular files for mandatory root documents**\n\nIf a required root document such as `SOURCES.md` is a directory, validation still exits successfully: `safePath` accepts directories and `existsSync` only checks existence. This certifies a workspace whose mandatory registry cannot be read or appended to as a document; the creator also preserves the directory rather than replacing it. Check the metadata returned by `safePath` with `isFile()` and report an error for non-file entries.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    }
+  ]
+}

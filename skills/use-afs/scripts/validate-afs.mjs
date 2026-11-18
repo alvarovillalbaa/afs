@@ -20,8 +20,9 @@ async function main() {
     }
   }
   for (const file of ["AGENTS.md", "REFERENCES.md", "SOURCES.md", "GAPS.md"]) {
-    await safePath(instructionRoot, path.join(instructionRoot, file))
-    if (!existsSync(path.join(instructionRoot, file))) errors.push(`${file} is required at the repository root.`)
+    const info = await safePath(instructionRoot, path.join(instructionRoot, file))
+    if (!info) errors.push(`${file} is required at the repository root.`)
+    else if (!info.isFile()) errors.push(`${file} must be a regular file at the repository root.`)
   }
   async function checkLessons(root, parts = []) {
     if (!existsSync(root)) return

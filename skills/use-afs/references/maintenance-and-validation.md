@@ -16,6 +16,8 @@ a generic docs catalog or application manifest alone is insufficient. Use
 `--mode=docs` or `--mode=root` with validation/migration after inspecting an
 otherwise ambiguous workspace. Generated application instructions prefix AFS
 folders with `docs/` while keeping root registries at the repository root.
+Migration records a detected docs profile before retiring the legacy documents
+used to detect it, so retries and validation keep checking the same shell.
 
 ## Validate
 
@@ -49,6 +51,8 @@ UTF-8 rather than replacing source bytes. Consolidated entries retain stable
 anchors, heading targets and retry markers; a partial or changed marked entry
 requires review before source retirement. Directory moves rebase inbound and
 internal Markdown links using their actual conflict-resolved destinations.
+Reference-style definitions are rebased alongside inline links, retaining titles
+and consolidated-entry anchors. Required root documents must be regular files.
 Run these tools with exclusive workspace ownership: path checks and moves do
 not provide isolation from concurrent writers.
 
