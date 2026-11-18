@@ -15,6 +15,11 @@ three cases involving reference-label collisions, reserved filename characters
 and explicit HTML targets. Peer reproduction/recheck and independent GitHub GFM
 rendering extend its latest focused run to 37 tests and eight rendered links.
 
+The subsequent [literal-aware rebasing correction](followup-3/README.md) removes
+the earlier regex pass that changed code examples and skipped parenthesized
+destinations. Both regressions failed before correction; all 39 focused tests
+now pass, with independent GitHub GFM rendering of the new cases.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.

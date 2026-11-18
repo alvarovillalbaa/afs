@@ -1,0 +1,87 @@
+{
+  "at": "2026-11-18T14:07:29.931711+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "official_reference": "https://docs.github.com/en/rest/markdown/markdown#render-a-markdown-document",
+  "source_script_sha256": "c8842298d5d9763f0c308afdae3f859342d4e7ffebb2f253d1d99562751c44f0",
+  "render_requests": 5,
+  "only_synthetic_content": true,
+  "passed": true,
+  "links": [
+    {
+      "caption": "Choice",
+      "before": [
+        "models/decisions/choice(v2).md",
+        "Title (v2)"
+      ],
+      "after": [
+        "decisions/choice%28v2%29.md",
+        "Title (v2)"
+      ],
+      "relocated_file_bytes_verified": true
+    },
+    {
+      "caption": "Escaped",
+      "before": [
+        "models/decisions/choice(v2).md",
+        null
+      ],
+      "after": [
+        "decisions/choice%28v2%29.md",
+        null
+      ],
+      "relocated_file_bytes_verified": true
+    },
+    {
+      "caption": "Ref",
+      "before": [
+        "models/decisions/choice(v2).md",
+        "Ref title"
+      ],
+      "after": [
+        "decisions/choice%28v2%29.md",
+        "Ref title"
+      ],
+      "relocated_file_bytes_verified": true
+    },
+    {
+      "caption": "Source A",
+      "before": [
+        "https://example.com/a",
+        "title [source]"
+      ],
+      "after": [
+        "https://example.com/a",
+        "title [source]"
+      ],
+      "matches_original": true
+    },
+    {
+      "caption": "Source B",
+      "before": [
+        "https://example.com/b",
+        "title [source]"
+      ],
+      "after": [
+        "https://example.com/b",
+        "title [source]"
+      ],
+      "matches_original": true
+    }
+  ],
+  "code_literals_equal": true,
+  "rendered_code_samples": [
+    "[B](b.md)",
+    "const sample = \"[B](b.md)\";",
+    "- [B](b.md)\n\n1. [B](b.md)\n"
+  ],
+  "html_sha256": {
+    "readme_before": "b20cf9f45c50e3829e2f3dffc522d95209fb45e4d06aa7065cb7069a5e308be9",
+    "readme_after": "9d1c244fe2f777b0cddfb086f4473080ab030888a79af28737e726c85c7b7223",
+    "a_before": "8edccc6ccde9ff16976f13ef66e9968e3cd296a9362db5cd37d8ffdcf0568e1a",
+    "b_before": "ec20da092962a26875c5a5cfbe41e55213246d86c959b74ce9386897fadcf30a",
+    "catalog_after": "2567ce1b17f4f33d9dc08785c12bc773d2d4b8dec3d5b15950bfa14f591afe51"
+  },
+  "issue_comment_or_repository_mutation": false,
+  "real_workspace_migration": false,
+  "fixture_removed": true
+}
