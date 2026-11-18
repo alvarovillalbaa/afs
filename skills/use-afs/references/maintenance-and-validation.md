@@ -69,6 +69,9 @@ Comments remain literal during link rebasing. Workspace skill documents and
 their templates are included in inbound navigation updates; only the installed
 AFS package's own template tree and generated dependencies are excluded.
 Heading anchors respect the opening fence's character, length and closing rules.
+Their slugs use displayed heading prose: character references are decoded while
+escaped punctuation and inline code retain their literal meaning, including
+duplicate-heading suffixes.
 Text transformations and retry-marker checks are prepared for the full plan
 before source retirement, including directory content and inbound documents.
 Text originals are retired after planned link rewrites pass readback. Fully

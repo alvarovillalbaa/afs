@@ -82,6 +82,18 @@ function rebase(text, source, destination, mappings) {
   return rewriteMarkdown(text, null, source, destination, mappings)
 }
 
+function codeSpanEnd(value, start) {
+  let length = 1
+  while (value[start + length] === "`") length++
+  const delimiter = "`".repeat(length)
+  let end = value.indexOf(delimiter, start + length)
+  while (end >= 0) {
+    if (value[end - 1] !== "`" && value[end + length] !== "`") return end + length
+    end = value.indexOf(delimiter, end + length)
+  }
+  return -1
+}
+
 function rewriteMarkdown(text, anchor, source, destination, mappings) {
   const normalize = (label) => label.replace(/^[ \t\r\n]+|[ \t\r\n]+$/g, "").replace(/[ \t\r\n]+/g, " ").toLowerCase().toUpperCase().toLowerCase()
   const labels = new Map()
@@ -141,17 +153,7 @@ function rewriteMarkdown(text, anchor, source, destination, mappings) {
   }
   const slash = String.fromCharCode(92)
   const tick = String.fromCharCode(96)
-  const codeEnd = (value, start) => {
-    let length = 1
-    while (value[start + length] === tick) length++
-    const delimiter = tick.repeat(length)
-    let end = value.indexOf(delimiter, start + length)
-    while (end >= 0) {
-      if (value[end - 1] !== tick && value[end + length] !== tick) return end + length
-      end = value.indexOf(delimiter, end + length)
-    }
-    return -1
-  }
+  const codeEnd = codeSpanEnd
   const angleEnd = (value, start, attributes = false) => {
     if (value.startsWith("<!--", start)) {
       const end = value.indexOf("-->", start + 4)
@@ -384,6 +386,32 @@ function namespaceHtmlAnchors(text, anchor) {
   return result + transform(pending)
 }
 
+function headingText(value) {
+  let prefix = `AFSHEADING${hash(value)}X`
+  while (value.includes(prefix)) prefix += "X"
+  const literals = []
+  const literal = (text) => `${prefix}${literals.push(text) - 1}END`
+  let protectedText = "", index = 0
+  while (index < value.length) {
+    if (value[index] === "\\" && /[!-\x2F:-@\[-\x60{-~]/.test(value[index + 1] ?? "")) {
+      protectedText += literal(value[index + 1]); index += 2; continue
+    }
+    if (value[index] === "`") {
+      const end = codeSpanEnd(value, index)
+      if (end >= 0) {
+        let length = 1
+        while (value[index + length] === "`") length++
+        let content = value.slice(index + length, end - length).replace(/[\r\n]/g, " ")
+        if (content.startsWith(" ") && content.endsWith(" ") && /[^ ]/.test(content)) content = content.slice(1, -1)
+        protectedText += literal(content); index = end; continue
+      }
+    }
+    protectedText += value[index++]
+  }
+  const prose = protectedText.replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/!?\[([^\]]+)\]\[[^\]]*\]/g, "$1").replace(/<[^>]*>/g, "")
+  return decodeUrlCharacters(prose).replace(new RegExp(`${prefix}(\\d+)END`, "g"), (_, index) => literals[Number(index)])
+}
+
 function headingAnchors(text, anchor) {
   const counts = new Map()
   let fence
@@ -398,7 +426,7 @@ function headingAnchors(text, anchor) {
     const heading = line.match(/^ {0,3}#{1,6}\s+(.+?)(?:\s+#+)?\s*$/) ??
       (line.trim() && /^ {0,3}(?:=+|-+)\s*$/.test(lines[index + 1] ?? "") ? [line, line.trim()] : null)
     if (!heading) return line
-    const slug = heading[1].toLowerCase().replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/!?\[([^\]]+)\]\[[^\]]*\]/g, "$1").replace(/<[^>]*>/g, "").replace(/[^\p{L}\p{N}_\-\s]/gu, "").replace(/\s/g, "-")
+    const slug = headingText(heading[1]).toLowerCase().replace(/[^\p{L}\p{N}_\-\s]/gu, "").replace(/\s/g, "-")
     const count = counts.get(slug) ?? 0
     counts.set(slug, count + 1)
     return `<a id="${anchor}-${slug}${count ? `-${count}` : ""}"></a>\n${line}`

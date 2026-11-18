@@ -802,3 +802,16 @@ test("entity-decoded URL whitespace preserves external destinations and resolves
   assert.ok(text.includes(external), text)
   assert.match(text, /\[Local\]\(REFERENCES.md#afs-migrated-[a-f0-9]+\)/)
 })
+
+test("heading entity anchors follow displayed prose while code and escapes stay literal", async () => {
+  const target = await fixture("afs-heading-entities-")
+  await mkdir(path.join(target, "references"))
+  await writeFile(path.join(target, "references", "a.md"), '# A &amp; B\n# A \\&amp; B\n# A `&amp;` B\n# Copy &copy; Right\n# N &#38; M\n')
+  const fragments = ["a--b", "a-amp-b", "a-amp-b-1", "copy--right", "n--m"]
+  await writeFile(path.join(target, "README.md"), fragments.map((fragment, index) => `[Heading ${index}](references/a.md#${fragment})`).join("\n") + "\n")
+  run("migrate", [target, "--registry=references/a.md"])
+  const links = [...(await readFile(path.join(target, "README.md"), "utf8")).matchAll(/\(REFERENCES.md#([^)]*)\)/g)]
+  assert.equal(links.length, fragments.length)
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  for (const link of links) assert.ok(text.includes(`<a id="${link[1]}"></a>`), text)
+})
