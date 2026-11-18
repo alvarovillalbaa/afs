@@ -52,10 +52,10 @@ function rebaseUrl(url, source, destination, mappings, markdown = true) {
     const mapped = mappings.get(oldTarget)
     if (!mapped && source === destination) return url
     const newTarget = mapped?.destination ?? oldTarget
-    const relative = path.relative(path.dirname(destination), newTarget).split(path.sep).join("/") || path.basename(destination)
+    const relative = path.relative(path.dirname(destination), newTarget).split(path.sep).join("/") || "."
     const anchor = mapped?.anchor ? `${mapped.anchor}${fragment ? `-${fragment}` : ""}` : fragment
     const encoded = relative.split("/").map((part) => encodeURIComponent(part).replace(/[!'()*]/g, (char) => `%${char.charCodeAt(0).toString(16).toUpperCase()}`)).join("/")
-    const result = `${encoded}${query}${anchor ? `#${anchor}` : ""}`
+    const result = `${encoded}${pathname.endsWith("/") ? "/" : ""}${query}${anchor ? `#${anchor}` : ""}`
     return angle ? `<${result}>` : result
 }
 
@@ -391,7 +391,7 @@ function headingAnchors(text, anchor) {
   const counts = new Map()
   let fence
   const lines = text.split("\n")
-  return lines.map((line, index) => {
+  const result = lines.map((line, index) => {
     const fenced = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
     if (fence) {
       if (fenced && fenced[1][0] === fence[0] && fenced[1].length >= fence.length && !fenced[2].trim()) fence = undefined
@@ -406,6 +406,7 @@ function headingAnchors(text, anchor) {
     counts.set(slug, count + 1)
     return `<a id="${anchor}-${slug}${count ? `-${count}` : ""}"></a>\n${line}`
   }).join("\n")
+  return fence ? `${result}${result.endsWith("\n") ? "" : "\n"}${fence}\n` : result
 }
 
 async function main() {
@@ -425,6 +426,7 @@ async function main() {
   const mappings = new Map()
   const jobs = []
   const directoryJobs = []
+  const directoryRoots = []
   const blockers = []
   const selectedRegistries = new Set(args.filter((arg) => arg.startsWith("--registry=")).map((arg) => path.resolve(instructionRoot, arg.slice(11))))
   const seenRegistries = new Set()
@@ -486,8 +488,11 @@ async function main() {
       const info = await safePath(instructionRoot, sourceRoot)
       if (!info) continue
       if (!info.isDirectory()) throw new Error(`Expected directory: ${sourceRoot}`)
-      await safePath(instructionRoot, destinationRoot)
-      for (const name of await readdir(sourceRoot)) {
+      const destinationInfo = await safePath(instructionRoot, destinationRoot)
+      if (destinationInfo && !destinationInfo.isDirectory()) throw new Error(`Expected directory: ${destinationRoot}`)
+      const names = await readdir(sourceRoot)
+      let admitted = 0
+      for (const name of names) {
         const source = path.join(sourceRoot, name)
         try {
           const info = await safePath(instructionRoot, source)
@@ -502,6 +507,7 @@ async function main() {
             markdown.push({ file, text: decode(bytes), sha256: hash(bytes) })
           }
           directoryJobs.push({ source, destination, markdown })
+          admitted++
           for (const file of [source, ...paths]) {
             let current = file
             while (current !== sourceRoot) {
@@ -511,6 +517,10 @@ async function main() {
             }
           }
         } catch (error) { blockers.push(`${source}: ${error.message}`) }
+      }
+      if (admitted === names.length) {
+        mappings.set(sourceRoot, { destination: destinationRoot })
+        directoryRoots.push(destinationRoot)
       }
     } catch (error) { blockers.push(error.message) }
   }
@@ -530,12 +540,42 @@ async function main() {
       mappings.delete(job.source)
     }
   }
+  // Render and validate the complete text plan before retiring any source.
+  const futureDestinations = new Map()
+  for (const job of admittedJobs) {
+    const origin = path.relative(instructionRoot, job.source)
+    const marker = `<!-- afs-migration:${hash(origin + "\0" + hash(job.bytes))} -->`
+    const anchor = mappings.get(job.source).anchor
+    const section = `\n\n${marker}\n<a id="${anchor}"></a>\n## Migrated context: ${origin}\n\nOriginal content retained for review. Current AFS routing supersedes any retired paths below.\n\n${headingAnchors(namespaceHtmlAnchors(rewriteMarkdown(job.text, anchor, job.source, job.destination, mappings), anchor), anchor)}\n<!-- /afs-migration -->\n`
+    const existing = futureDestinations.get(job.destination) ?? (await safePath(instructionRoot, job.destination) ? decode(await readFile(job.destination)) : `# ${path.basename(job.destination, ".md")}\n`)
+    if (existing.includes(`<a id="${anchor}"></a>`) && !existing.includes(marker)) throw new Error(`Changed migration source; preserve both versions for review: ${job.source}`)
+    if (existing.includes(marker) && !existing.includes(section)) throw new Error(`Partial or changed migration entry; source retained for review: ${job.destination}`)
+    job.section = section
+    job.destinationBeforeAppend = existing
+    futureDestinations.set(job.destination, existing.includes(section) ? existing : existing + section)
+  }
+  for (const job of directoryJobs) for (const item of job.markdown) item.updated = rebase(item.text, item.file, mappings.get(item.file).destination, mappings)
+  const retiredTextSources = new Set([...admittedJobs.map((job) => job.source), ...directoryJobs.flatMap((job) => job.markdown.map((item) => item.file))])
+  const preparedUpdates = []
+  for (const file of await files(instructionRoot, instructionRoot, true)) {
+    if (!file.endsWith(".md") || retiredTextSources.has(file) || futureDestinations.has(file)) continue
+    let original
+    try { original = decode(await readFile(file)) }
+    catch (error) { blockers.push(`${path.relative(instructionRoot, file)}: ${error.message}`); continue }
+    const updated = rebase(original, file, file, mappings)
+    if (updated !== original) preparedUpdates.push({ file, original, updated })
+  }
+  for (const [file, original] of futureDestinations) {
+    const updated = rebase(original, file, file, mappings)
+    if (updated !== original) preparedUpdates.push({ file, original, updated })
+  }
   for (const registry of ["REFERENCES.md", "SOURCES.md"]) {
     try {
       const destination = path.join(instructionRoot, registry)
       if (!await safePath(instructionRoot, destination)) await writeFile(destination, `# ${registry.slice(0, -3)}\n`, { flag: "wx" })
     } catch (error) { blockers.push(error.message) }
   }
+  for (const destination of directoryRoots) { await safePath(instructionRoot, destination); await mkdir(destination, { recursive: true }) }
   for (const job of admittedJobs) {
     await safePath(instructionRoot, job.source)
     await safePath(instructionRoot, job.destination)
@@ -543,20 +583,14 @@ async function main() {
     await mkdir(path.dirname(job.destination), { recursive: true })
     if (!await safePath(instructionRoot, job.destination)) await writeFile(job.destination, `# ${path.basename(job.destination, ".md")}\n`, { flag: "wx" })
     const origin = path.relative(instructionRoot, job.source)
-    const marker = `<!-- afs-migration:${hash(origin + "\0" + hash(job.bytes))} -->`
-    const anchor = mappings.get(job.source).anchor
-    const section = `\n\n${marker}\n<a id="${anchor}"></a>\n## Migrated context: ${origin}\n\nOriginal content retained for review. Current AFS routing supersedes any retired paths below.\n\n${headingAnchors(namespaceHtmlAnchors(rewriteMarkdown(job.text, anchor, job.source, job.destination, mappings), anchor), anchor)}\n<!-- /afs-migration -->\n`
+    const section = job.section
     const existing = decode(await readFile(job.destination))
-    if (existing.includes(`<a id="${anchor}"></a>`) && !existing.includes(marker)) throw new Error(`Changed migration source; preserve both versions for review: ${job.source}`)
-    if (existing.includes(marker) && !existing.includes(section)) throw new Error(`Partial or changed migration entry; source retained for review: ${job.destination}`)
+    if (existing !== job.destinationBeforeAppend) throw new Error(`Destination changed after transformation preflight: ${job.destination}`)
     if (!existing.includes(section)) {
       await safePath(instructionRoot, job.destination)
       await appendFile(job.destination, section)
       if (!(await readFile(job.destination, "utf8")).endsWith(section)) throw new Error("Migration append verification failed; source retained")
     }
-    await safePath(instructionRoot, job.source)
-    if (hash(await readFile(job.source)) !== hash(job.bytes)) throw new Error(`Source changed before retirement: ${job.source}`)
-    await unlink(job.source)
     console.log(`${origin} -> ${path.relative(instructionRoot, job.destination)}`)
   }
   for (const job of directoryJobs) {
@@ -573,18 +607,21 @@ async function main() {
     for (const item of job.markdown) {
       const destination = mappings.get(item.file).destination
       await safePath(instructionRoot, destination)
-      const updated = rebase(item.text, item.file, destination, mappings)
+      const updated = item.updated
       if (updated !== item.text) await writeFile(destination, updated)
     }
     console.log(`${path.relative(target, job.source)} -> ${path.relative(target, job.destination)}`)
   }
-  for (const file of await files(instructionRoot, instructionRoot, true)) {
-    if (!file.endsWith(".md")) continue
-    let original
-    try { original = decode(await readFile(file)) }
-    catch (error) { blockers.push(`${path.relative(instructionRoot, file)}: ${error.message}`); continue }
-    const updated = rebase(original, file, file, mappings)
-    if (updated !== original) { await safePath(instructionRoot, file); await writeFile(file, updated) }
+  for (const { file, original, updated } of preparedUpdates) {
+    await safePath(instructionRoot, file)
+    if (decode(await readFile(file)) !== original) throw new Error(`File changed after transformation preflight: ${file}`)
+    await writeFile(file, updated)
+    if (decode(await readFile(file)) !== updated) throw new Error(`Link rewrite verification failed; sources retained: ${file}`)
+  }
+  for (const job of admittedJobs) {
+    await safePath(instructionRoot, job.source)
+    if (hash(await readFile(job.source)) !== hash(job.bytes)) throw new Error(`Source changed before retirement: ${job.source}`)
+    await unlink(job.source)
   }
   async function removeEmpty(root) {
     if (!await safePath(instructionRoot, root)) return

@@ -685,3 +685,45 @@ test("unmatched backticks in separate blocks cannot suppress actual link rebasin
     assert.ok(text.includes("~~~md\nliteral\n~~~"), text)
   }
 })
+
+test("transformation failures retain all earlier sources so a corrected retry can rebase inbound links", async () => {
+  const target = await fixture("afs-transform-preflight-")
+  await mkdir(path.join(target, "references"))
+  const a = "# A\n"
+  const b = '<a href="../asset&copy;.md">B</a>\n'
+  await writeFile(path.join(target, "references", "a.md"), a)
+  await writeFile(path.join(target, "references", "b.md"), b)
+  await writeFile(path.join(target, "README.md"), "[A](references/a.md)\n")
+  const result = spawnSync(process.execPath, [script("migrate"), target, "--registry=references/a.md", "--registry=references/b.md"], { encoding: "utf8" })
+  assert.notEqual(result.status, 0)
+  assert.equal(await readFile(path.join(target, "references", "a.md"), "utf8"), a)
+  assert.equal(await readFile(path.join(target, "references", "b.md"), "utf8"), b)
+  await writeFile(path.join(target, "references", "b.md"), "# B corrected\n")
+  run("migrate", [target, "--registry=references/a.md", "--registry=references/b.md"])
+  assert.match(await readFile(path.join(target, "README.md"), "utf8"), /\[A\]\(REFERENCES.md#afs-migrated-[a-f0-9]+\)/)
+})
+
+test("relocated directory roots retain direct navigation and trailing slashes", async () => {
+  const target = await fixture("afs-directory-root-links-")
+  await mkdir(path.join(target, "models", "decisions"), { recursive: true })
+  await writeFile(path.join(target, "models", "decisions", "README.md"), "# Decisions\n[Here](./)\n[Plain](.)\n")
+  await writeFile(path.join(target, "README.md"), "[Decisions](models/decisions/)\n[Plain](models/decisions)\n")
+  run("migrate", [target])
+  assert.equal(await readFile(path.join(target, "README.md"), "utf8"), "[Decisions](decisions/)\n[Plain](decisions)\n")
+  assert.ok(existsSync(path.join(target, "decisions", "README.md")))
+  assert.equal(await readFile(path.join(target, "decisions", "README.md"), "utf8"), "# Decisions\n[Here](./)\n[Plain](.)\n")
+})
+
+test("EOF-terminated code fences are closed before the next consolidated entry", async () => {
+  for (const char of ["~", "`"]) {
+    const target = await fixture("afs-eof-fence-")
+    await mkdir(path.join(target, "references"))
+    const original = `${char.repeat(4)}text\n${char.repeat(3)}\n# Literal heading`
+    await writeFile(path.join(target, "references", "a.md"), original)
+    await writeFile(path.join(target, "references", "b.md"), "# B\n[B source](https://example.com/b)\n")
+    run("migrate", [target, "--registry=references/a.md", "--registry=references/b.md"])
+    const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+    assert.ok(text.includes(`${original}\n${char.repeat(4)}\n\n<!-- /afs-migration -->`), text)
+    assert.match(text, /<a id="afs-migrated-[a-f0-9]+-b"><\/a>\n# B/)
+  }
+})

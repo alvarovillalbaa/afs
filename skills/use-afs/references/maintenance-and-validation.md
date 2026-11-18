@@ -65,6 +65,13 @@ relocation mappings. Rewritten attributes are quoted; basic/numeric character
 references are decoded once and re-escaped. Other named entities require owner
 review and retain the source. Comments remain literal during link rebasing.
 Heading anchors respect the opening fence's character, length and closing rules.
+Text transformations and retry-marker checks are prepared for the full plan
+before source retirement, including directory content and inbound documents.
+Text originals are retired after planned link rewrites pass readback. Fully
+admitted directory roots retain direct navigation, including `.` and `./` links.
+An EOF-terminated code fence is closed at the consolidated entry boundary so
+later entries retain their rendered meaning. This is not an atomic filesystem
+transaction; I/O failures and concurrent writers still require owner review.
 Run these tools with exclusive workspace ownership: path checks and moves do
 not provide isolation from concurrent writers.
 
