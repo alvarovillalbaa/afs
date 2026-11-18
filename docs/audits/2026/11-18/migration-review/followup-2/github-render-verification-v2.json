@@ -1,0 +1,96 @@
+{
+  "at": "2026-11-18T13:47:14.806831+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "official_reference": "https://docs.github.com/en/rest/markdown/markdown#render-a-markdown-document",
+  "only_synthetic_content": true,
+  "issue_comment_or_repository_mutation": false,
+  "browser_click_or_visual_acceptance": false,
+  "dependencies_installed": false,
+  "original_A_html_sha256": "dc8da742d52bc02da1856f17e9883ae7d5d0e4571153e3dec0c69132a07f25f4",
+  "original_B_html_sha256": "33739208cca0721630b8022d2fd96c181249db31394b9b14bab0f0620065c08e",
+  "passed": true,
+  "source_script_sha256": "24dbc99be7c14660a924768fb6c1c5b61973b9ba12ad0771a5f1d3b36a30c87d",
+  "render_requests": 3,
+  "migrated_html_sha256": "22faae9783d14e23de70e90733c613b95961715a12847327ff9e7227b94e761b",
+  "links_compared": [
+    {
+      "caption": "Source A",
+      "original_href": "https://example.com/a",
+      "migrated_href": "https://example.com/a",
+      "resolved_resource": "https://example.com/a",
+      "title": "title [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Inline A",
+      "original_href": "https://example.com/path/%5Bsource%5D",
+      "migrated_href": "https://example.com/path/%5Bsource%5D",
+      "resolved_resource": "https://example.com/path/%5Bsource%5D",
+      "title": "inline [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Quoted A",
+      "original_href": "https://example.com/quote-a",
+      "migrated_href": "https://example.com/quote-a",
+      "resolved_resource": "https://example.com/quote-a",
+      "title": null,
+      "matches_original_render": true
+    },
+    {
+      "caption": "Local A",
+      "original_href": "../asset-a%23.md?raw=1",
+      "migrated_href": "asset-a%23.md?raw=1",
+      "resolved_resource": "https://fixture.example/work/asset-a%23.md?raw=1",
+      "title": null,
+      "matches_original_render": true
+    },
+    {
+      "caption": "Source B",
+      "original_href": "https://example.com/b",
+      "migrated_href": "https://example.com/b",
+      "resolved_resource": "https://example.com/b",
+      "title": "title [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Inline B",
+      "original_href": "https://example.com/path/%5Bsource%5D",
+      "migrated_href": "https://example.com/path/%5Bsource%5D",
+      "resolved_resource": "https://example.com/path/%5Bsource%5D",
+      "title": "inline [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Quoted B",
+      "original_href": "https://example.com/quote-b",
+      "migrated_href": "https://example.com/quote-b",
+      "resolved_resource": "https://example.com/quote-b",
+      "title": null,
+      "matches_original_render": true
+    },
+    {
+      "caption": "Local B",
+      "original_href": "../asset-b%23.md?raw=1",
+      "migrated_href": "asset-b%23.md?raw=1",
+      "resolved_resource": "https://fixture.example/work/asset-b%23.md?raw=1",
+      "title": null,
+      "matches_original_render": true
+    }
+  ],
+  "explicit_anchor_inventory": [
+    {
+      "caption": "Anchor A",
+      "href": "REFERENCES.md#afs-migrated-bb0a16791429875f0613-custom",
+      "observed_html_id": "user-content-afs-migrated-bb0a16791429875f0613-custom"
+    },
+    {
+      "caption": "Anchor B",
+      "href": "REFERENCES.md#afs-migrated-860314f84e090a7acd0d-custom",
+      "observed_html_id": "user-content-afs-migrated-860314f84e090a7acd0d-custom"
+    }
+  ],
+  "literal_text_and_both_footnotes_preserved": true,
+  "synthetic_sources_retired": true,
+  "synthetic_fixture_removed": true
+}

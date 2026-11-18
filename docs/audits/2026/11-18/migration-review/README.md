@@ -10,6 +10,11 @@ reference definitions, persistence of legacy docs detection and mandatory
 document types. Its latest verification passes 27 focused tests; the original
 24-test run below remains preserved as historical evidence.
 
+The next [consolidated-navigation review](followup-2/README.md) addresses another
+three cases involving reference-label collisions, reserved filename characters
+and explicit HTML targets. Peer reproduction/recheck and independent GitHub GFM
+rendering extend its latest focused run to 37 tests and eight rendered links.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.
