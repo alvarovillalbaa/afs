@@ -49,6 +49,11 @@ suffixes from colliding with literal numbered headings. Its six-heading
 regression checks every incoming target and unique generated ID; all 54 focused
 tests pass.
 
+The [linked-image correction](followup-10/README.md) rebases inline images inside
+link labels across consolidated, moved and incoming documents. All 55 focused
+tests pass; peer checks cover six cases and GitHub GFM rendering confirms equal
+resolved resource identity for two actual image elements.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.

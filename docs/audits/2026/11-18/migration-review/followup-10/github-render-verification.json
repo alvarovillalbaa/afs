@@ -1,0 +1,20 @@
+{
+  "at": "2026-11-18T16:07:08.368776+00:00",
+  "migrator_sha256": "d8ca8a956e4a83255eb995a6031b3ed4749969327b1bfebad52533d40f13dc18",
+  "mode": "GitHub GFM markdown API",
+  "requests": 2,
+  "original_image_sources": [
+    "../assets/logo.svg",
+    "../assets/logo(v2).svg"
+  ],
+  "migrated_image_sources": [
+    "assets/logo.svg",
+    "assets/logo%28v2%29.svg"
+  ],
+  "resolved_resource_identity_equal": true,
+  "outer_links_preserved": true,
+  "code_literal_preserved": true,
+  "actual_rendered_images": 2,
+  "synthetic_fixture_removed": true,
+  "browser_or_resource_download_acceptance": false
+}

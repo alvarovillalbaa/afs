@@ -1,0 +1,10 @@
+{
+  "source_head": "ac3e0b87100b76f07fc623326838d90af02537c9",
+  "command": "node --test --test-name-pattern='linked inline images' tests/afs-contract.test.mjs",
+  "exit_code": 1,
+  "passed": 0,
+  "failed": 1,
+  "output_chunk": "0f458c",
+  "reason": "A linked image retains ../assets/logo.svg after its registry is consolidated into the root",
+  "synthetic_fixture_removed": true
+}

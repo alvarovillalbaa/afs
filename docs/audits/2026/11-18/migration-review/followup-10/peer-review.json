@@ -1,0 +1,15 @@
+{
+  "migrator_sha256": "d8ca8a956e4a83255eb995a6031b3ed4749969327b1bfebad52533d40f13dc18",
+  "review": "independent read-only linked-image delta review",
+  "linked_image_cases_passed": 6,
+  "confirmed_new_findings": 0,
+  "contexts": ["consolidated", "moved", "inbound"],
+  "outer_links": ["inline", "reference"],
+  "conflict_resolved_svg_mapping_verified": true,
+  "url_entities_query_angles_parentheses_and_titles_verified": true,
+  "literal_alt_code_and_examples_preserved": true,
+  "migration_and_retry_exit_codes": 0,
+  "retry_output_byte_identical": true,
+  "fixtures_removed": true,
+  "repository_mutated_by_reviewer": false
+}
