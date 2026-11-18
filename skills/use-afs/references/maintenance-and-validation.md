@@ -60,6 +60,11 @@ migration; these checks do not replace content-specific review.
 Link rebasing shares the literal-aware reference traversal: inline, fenced and
 indented code examples remain unchanged in the exercised cases. Actual inline
 destinations support balanced or escaped parentheses, preserving their titles.
+Relative HTML `href`, `src`, `poster` and `xlink:href` attributes use the same
+relocation mappings. Rewritten attributes are quoted; basic/numeric character
+references are decoded once and re-escaped. Other named entities require owner
+review and retain the source. Comments remain literal during link rebasing.
+Heading anchors respect the opening fence's character, length and closing rules.
 Run these tools with exclusive workspace ownership: path checks and moves do
 not provide isolation from concurrent writers.
 

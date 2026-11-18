@@ -35,9 +35,10 @@ async function files(root, instructionRoot, scan = false, blockers = []) {
   return result
 }
 
-function rebaseUrl(url, source, destination, mappings) {
-    const angle = url.startsWith("<")
-    const value = (angle ? url.slice(1, -1) : url).replace(/\\([!-\x2F:-@\[-\x60{-~])/g, "$1")
+function rebaseUrl(url, source, destination, mappings, markdown = true) {
+    const angle = markdown && url.startsWith("<")
+    const raw = angle ? url.slice(1, -1) : url
+    const value = markdown ? raw.replace(/\\([!-\x2F:-@\[-\x60{-~])/g, "$1") : raw
     if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(value)) return url
     const separator = value.indexOf("#")
     const pathAndQuery = separator < 0 ? value : value.slice(0, separator)
@@ -58,6 +59,28 @@ function rebaseUrl(url, source, destination, mappings) {
     return angle ? `<${result}>` : result
 }
 
+function rebaseHtmlTag(tag, source, destination, mappings) {
+  if (!/^<[a-z][\w:-]*(?:\s|\/?>)/i.test(tag)) return tag
+  return tag.replace(/(\s)([^\s"'<>/=]+)(\s*=\s*)(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g, (attribute, space, key, equal, double, single, bare) => {
+    if (!["href", "src", "poster", "xlink:href"].includes(key.toLowerCase())) return attribute
+    const original = double ?? single ?? bare
+    if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(original)) return attribute
+    const entities = { amp: "&", AMP: "&", quot: '"', QUOT: '"', apos: "'", lt: "<", LT: "<", gt: ">", GT: ">" }
+    const value = original.replace(/&(#(?:[xX][0-9a-fA-F]+|\d+)|[a-zA-Z][a-zA-Z0-9]+);/g, (entity, name) => {
+      if (Object.hasOwn(entities, name)) return entities[name]
+      if (name[0] !== "#") throw new Error("HTML URL entity requires content review; source retained")
+      const point = name[1].toLowerCase() === "x" ? parseInt(name.slice(2), 16) : Number(name.slice(1))
+      if (!(point > 0 && point <= 0x10ffff && !(point >= 0xd800 && point <= 0xdfff))) throw new Error("Invalid HTML URL character reference; source retained")
+      return String.fromCodePoint(point)
+    })
+    const updated = rebaseUrl(value, source, destination, mappings, false)
+    if (updated === value) return attribute
+    const quote = single !== undefined ? "'" : '"'
+    const escaped = updated.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/'/g, "&#39;")
+    return `${space}${key}${equal}${quote}${escaped}${quote}`
+  })
+}
+
 function rebase(text, source, destination, mappings) {
   return rewriteMarkdown(text, null, source, destination, mappings)
 }
@@ -68,18 +91,37 @@ function rewriteMarkdown(text, anchor, source, destination, mappings) {
   const definition = /^((?:(?:[ \t]*>[ \t]?)|(?:[ \t]*(?:[-+*]|\d{1,9}[.)])[ \t]+))*[ \t]*)\[((?:\\.|[^\]\\\n])+)\](:)/
   const outsideCode = (value, transform, literal = (line) => line) => {
     let fence, footnote = false, afterBlank = true
+    let offset = 0, commentEnd = 0, inlineEnd = 0
     const lists = []
+    const block = (line) => { inlineEnd = 0; return literal(line) }
     return value.split("\n").map((line) => {
+      const start = offset
+      offset += line.length + 1
+      const trackLiterals = () => {
+        for (let index = Math.max(start, commentEnd, inlineEnd); index < start + line.length; index++) {
+          if (value[index] === slash) { index++; continue }
+          if (value[index] === tick) {
+            const end = codeEnd(value, index)
+            if (end >= 0) { inlineEnd = end; index = end - 1; continue }
+          }
+          if (value.startsWith("<!--", index)) {
+            const end = value.indexOf("-->", index + 4)
+            commentEnd = end < 0 ? value.length : end + 3
+            index = commentEnd - 1
+          }
+        }
+      }
+      if (start < commentEnd) { trackLiterals(); return transform(line) }
       const content = line.replace(/^(?: {0,3}>[ \t]?)+/, "")
       const spaces = content.match(/^[ \t]*/)[0].replace(/\t/g, "    ").length
       if (fence) {
         const marker = content.slice(Math.min(spaces, fence.base)).match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
         if (marker && marker[1][0] === fence.marker[0] && marker[1].length >= fence.marker.length && !marker[2].trim()) { fence = undefined; afterBlank = true }
-        return literal(line)
+        return block(line)
       }
-      if (!content.trim()) { afterBlank = true; return literal(line) }
+      if (!content.trim()) { afterBlank = true; return block(line) }
       const containerIndent = lists.at(-1) ?? (footnote ? 4 : 0)
-      if (afterBlank && spaces >= containerIndent + 4) return literal(line)
+      if (afterBlank && spaces >= containerIndent + 4) return block(line)
       const list = content.match(/^([ \t]*)(?:[-+*]|\d{1,9}[.)])([ \t]+)(.*)$/)
       if (list) {
         while (lists.length && lists.at(-1) > spaces) lists.pop()
@@ -92,10 +134,11 @@ function rewriteMarkdown(text, anchor, source, destination, mappings) {
       const base = lists.at(-1) ?? (footnote ? 4 : 0)
       const logical = list ? list[3] : content.slice(Math.min(spaces, base))
       const marker = logical.match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
-      if (marker) { fence = { marker: marker[1], base }; return literal(line) }
-      if (afterBlank && spaces >= base + 4) return literal(line)
+      if (marker) { fence = { marker: marker[1], base }; return block(line) }
+      if (afterBlank && spaces >= base + 4) return block(line)
       if (isFootnote) footnote = true
       afterBlank = false
+      trackLiterals()
       return transform(line)
     }).join("\n")
   }
@@ -113,6 +156,10 @@ function rewriteMarkdown(text, anchor, source, destination, mappings) {
     return -1
   }
   const angleEnd = (value, start, attributes = false) => {
+    if (value.startsWith("<!--", start)) {
+      const end = value.indexOf("-->", start + 4)
+      return end < 0 ? value.length - 1 : end + 2
+    }
     let quote
     for (let index = start + 1; index < value.length; index++) {
       const char = value[index]
@@ -169,7 +216,7 @@ function rewriteMarkdown(text, anchor, source, destination, mappings) {
       }
       if (char === "<") {
         const end = angleEnd(value, index, /^<\/?[a-z][\w:-]*(?:\s|\/?>)/i.test(value.slice(index)))
-        if (end >= 0) { result += value.slice(index, end + 1); index = end + 1; continue }
+        if (end >= 0) { result += rebaseHtmlTag(value.slice(index, end + 1), source, destination, mappings); index = end + 1; continue }
       }
       const atWordStart = index === 0 || !/[a-z0-9+.-]/i.test(value[index - 1])
       const url = atWordStart && /[a-z]/i.test(char) ? value.slice(index).match(/^(?:[a-z][a-z0-9+.-]*:\/\/|mailto:)[^\s<>]+/i) : null
@@ -277,7 +324,7 @@ function rewriteMarkdown(text, anchor, source, destination, mappings) {
       }
       if (char === "<") {
         const end = angleEnd(value, index, /^<\/?[a-z][\w:-]*(?:\s|\/?>)/i.test(value.slice(index)))
-        if (end >= 0) { result += literal(value.slice(index, end + 1)); index = end + 1; continue }
+        if (end >= 0) { result += literal(rebaseHtmlTag(value.slice(index, end + 1), source, destination, mappings)); index = end + 1; continue }
       }
       const atWordStart = index === 0 || !/[a-z0-9+.-]/i.test(value[index - 1])
       const url = atWordStart && /[a-z]/i.test(char) ? value.slice(index).match(/^(?:[a-z][a-z0-9+.-]*:\/\/|mailto:)[^\s<>]+/i) : null
@@ -342,12 +389,15 @@ function namespaceHtmlAnchors(text, anchor) {
 
 function headingAnchors(text, anchor) {
   const counts = new Map()
-  let fence = ""
+  let fence
   const lines = text.split("\n")
   return lines.map((line, index) => {
-    const fenced = line.match(/^\s*(`{3,}|~{3,})/)
-    if (fenced) { fence = fence === fenced[1][0] ? "" : fence || fenced[1][0]; return line }
-    if (fence) return line
+    const fenced = line.match(/^ {0,3}(`{3,}|~{3,})(.*)$/)
+    if (fence) {
+      if (fenced && fenced[1][0] === fence[0] && fenced[1].length >= fence.length && !fenced[2].trim()) fence = undefined
+      return line
+    }
+    if (fenced && !(fenced[1][0] === "`" && fenced[2].includes("`"))) { fence = fenced[1]; return line }
     const heading = line.match(/^ {0,3}#{1,6}\s+(.+?)(?:\s+#+)?\s*$/) ??
       (line.trim() && /^ {0,3}(?:=+|-+)\s*$/.test(lines[index + 1] ?? "") ? [line, line.trim()] : null)
     if (!heading) return line
