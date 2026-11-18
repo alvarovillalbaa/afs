@@ -1,0 +1,8 @@
+{
+  "at": "2026-11-18T15:02:15.007201+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "only_synthetic_content": true,
+  "input": "[Decimal](a&#128;b.md)\n[Hex](a&#x80;b.md)\n",
+  "HTML": "<p><a href=\"a%C2%80b.md\">Decimal</a><br>\n<a href=\"a%C2%80b.md\">Hex</a></p>",
+  "issue_comment_or_repository_mutation": false
+}

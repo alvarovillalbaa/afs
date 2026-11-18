@@ -29,6 +29,11 @@ The subsequent [transformation preflight and entry-boundary review](followup-5/R
 prepares the full text plan before retirement, retains directory-root navigation
 and closes EOF-terminated fences between entries. All 46 focused tests pass.
 
+The next [workspace-skill and character-reference correction](followup-6/README.md)
+includes authored skill navigation and complete HTML entity data, distinguishes
+Markdown escaping from HTML attributes and preserves URL classification after
+decoded whitespace. Its final focused run passes 50 tests.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.

@@ -1,0 +1,38 @@
+{
+  "at": "2026-11-18T15:03:46.258810+00:00",
+  "source_sha256": {
+    "skills/use-afs/scripts/migrate-afs.mjs": "dc3f5144be836e25e38b9a6911a76758f66daf7bfd385c918ebcc2e15f391dbd",
+    "skills/use-afs/scripts/character-references.mjs": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58",
+    "skills/use-afs/references/html-named-character-references.json": "ef03c4476114ddb0ac18b4fc626e881e828022b1e4b94b3fb0717810663f83dc"
+  },
+  "preceding_five_lens_review": "../followup-2/peer-review.json",
+  "bounded_rechecks": [
+    {
+      "agent": "afs_bug_review",
+      "finding": "Entity-decoded ASCII whitespace made external URL appear local",
+      "negative_evidence": "peer-baseline.json",
+      "fixed_and_rechecked": true,
+      "verified_migrator_sha256": "dc3f5144be836e25e38b9a6911a76758f66daf7bfd385c918ebcc2e15f391dbd",
+      "other_verified_boundaries": [
+        "Authored workspace skills and their templates included",
+        "Installed AFS templates unchanged",
+        "Named/escaped/numeric references traversed",
+        "External URL and local tab-entity case preserve destinations"
+      ],
+      "decoder_at_boundary_recheck": "5a6f0e9d9d84e7d92d8d5b55b52051405b7711dcf6426bc20fd221c4013c8611",
+      "later_decoder_delta": "Entity decoding before URL punctuation cleanup; exact current delta verified by second peer and current GFM oracle",
+      "fixtures_removed": true
+    },
+    {
+      "agent": "afs_prior_comments",
+      "verified_source_sha256": {
+        "skills/use-afs/scripts/migrate-afs.mjs": "dc3f5144be836e25e38b9a6911a76758f66daf7bfd385c918ebcc2e15f391dbd",
+        "skills/use-afs/scripts/character-references.mjs": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58",
+        "skills/use-afs/references/html-named-character-references.json": "ef03c4476114ddb0ac18b4fc626e881e828022b1e4b94b3fb0717810663f83dc"
+      },
+      "result": "No blocker: cmark URL order, explicit encoded filenames, query identity, one-pass references and byte-identical retry",
+      "fixtures_removed": true
+    }
+  ],
+  "dependencies_or_external_mutations": false
+}

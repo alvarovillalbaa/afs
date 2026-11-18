@@ -1,0 +1,22 @@
+{
+  "at": "2026-11-18T14:59:52.710810+00:00",
+  "type": "independent GFM oracle contradicted initial URL escape ordering assumption",
+  "failed_fixture_cleanup": true,
+  "exec_session": 94483,
+  "failure_output_chunk": "41264a",
+  "source_binding_before_correction": {
+    "migration": "dc3f5144be836e25e38b9a6911a76758f66daf7bfd385c918ebcc2e15f391dbd",
+    "decoder": "5a6f0e9d9d84e7d92d8d5b55b52051405b7711dcf6426bc20fd221c4013c8611"
+  },
+  "minimal_probe_exec_chunk": "426551",
+  "observations": {
+    "a_backslash_amp_b": "Rendered destination a&b.md, same as unescaped amp entity",
+    "backslash_copy_query": "Rendered query name=%5C%C2%A9",
+    "amp_copy_query": "Rendered literal query name=&copy;",
+    "angled_Tab_external": "GitHub sanitizer rendered caption without a hyperlink"
+  },
+  "primary_implementation": "https://github.com/github/cmark-gfm/blob/master/src/inlines.c",
+  "corrected_pipeline": "Decode character references once, then unescape URL punctuation, then classify and serialize",
+  "earlier_unit_expectations_corrected_to_actual_URL_behavior": true,
+  "prior_50_test_run_was_not_independent_acceptance": true
+}

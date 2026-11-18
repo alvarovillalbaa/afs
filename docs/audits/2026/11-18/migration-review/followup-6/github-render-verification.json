@@ -1,0 +1,70 @@
+{
+  "at": "2026-11-18T15:00:50.665130+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "source_sha256": {
+    "skills/use-afs/scripts/migrate-afs.mjs": "dc3f5144be836e25e38b9a6911a76758f66daf7bfd385c918ebcc2e15f391dbd",
+    "skills/use-afs/scripts/character-references.mjs": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58",
+    "skills/use-afs/references/html-named-character-references.json": "ef03c4476114ddb0ac18b4fc626e881e828022b1e4b94b3fb0717810663f83dc"
+  },
+  "render_requests": 4,
+  "only_synthetic_content": true,
+  "passed": true,
+  "links_compared": [
+    {
+      "caption": "Target",
+      "original_resource": "a&b.md",
+      "migrated_href": "REFERENCES.md#afs-migrated-0616ef6fd6a1f5cdcfd3",
+      "observed_target": true
+    },
+    {
+      "caption": "Numeric",
+      "original_resource": "a&b.md",
+      "migrated_href": "REFERENCES.md#afs-migrated-0616ef6fd6a1f5cdcfd3",
+      "observed_target": true
+    },
+    {
+      "caption": "Named",
+      "original_resource": "a\u00a9b.md",
+      "migrated_href": "REFERENCES.md#afs-migrated-14c56e5b55a8b4d12c55",
+      "observed_target": true
+    },
+    {
+      "caption": "Escaped",
+      "original_resource": "a&b.md",
+      "migrated_href": "REFERENCES.md#afs-migrated-0616ef6fd6a1f5cdcfd3",
+      "observed_target": true
+    },
+    {
+      "caption": "Encoded",
+      "original_resource": "a&amp;b.md",
+      "migrated_href": "REFERENCES.md#afs-migrated-26d176e92dd35d481823",
+      "observed_target": true
+    },
+    {
+      "caption": "Reference",
+      "original_resource": "a&b.md",
+      "migrated_href": "REFERENCES.md#afs-migrated-0616ef6fd6a1f5cdcfd3",
+      "observed_target": true
+    },
+    {
+      "caption": "HTML named",
+      "original_resource": "a\u00a9b.md",
+      "migrated_href": "REFERENCES.md#afs-migrated-14c56e5b55a8b4d12c55",
+      "observed_target": true
+    }
+  ],
+  "query_preserved": "name=\\\u00a9",
+  "external_render_inventory_unchanged": true,
+  "angled_Tab_external_sanitized_to_caption_in_both": true,
+  "workspace_skill_href": "../../REFERENCES.md#afs-migrated-0616ef6fd6a1f5cdcfd3",
+  "code_samples_equal": true,
+  "html_sha256": {
+    "a_before": "3e7ac3f15e8c2c3a02a8b013b6dd37d1495027444ca9ed0b29629d34767f32ee",
+    "catalog_after": "4ba0cad1578104fe2b64deaa49db985e942e046b72585dc33cb66b3f8ac6b26c",
+    "skill_before": "5bb99ed7f05c18afe16d73b30050cf8df5ccbc4fce2f14f4564b737066f59688",
+    "skill_after": "3dbb2d0abfff2fddc1eeefaa5dd18432c20a3df9a7fd4bc6c13fd0211c8cb1d8"
+  },
+  "real_workspace_migration": false,
+  "issue_comment_or_repository_mutation": false,
+  "fixture_removed": true
+}

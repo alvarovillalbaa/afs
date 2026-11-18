@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-18T15:04:18.988570+00:00",
+  "implementation_commit": "14033721a5942130ab4ef5939b20a89a85f770fb",
+  "source_sha256": {
+    "skills/use-afs/scripts/migrate-afs.mjs": "dc3f5144be836e25e38b9a6911a76758f66daf7bfd385c918ebcc2e15f391dbd",
+    "skills/use-afs/scripts/character-references.mjs": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58",
+    "skills/use-afs/references/html-named-character-references.json": "ef03c4476114ddb0ac18b4fc626e881e828022b1e4b94b3fb0717810663f83dc",
+    "tests/afs-contract.test.mjs": "ebf70854ebd69853106465374416058dfbfcaf5787df8433a7ddb27a2ddb5212"
+  },
+  "verified_unit_tests": 50,
+  "negative_baselines_and_failed_oracle_preserved": true,
+  "evidence_commit_follows_source_commit": true
+}
