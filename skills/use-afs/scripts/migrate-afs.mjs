@@ -456,6 +456,7 @@ function headingText(value) {
 
 function headingAnchors(text, anchor) {
   const counts = new Map()
+  const allocated = new Set()
   let fence
   const lines = text.split("\n")
   const result = lines.map((line, index) => {
@@ -469,9 +470,12 @@ function headingAnchors(text, anchor) {
       (line.trim() && /^ {0,3}(?:=+|-+)\s*$/.test(lines[index + 1] ?? "") ? [line, line.trim()] : null)
     if (!heading) return line
     const slug = headingText(heading[1]).toLowerCase().replace(/[^\p{L}\p{N}_\-\s]/gu, "").replace(/\s/g, "-")
-    const count = counts.get(slug) ?? 0
-    counts.set(slug, count + 1)
-    return `<a id="${anchor}-${slug}${count ? `-${count}` : ""}"></a>\n${line}`
+    let count = counts.get(slug) ?? 0
+    let id = `${slug}${count ? `-${count}` : ""}`
+    while (allocated.has(id)) { count++; id = `${slug}-${count}` }
+    counts.set(slug, count)
+    allocated.add(id)
+    return `<a id="${anchor}-${id}"></a>\n${line}`
   }).join("\n")
   return fence ? `${result}${result.endsWith("\n") ? "" : "\n"}${fence}\n` : result
 }

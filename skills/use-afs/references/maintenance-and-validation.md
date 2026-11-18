@@ -80,6 +80,8 @@ escaped punctuation and inline code retain their literal meaning, including
 duplicate-heading suffixes. Matched asterisk and underscore emphasis delimiters
 are removed before slugging; unmatched, intraword, escaped, code and
 entity-produced underscores remain literal.
+Suffix allocation checks every heading ID already generated for the entry, so
+literal numbered headings cannot collide with suffixes assigned to duplicates.
 Text transformations and retry-marker checks are prepared for the full plan
 before source retirement, including directory content and inbound documents.
 Text originals are retired after planned link rewrites pass readback. Fully

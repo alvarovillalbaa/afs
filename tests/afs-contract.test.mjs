@@ -872,3 +872,19 @@ test("retained captures and unselected registry files remain byte-identical duri
     assert.match(await readFile(path.join(workspace, "SOURCES.md"), "utf8"), /\[Evidence\]\(REFERENCES.md#afs-migrated-/)
   }
 })
+
+test("heading suffixes avoid IDs already allocated to other heading slugs", async () => {
+  const target = await fixture("afs-heading-collision-")
+  await mkdir(path.join(target, "references"))
+  const headings = ["A", "A", "A-1", "A", "A-1", "A-1-1"]
+  const fragments = ["a", "a-1", "a-1-1", "a-2", "a-1-2", "a-1-1-1"]
+  await writeFile(path.join(target, "references", "a.md"), headings.map((heading) => `# ${heading}`).join("\n") + "\n")
+  await writeFile(path.join(target, "README.md"), fragments.map((slug, index) => `[${index}](references/a.md#${slug})`).join("\n") + "\n")
+  run("migrate", [target, "--registry=references/a.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const links = [...(await readFile(path.join(target, "README.md"), "utf8")).matchAll(/\(REFERENCES.md#([^)]*)\)/g)]
+  const anchors = [...text.matchAll(/<a id="(afs-migrated-[^"]+)"><\/a>/g)].map((match) => match[1])
+  assert.equal(new Set(anchors).size, anchors.length, "Every explicit migration ID is unique")
+  assert.equal(links.length, fragments.length)
+  for (const link of links) assert.ok(anchors.includes(link[1]), link[1])
+})
