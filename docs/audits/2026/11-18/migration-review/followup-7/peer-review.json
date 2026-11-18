@@ -1,0 +1,24 @@
+{
+  "at": "2026-11-18T15:23:33.615894+00:00",
+  "source_sha256": {
+    "skills/use-afs/scripts/migrate-afs.mjs": "f3dc038364ffaf88a19713343922708089567b1c16b867a09bd8251dc261f5c3",
+    "skills/use-afs/scripts/character-references.mjs": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58"
+  },
+  "preceding_five_lens_review": "../followup-2/peer-review.json",
+  "bounded_rechecks": [
+    {
+      "agent": "afs_bug_review",
+      "result": "Five heading targets resolve; escaped/code literals, duplicate suffixes and one/two-backtick spans preserved; adjacent actual link rebases",
+      "verified_migrator_sha256": "f3dc038364ffaf88a19713343922708089567b1c16b867a09bd8251dc261f5c3",
+      "fixture_removed": true
+    },
+    {
+      "agent": "afs_prior_comments",
+      "result": "Ten heading cases, reference-link headings, nested code spans and byte-identical retry pass",
+      "verified_migrator_sha256": "f3dc038364ffaf88a19713343922708089567b1c16b867a09bd8251dc261f5c3",
+      "decoder_sha256": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58",
+      "fixture_removed": true
+    }
+  ],
+  "dependencies_or_external_mutations": false
+}

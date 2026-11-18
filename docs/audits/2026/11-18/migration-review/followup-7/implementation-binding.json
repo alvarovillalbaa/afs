@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-18T15:23:52.019706+00:00",
+  "implementation_commit": "1e024fde2cac3d57050b284959957412ac474722",
+  "migrator_sha256": "f3dc038364ffaf88a19713343922708089567b1c16b867a09bd8251dc261f5c3",
+  "tests_sha256": "6e08a3b26e3834be900c40e7ec1e7441308e66495e93de17208a27759c61bda1",
+  "verified_unit_tests": 51,
+  "failed_baselines_and_render_limits_preserved": true,
+  "evidence_commit_follows_source_commit": true
+}

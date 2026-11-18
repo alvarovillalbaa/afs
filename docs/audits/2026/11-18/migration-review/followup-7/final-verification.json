@@ -1,0 +1,56 @@
+{
+  "at": "2026-11-18T15:23:33.615894+00:00",
+  "source_parent": "f47e8cd2b099657a7faa763d05bedbac9fb76015",
+  "unit_command": "node --test tests/afs-contract.test.mjs",
+  "unit_tests_passed": 51,
+  "unit_process_exit_code": 0,
+  "unit_result_evidence": {
+    "exec_session": 5338,
+    "final_output_chunk": "91cced",
+    "summary": "tests 51; pass 51; fail 0; cancelled 0; skipped 0"
+  },
+  "syntax": [
+    {
+      "path": "skills/use-afs/scripts/create-afs.mjs",
+      "exit_code": 0,
+      "sha256": "24e1ff0c3e6fdfdd7ae6f3cc0d3f0dd5d89f21c3bd84ec74eb66170d4e670361"
+    },
+    {
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "exit_code": 0,
+      "sha256": "f3dc038364ffaf88a19713343922708089567b1c16b867a09bd8251dc261f5c3"
+    },
+    {
+      "path": "skills/use-afs/scripts/standard.mjs",
+      "exit_code": 0,
+      "sha256": "f73d846c02d4dfe4b73b0db71c5c5f7e7fb13e31feef26b781cb3bbd13b3e06e"
+    },
+    {
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "exit_code": 0,
+      "sha256": "8c1cf3d33624e6eefee29472a4495f9aed1b653d9ed81348f97b97608733180e"
+    },
+    {
+      "path": "skills/use-afs/scripts/character-references.mjs",
+      "exit_code": 0,
+      "sha256": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58"
+    },
+    {
+      "path": "tests/afs-contract.test.mjs",
+      "exit_code": 0,
+      "sha256": "6e08a3b26e3834be900c40e7ec1e7441308e66495e93de17208a27759c61bda1"
+    }
+  ],
+  "git_diff_check_exit_code": 0,
+  "current_github_render_passed": true,
+  "current_github_render_requests": 2,
+  "original_page_automatic_heading_ids_observed": false,
+  "dirty_primary_fingerprints_unchanged": true,
+  "primary_fingerprints": {
+    "head": "76caffaaaea6766cffbbd2b1153bd950be1acb54",
+    "status_sha256": "5394eb062ea2d80027d49fd927079dc77b7b65edb51aae14dfdbe701d7b9e3e3",
+    "tracked_diff_sha256": "ac935e3c0c837f69ed83df76d5a73b78113c8ba1104e48f5aae15861fe283d70",
+    "index_sha256": "0e07addd8799fb8248acedcab10de6af12f50dcb57ba61dca7a39e6c68874b72"
+  },
+  "dependencies_builds_browser_or_real_workspace_migration": false
+}
