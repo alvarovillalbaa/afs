@@ -390,11 +390,11 @@ function headingText(value) {
   let prefix = `AFSHEADING${hash(value)}X`
   while (value.includes(prefix)) prefix += "X"
   const literals = []
-  const literal = (text) => `${prefix}${literals.push(text) - 1}END`
+  const literal = (text, raw = text) => `${prefix}${literals.push({ text, raw, first: [...raw][0], last: [...raw].at(-1) }) - 1}END`
   let protectedText = "", index = 0
   while (index < value.length) {
     if (value[index] === "\\" && /[!-\x2F:-@\[-\x60{-~]/.test(value[index + 1] ?? "")) {
-      protectedText += literal(value[index + 1]); index += 2; continue
+      protectedText += literal(value[index + 1], value.slice(index, index + 2)); index += 2; continue
     }
     if (value[index] === "`") {
       const end = codeSpanEnd(value, index)
@@ -403,13 +403,55 @@ function headingText(value) {
         while (value[index + length] === "`") length++
         let content = value.slice(index + length, end - length).replace(/[\r\n]/g, " ")
         if (content.startsWith(" ") && content.endsWith(" ") && /[^ ]/.test(content)) content = content.slice(1, -1)
-        protectedText += literal(content); index = end; continue
+        protectedText += literal(content, value.slice(index, end)); index = end; continue
       }
     }
     protectedText += value[index++]
   }
-  const prose = protectedText.replace(/!?\[([^\]]+)\]\([^)]*\)/g, "$1").replace(/!?\[([^\]]+)\]\[[^\]]*\]/g, "$1").replace(/<[^>]*>/g, "")
-  return decodeUrlCharacters(prose).replace(new RegExp(`${prefix}(\\d+)END`, "g"), (_, index) => literals[Number(index)])
+  const linkDisplay = (raw, display) => {
+    const original = display.replace(new RegExp(`${prefix}(\\d+)END`, "g"), (_, index) => literals[Number(index)].raw)
+    return literal(headingText(original), raw)
+  }
+  const prose = protectedText.replace(/!?\[([^\]]+)\]\([^)]*\)/g, linkDisplay).replace(/!?\[([^\]]+)\]\[[^\]]*\]/g, linkDisplay).replace(/<[^>]*>/g, (tag) => literal("", tag))
+  const neighbor = (text, before) => {
+    const token = text.match(new RegExp(before ? `${prefix}(\\d+)END$` : `^${prefix}(\\d+)END`))
+    return token ? literals[Number(token[1])][before ? "last" : "first"] : [...text].at(before ? -1 : 0) ?? "\n"
+  }
+  const runs = [...prose.matchAll(/\*+|_+/g)].map((match) => {
+    const before = neighbor(prose.slice(0, match.index), true), after = neighbor(prose.slice(match.index + match[0].length), false)
+    const beforeSpace = /\s/u.test(before), afterSpace = /\s/u.test(after)
+    const beforePunctuation = /[\p{P}\p{S}]/u.test(before), afterPunctuation = /[\p{P}\p{S}]/u.test(after)
+    const left = !afterSpace && (!afterPunctuation || beforeSpace || beforePunctuation)
+    const right = !beforeSpace && (!beforePunctuation || afterSpace || afterPunctuation)
+    const underscore = match[0][0] === "_"
+    return { index: match.index, char: match[0][0], length: match[0].length, remaining: match[0].length, active: true,
+      open: left && (!underscore || !right || beforePunctuation), close: right && (!underscore || !left || afterPunctuation) }
+  })
+  // Match delimiter runs before entity decoding; escaped/code tokens never act as delimiters.
+  for (let index = 0; index < runs.length; index++) {
+    const closer = runs[index]
+    while (closer.close && closer.remaining) {
+      let start = index - 1
+      for (; start >= 0; start--) {
+        const opener = runs[start]
+        const odd = (closer.open || opener.close) && closer.length % 3 !== 0 && (opener.length + closer.length) % 3 === 0
+        if (opener.active && opener.open && opener.remaining && opener.char === closer.char && !odd) break
+      }
+      if (start < 0) break
+      const opener = runs[start]
+      const used = opener.remaining >= 2 && closer.remaining >= 2 ? 2 : 1
+      opener.remaining -= used
+      closer.remaining -= used
+      for (let middle = start + 1; middle < index; middle++) runs[middle].active = false
+    }
+  }
+  let displayed = "", offset = 0
+  for (const run of runs) {
+    displayed += prose.slice(offset, run.index) + run.char.repeat(run.remaining)
+    offset = run.index + run.length
+  }
+  displayed += prose.slice(offset)
+  return decodeUrlCharacters(displayed).replace(new RegExp(`${prefix}(\\d+)END`, "g"), (_, index) => literals[Number(index)].text)
 }
 
 function headingAnchors(text, anchor) {
@@ -581,9 +623,10 @@ async function main() {
   }
   for (const job of directoryJobs) for (const item of job.markdown) item.updated = rebase(item.text, item.file, mappings.get(item.file).destination, mappings)
   const retiredTextSources = new Set([...admittedJobs.map((job) => job.source), ...directoryJobs.flatMap((job) => job.markdown.map((item) => item.file))])
+  const retainedRoots = ["references", "sources", "raw", "official-documentation", "goals", "models", "templates", "facts/items", "facts/episodes", "facts/triples"].map((name) => path.join(target, name) + path.sep)
   const preparedUpdates = []
   for (const file of await files(instructionRoot, instructionRoot, true)) {
-    if (!file.endsWith(".md") || retiredTextSources.has(file) || futureDestinations.has(file)) continue
+    if (!file.endsWith(".md") || retiredTextSources.has(file) || futureDestinations.has(file) || retainedRoots.some((root) => file.startsWith(root))) continue
     let original
     try { original = decode(await readFile(file)) }
     catch (error) { blockers.push(`${path.relative(instructionRoot, file)}: ${error.message}`); continue }

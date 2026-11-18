@@ -41,7 +41,13 @@ Registry content is selected explicitly after review, for example:
 Repeat `--registry=...` for additional files, using paths relative to the
 instruction root (`docs/references/...` in the application profile).
 Unselected Markdown snapshots and repository-native technical guides remain
-in place with blockers. A Markdown suffix does not establish registry ownership
+in place with blockers and are excluded from automatic inbound-link edits.
+The same byte-preservation boundary covers retained raw, official-documentation,
+goal, model, global-template and type-first fact trees under the selected AFS
+target. Explicitly selected registry jobs still consolidate and rebase their own
+content. Retained captures can contain obsolete paths; update maintained
+navigation separately instead of altering unreviewed evidence.
+A Markdown suffix does not establish registry ownership
 or verified external preservation. Type-first `facts/items`, `facts/episodes`
 and `facts/triples` also remain blocked for content-owner review.
 
@@ -71,7 +77,9 @@ AFS package's own template tree and generated dependencies are excluded.
 Heading anchors respect the opening fence's character, length and closing rules.
 Their slugs use displayed heading prose: character references are decoded while
 escaped punctuation and inline code retain their literal meaning, including
-duplicate-heading suffixes.
+duplicate-heading suffixes. Matched asterisk and underscore emphasis delimiters
+are removed before slugging; unmatched, intraword, escaped, code and
+entity-produced underscores remain literal.
 Text transformations and retry-marker checks are prepared for the full plan
 before source retirement, including directory content and inbound documents.
 Text originals are retired after planned link rewrites pass readback. Fully

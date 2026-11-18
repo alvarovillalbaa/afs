@@ -815,3 +815,60 @@ test("heading entity anchors follow displayed prose while code and escapes stay 
   const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
   for (const link of links) assert.ok(text.includes(`<a id="${link[1]}"></a>`), text)
 })
+
+test("heading emphasis follows delimiter rules without erasing literal underscores", async () => {
+  const target = await fixture("afs-heading-emphasis-")
+  await mkdir(path.join(target, "references"))
+  const headings = [
+    ["_Important_", "important"], ["__Strong__", "strong"],
+    ["___Nested___", "nested"], ["_Outer **inner** text_", "outer-inner-text"],
+    ["snake_case_name", "snake_case_name"], ["_unclosed", "_unclosed"],
+    ["a _ b _ c", "a-_-b-_-c"], ["\\_Escaped\\_", "_escaped_"],
+    ["`_Code_`", "_code_"], ["&#95;Entity&#95;", "_entity_"],
+    ["__foo_ bar_", "foo-bar"], ["foo_ _bar", "foo_-_bar"],
+    ["*foo _bar* baz_", "foo-_bar-baz_"], ["_`code`_", "code"],
+    ["\\*_punctuation_\\*", "punctuation"],
+    ["_[foo_](/url)", "_foo_"], ["[_bar](/url)_", "_bar_"],
+    ["_[_link_](/url)_", "link"], ["_[`_literal_`](/url)_", "_literal_"],
+    ["a<b>_html_</b>b", "ahtmlb"],
+  ]
+  await writeFile(path.join(target, "references", "a.md"), headings.map(([heading]) => `# ${heading}`).join("\n") + "\n")
+  await writeFile(path.join(target, "README.md"), headings.map(([, slug], index) => `[${index}](references/a.md#${slug})`).join("\n") + "\n")
+  run("migrate", [target, "--registry=references/a.md"])
+  const text = await readFile(path.join(target, "REFERENCES.md"), "utf8")
+  const links = [...(await readFile(path.join(target, "README.md"), "utf8")).matchAll(/\(REFERENCES.md#([^)]*)\)/g)]
+  assert.equal(links.length, headings.length)
+  for (const [index, link] of links.entries()) assert.ok(text.includes(`<a id="${link[1]}"></a>`), headings[index][0])
+})
+
+test("retained captures and unselected registry files remain byte-identical during inbound updates", async () => {
+  for (const mode of ["root", "docs"]) {
+    const workspace = await fixture("afs-retained-inbound-")
+    const target = mode === "docs" ? path.join(workspace, "docs") : workspace
+    await mkdir(path.join(target, "references"), { recursive: true })
+    await writeFile(path.join(target, "references", "registry.md"), "# Evidence\n")
+    const captures = ["raw/capture.md", "sources/snapshot.md", "references/snapshot.md", "official-documentation/page.md", "goals/goal.md", "models/goals/goal.md", "models/unknown.md", "templates/page.md", "facts/items/item.md", "facts/episodes/episode.md", "facts/triples/triple.md"]
+    const original = Buffer.from("[Evidence](../references/registry.md)\r\nOriginal capture.\r\n")
+    for (const file of captures) {
+      await mkdir(path.dirname(path.join(target, file)), { recursive: true })
+      await writeFile(path.join(target, file), original)
+    }
+    const binaryCapture = Buffer.from([0xff, 0x5b, 0x5d, 0x28, 0x29, 0x0a])
+    await mkdir(path.join(target, "raw", "nested"))
+    await writeFile(path.join(target, "raw", "nested", "capture.md"), binaryCapture)
+    await writeFile(path.join(target, "sources", "selected.md"), "# Reviewed registry\n[Evidence](../references/registry.md)\n")
+    await mkdir(path.join(target, "skills", "review"), { recursive: true })
+    await writeFile(path.join(target, "skills", "review", "SKILL.md"), "[Evidence](../../references/registry.md)\n")
+    await writeFile(path.join(workspace, "README.md"), `[Evidence](${mode === "docs" ? "docs/" : ""}references/registry.md)\n`)
+    const prefix = mode === "docs" ? "docs/" : ""
+    const result = spawnSync(process.execPath, [script("migrate"), workspace, `--mode=${mode}`, `--registry=${prefix}references/registry.md`, `--registry=${prefix}sources/selected.md`], { encoding: "utf8" })
+    assert.equal(result.status, 2, result.stderr)
+    for (const file of captures) assert.deepEqual(await readFile(path.join(target, file)), original, file)
+    assert.deepEqual(await readFile(path.join(target, "raw", "nested", "capture.md")), binaryCapture)
+    assert.match(await readFile(path.join(workspace, "README.md"), "utf8"), /REFERENCES.md#afs-migrated-/)
+    assert.match(await readFile(path.join(target, "skills", "review", "SKILL.md"), "utf8"), /REFERENCES.md#afs-migrated-/)
+    assert.ok(!existsSync(path.join(target, "references", "registry.md")))
+    assert.ok(!existsSync(path.join(target, "sources", "selected.md")))
+    assert.match(await readFile(path.join(workspace, "SOURCES.md"), "utf8"), /\[Evidence\]\(REFERENCES.md#afs-migrated-/)
+  }
+})
