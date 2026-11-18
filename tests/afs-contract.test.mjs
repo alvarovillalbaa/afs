@@ -582,3 +582,40 @@ test("namespaced labels stay valid at the label limit and match Unicode case fol
   assert.ok(text.includes(`[Long][${long}]`))
   assert.ok(text.includes(`[German][${german}]`))
 })
+
+test("link rebasing preserves code literals in consolidated, moved and inbound documents", async () => {
+  const target = await fixture("afs-rebase-code-literals-")
+  await mkdir(path.join(target, "references"))
+  await mkdir(path.join(target, "models", "decisions"), { recursive: true })
+  const code = '`[B](b.md)`\n\n~~~js\nconst sample = "[B](b.md)";\n~~~\n\n    [B](b.md)\n\n    - [B](b.md)\n\n    1. [B](b.md)\n'
+  await writeFile(path.join(target, "references", "a.md"), `[B](b.md)\n\n${code}`)
+  await writeFile(path.join(target, "references", "b.md"), "# B\n")
+  const decisionCode = code.replaceAll("b.md", "../../references/b.md")
+  await writeFile(path.join(target, "models", "decisions", "choice.md"), `[B](../../references/b.md)\n\n${decisionCode}`)
+  const inboundCode = code.replaceAll("b.md", "references/b.md")
+  await writeFile(path.join(target, "README.md"), `[B](references/b.md)\n\n${inboundCode}`)
+  run("migrate", [target, "--registry=references/a.md", "--registry=references/b.md"])
+  for (const [name, literal] of [["REFERENCES.md", code], ["decisions/choice.md", decisionCode], ["README.md", inboundCode]]) {
+    const text = await readFile(path.join(target, name), "utf8")
+    assert.ok(text.includes(literal), `${name}: ${text}`)
+    assert.match(text, /\[B\]\((?:\.\.\/)?REFERENCES.md#afs-migrated-[a-f0-9]+\)/)
+  }
+})
+
+test("link rebasing handles balanced and escaped parentheses in actual destinations", async () => {
+  const target = await fixture("afs-rebase-parentheses-")
+  await mkdir(path.join(target, "models", "decisions"), { recursive: true })
+  const name = "choice(v2).md"
+  await writeFile(path.join(target, "models", "decisions", name), "# Choice\n")
+  const slash = String.fromCharCode(92)
+  const escaped = `choice${slash}(v2${slash}).md`
+  await writeFile(path.join(target, "README.md"), `[Choice](models/decisions/${name} "Title (v2)")\n![Image](models/decisions/${escaped})\n[Angle](<models/decisions/${name}>)\n[Ref][choice]\n\n[choice]: models/decisions/${escaped} 'Reference (v2)'\n`)
+  run("migrate", [target])
+  const text = await readFile(path.join(target, "README.md"), "utf8")
+  assert.ok(text.includes('[Choice](decisions/choice%28v2%29.md "Title (v2)")'), text)
+  assert.ok(text.includes("![Image](decisions/choice%28v2%29.md)"), text)
+  assert.ok(text.includes("[Angle](<decisions/choice%28v2%29.md>)"), text)
+  assert.ok(text.includes("[Ref][choice]"), text)
+  assert.ok(text.includes("[choice]: decisions/choice%28v2%29.md 'Reference (v2)'"), text)
+  assert.equal(await readFile(path.join(target, "decisions", name), "utf8"), "# Choice\n")
+})

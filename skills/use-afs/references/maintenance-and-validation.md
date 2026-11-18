@@ -57,6 +57,9 @@ Consolidation gives each entry its own reference/footnote labels and explicit
 HTML anchor IDs, including local fragment links. Filename path segments retain
 URL escaping for reserved characters. Review the resulting navigation after
 migration; these checks do not replace content-specific review.
+Link rebasing shares the literal-aware reference traversal: inline, fenced and
+indented code examples remain unchanged in the exercised cases. Actual inline
+destinations support balanced or escaped parentheses, preserving their titles.
 Run these tools with exclusive workspace ownership: path checks and moves do
 not provide isolation from concurrent writers.
 

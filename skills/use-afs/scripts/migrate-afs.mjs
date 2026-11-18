@@ -37,7 +37,7 @@ async function files(root, instructionRoot, scan = false, blockers = []) {
 
 function rebaseUrl(url, source, destination, mappings) {
     const angle = url.startsWith("<")
-    const value = angle ? url.slice(1, -1) : url
+    const value = (angle ? url.slice(1, -1) : url).replace(/\\([!-\x2F:-@\[-\x60{-~])/g, "$1")
     if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(value)) return url
     const separator = value.indexOf("#")
     const pathAndQuery = separator < 0 ? value : value.slice(0, separator)
@@ -59,13 +59,10 @@ function rebaseUrl(url, source, destination, mappings) {
 }
 
 function rebase(text, source, destination, mappings) {
-  const rewrite = (match, before, url, title = "", after) => `${before}${rebaseUrl(url, source, destination, mappings)}${title}${after}`
-  return text
-    .replace(/(!?\[[^\]\n]*\]\()(<[^>\n]+>|[^\s()]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?(\))/g, rewrite)
-    .replace(/^([ ]{0,3}\[(?!\^)[^\]\n]+\]:[ \t]*(?:\r?\n[ \t]*)?)(<[^>\n]+>|[^\s]+)([ \t]+(?:"[^"\n]*"|'[^'\n]*'|\([^\)\n]*\)))?([ \t]*\r?$)/gm, rewrite)
+  return rewriteMarkdown(text, null, source, destination, mappings)
 }
 
-function namespaceReferences(text, anchor, source, destination, mappings) {
+function rewriteMarkdown(text, anchor, source, destination, mappings) {
   const normalize = (label) => label.replace(/^[ \t\r\n]+|[ \t\r\n]+$/g, "").replace(/[ \t\r\n]+/g, " ").toLowerCase().toUpperCase().toLowerCase()
   const labels = new Map()
   const definition = /^((?:(?:[ \t]*>[ \t]?)|(?:[ \t]*(?:[-+*]|\d{1,9}[.)])[ \t]+))*[ \t]*)\[((?:\\.|[^\]\\\n])+)\](:)/
@@ -81,6 +78,8 @@ function namespaceReferences(text, anchor, source, destination, mappings) {
         return literal(line)
       }
       if (!content.trim()) { afterBlank = true; return literal(line) }
+      const containerIndent = lists.at(-1) ?? (footnote ? 4 : 0)
+      if (afterBlank && spaces >= containerIndent + 4) return literal(line)
       const list = content.match(/^([ \t]*)(?:[-+*]|\d{1,9}[.)])([ \t]+)(.*)$/)
       if (list) {
         while (lists.length && lists.at(-1) > spaces) lists.pop()
@@ -138,6 +137,26 @@ function namespaceReferences(text, anchor, source, destination, mappings) {
       else if (char === ending && --depth === 0) return index
     }
     return -1
+  }
+  const inlineDestination = (value) => {
+    let start = 1
+    while (/\s/.test(value[start] ?? "") && start < value.length) start++
+    let end = start
+    if (value[start] === "<") {
+      const angle = angleEnd(value, start)
+      if (angle < 0) return value
+      end = angle + 1
+    } else {
+      let depth = 0
+      while (end < value.length - 1 && !/\s/.test(value[end])) {
+        if (value[end] === slash) { end += 2; continue }
+        if (value[end] === "(") depth++
+        else if (value[end] === ")" && --depth < 0) return value
+        end++
+      }
+      if (depth) return value
+    }
+    return value.slice(0, start) + rebaseUrl(value.slice(start, end), source, destination, mappings) + value.slice(end)
   }
   const rewriteUses = (value, allowLinks = true) => {
     let result = "", index = 0
@@ -238,14 +257,13 @@ function namespaceReferences(text, anchor, source, destination, mappings) {
           const data = label.startsWith("^") ? null : definitionEnd(value, index + match[0].length)
           const end = label.startsWith("^") ? index + match[0].length : data?.end
           if (end !== undefined) {
-            if (!labels.has(label)) labels.set(label, `${label.startsWith("^") ? "^" : ""}${anchor}-ref-${labels.size + 1}`)
+            if (anchor && !labels.has(label)) labels.set(label, `${label.startsWith("^") ? "^" : ""}${anchor}-ref-${labels.size + 1}`)
             let original = value.slice(index, end)
-            // Simple root definitions were rebased already; container definitions were not.
-            if (data && (/[>\t]/.test(match[1]) || match[1].length > 3 || /(?:[-+*]|\d[.)])/.test(match[1]))) {
+            if (data) {
               const start = data.destinationStart - index, finish = data.destinationEnd - index
               original = original.slice(0, start) + rebaseUrl(original.slice(start, finish), source, destination, mappings) + original.slice(finish)
             }
-            result += literal(() => original.replace(definition, (_, indent, raw, colon) => `${indent}[${labels.get(normalize(raw))}]${colon}`))
+            result += literal(() => anchor ? original.replace(definition, (_, indent, raw, colon) => `${indent}[${labels.get(normalize(raw))}]${colon}`) : original)
             index = end
             continue
           }
@@ -271,7 +289,7 @@ function namespaceReferences(text, anchor, source, destination, mappings) {
         const inlineEnd = end >= 0 && value[end + 1] === "(" ? close(value, end + 1, "(", ")") : -1
         if (inlineEnd >= 0) {
           const display = value.slice(start + 1, end)
-          const destination = value.slice(end + 1, inlineEnd + 1)
+          const destination = inlineDestination(value.slice(end + 1, inlineEnd + 1))
           result += literal(() => `${image ? "!" : ""}[${image ? display : rewriteUses(display, false)}]${destination}`)
           index = inlineEnd + 1
           continue
@@ -287,7 +305,6 @@ function namespaceReferences(text, anchor, source, destination, mappings) {
   const flush = () => { if (pending.length) { pieces.push({ code: false, text: protect(pending.join("\n")) }); pending = [] } }
   outsideCode(text, (line) => { pending.push(line); return line }, (line) => { flush(); pieces.push({ code: true, text: line }); return line })
   flush()
-  if (!labels.size) return text
   const rewritten = pieces.map((piece) => piece.code ? piece.text : rewriteUses(piece.text)).join("\n")
   const restored = rewritten.replace(new RegExp(`${tokenPrefix}(\\d+)END`, "g"), (_, index) => literals[Number(index)]())
   if (restored.includes(tokenPrefix)) throw new Error("Reference literal restoration failed; source retained")
@@ -478,7 +495,7 @@ async function main() {
     const origin = path.relative(instructionRoot, job.source)
     const marker = `<!-- afs-migration:${hash(origin + "\0" + hash(job.bytes))} -->`
     const anchor = mappings.get(job.source).anchor
-    const section = `\n\n${marker}\n<a id="${anchor}"></a>\n## Migrated context: ${origin}\n\nOriginal content retained for review. Current AFS routing supersedes any retired paths below.\n\n${headingAnchors(namespaceHtmlAnchors(namespaceReferences(rebase(job.text, job.source, job.destination, mappings), anchor, job.source, job.destination, mappings), anchor), anchor)}\n<!-- /afs-migration -->\n`
+    const section = `\n\n${marker}\n<a id="${anchor}"></a>\n## Migrated context: ${origin}\n\nOriginal content retained for review. Current AFS routing supersedes any retired paths below.\n\n${headingAnchors(namespaceHtmlAnchors(rewriteMarkdown(job.text, anchor, job.source, job.destination, mappings), anchor), anchor)}\n<!-- /afs-migration -->\n`
     const existing = decode(await readFile(job.destination))
     if (existing.includes(`<a id="${anchor}"></a>`) && !existing.includes(marker)) throw new Error(`Changed migration source; preserve both versions for review: ${job.source}`)
     if (existing.includes(marker) && !existing.includes(section)) throw new Error(`Partial or changed migration entry; source retained for review: ${job.destination}`)
