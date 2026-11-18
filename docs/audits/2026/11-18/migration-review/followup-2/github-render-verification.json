@@ -1,0 +1,68 @@
+{
+  "at": "2026-11-18T13:38:58.425055+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "official_reference": "https://docs.github.com/en/rest/markdown/markdown#render-a-markdown-document",
+  "only_synthetic_content": true,
+  "issue_comment_or_repository_mutation": false,
+  "browser_click_or_visual_acceptance": false,
+  "dependencies_installed": false,
+  "original_A_html_sha256": "b9e352af4ed74f7f8f2c548d2f0a3492c2c8094eb74c23eb28a4c1789c230d84",
+  "original_B_html_sha256": "266dc7a5390c7710561dc8e55c399c0036dfeab43b4d8b4bdcd40ff6f02f9b55",
+  "passed": true,
+  "source_script_sha256": "4a43bbc4e65e18ad7263c30aa1336bcb7086c9554bcc7656093e7211c2eb9f62",
+  "render_requests": 3,
+  "migrated_html_sha256": "7139ac6bed0c543e4d59d56a18e375e8b1f9ee9e01caacd1c8d4cf1e95aec6ae",
+  "external_links_compared": [
+    {
+      "caption": "Source A",
+      "href": "https://example.com/a",
+      "title": "title [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Inline A",
+      "href": "https://example.com/path/%5Bsource%5D",
+      "title": "inline [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Quoted A",
+      "href": "https://example.com/quote-a",
+      "title": null,
+      "matches_original_render": true
+    },
+    {
+      "caption": "Source B",
+      "href": "https://example.com/b",
+      "title": "title [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Inline B",
+      "href": "https://example.com/path/%5Bsource%5D",
+      "title": "inline [source]",
+      "matches_original_render": true
+    },
+    {
+      "caption": "Quoted B",
+      "href": "https://example.com/quote-b",
+      "title": null,
+      "matches_original_render": true
+    }
+  ],
+  "explicit_anchor_inventory": [
+    {
+      "caption": "Anchor A",
+      "href": "REFERENCES.md#afs-migrated-bb0a16791429875f0613-custom",
+      "observed_html_id": "user-content-afs-migrated-bb0a16791429875f0613-custom"
+    },
+    {
+      "caption": "Anchor B",
+      "href": "REFERENCES.md#afs-migrated-860314f84e090a7acd0d-custom",
+      "observed_html_id": "user-content-afs-migrated-860314f84e090a7acd0d-custom"
+    }
+  ],
+  "literal_text_and_both_footnotes_preserved": true,
+  "synthetic_sources_retired": true,
+  "synthetic_fixture_removed": true
+}

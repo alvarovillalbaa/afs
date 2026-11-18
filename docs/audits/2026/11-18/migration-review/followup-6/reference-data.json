@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-18T14:48:59.559501+00:00",
+  "source": "https://html.spec.whatwg.org/entities.json",
+  "source_sha256": "d741d877ac77c4194c4ad526b5b4a19aef8dfe411ab840a466891cdbb9f362e6",
+  "source_bytes": 145897,
+  "named_entries": 2231,
+  "semicolon_entries": 2125,
+  "snapshot": "skills/use-afs/references/html-named-character-references.json",
+  "snapshot_sha256": "ef03c4476114ddb0ac18b4fc626e881e828022b1e4b94b3fb0717810663f83dc",
+  "snapshot_bytes": 55644,
+  "all_source_codepoints_and_characters_verified": true,
+  "independent_python_stdlib_html5_table_equal": true,
+  "transformation": "Retain every source key and its characters value; sort keys and serialize ASCII JSON",
+  "new_package_dependency": false,
+  "runtime_network": false,
+  "HTML_numeric_replacements_independently_verified": 27
+}

@@ -1,0 +1,11 @@
+{
+  "migrator_sha256": "8385dd4b089c76e488b42ac3d3c61039c82ff192f5c549fce7e0348d3b50eac9",
+  "review": "independent read-only recheck of the corrected link and HTML scope",
+  "focused_heading_cases_passed": 6,
+  "confirmed_new_findings": 0,
+  "retry_output_byte_identical": true,
+  "retry_added_duplicate_entries": false,
+  "restored_sources_retired_after_verified_retry": true,
+  "fixtures_removed": true,
+  "repository_mutated_by_reviewer": false
+}

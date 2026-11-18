@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-18T12:52:02.281548+00:00",
+  "source_head": "093bc5371bb68b000a3dfd932b7af58fe6d9aa06",
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=consolidated reference labels|rebased path segments|consolidated explicit HTML",
+    "tests/afs-contract.test.mjs"
+  ],
+  "exit_code": 1,
+  "stdout": "\u2716 consolidated reference labels retain each document's destinations (119.489917ms)\n\u2716 rebased path segments escape filename characters instead of creating URL fragments (97.601041ms)\n\u2716 consolidated explicit HTML anchors keep incoming and local fragment targets (80.224625ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 3\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 408.235292\n\n\u2716 failing tests:\n\ntest at tests/afs-contract.test.mjs:409:1\n\u2716 consolidated reference labels retain each document's destinations (119.489917ms)\n  AssertionError [ERR_ASSERTION]: Expected \"actual\" to be strictly unequal to:\n  \n  'source'\n      at TestContext.<anonymous> (file://<repository>/tests/afs-contract.test.mjs:419:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'source',\n    expected: 'source',\n    operator: 'notStrictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/afs-contract.test.mjs:430:1\n\u2716 rebased path segments escape filename characters instead of creating URL fragments (97.601041ms)\n  AssertionError [ERR_ASSERTION]: [Decision](decisions/C#.md)\n  [Decision](decisions/why?.md)\n  [Decision](decisions/one).md)\n  \n      at TestContext.<anonymous> (file://<repository>/tests/afs-contract.test.mjs:439:12)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }\n\ntest at tests/afs-contract.test.mjs:444:1\n\u2716 consolidated explicit HTML anchors keep incoming and local fragment targets (80.224625ms)\n  AssertionError [ERR_ASSERTION]: # REFERENCES\n  \n  \n  <!-- afs-migration:f9a5c51578d53d35e3b9e07a0e63a562ac4747d425843536f463395bb44df62a -->\n  <a id=\"afs-migrated-e0c81f96af55740293c0\"></a>\n  ## Migrated context: references/entry.md\n  \n  Original content retained for review. Current AFS routing supersedes any retired paths below.\n  \n  <a id=\"custom\"></a>\n  <span id=other></span>\n  <a name=legacy></a>\n  <a href=\"#custom\">Local custom</a>\n  [Local](REFERENCES.md#afs-migrated-e0c81f96af55740293c0-custom)\n  \n  <!-- /afs-migration -->\n  \n      at TestContext.<anonymous> (file://<repository>/tests/afs-contract.test.mjs:455:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: false,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }\n",
+  "stderr": "",
+  "expected_tests": 3,
+  "expected_failures": 3,
+  "new_fixture_residue": [],
+  "only_synthetic_fixtures_executed": true
+}

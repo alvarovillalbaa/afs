@@ -1,0 +1,30 @@
+{
+  "at": "2026-11-18T13:00:54.293Z",
+  "reviewed_head": "093bc5371bb68b000a3dfd932b7af58fe6d9aa06",
+  "findings": [
+    {
+      "thread_id": "PRRT_kwDOSKaOPs649ZBa",
+      "comment_id": 4614099489,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4614099489",
+      "test": "consolidated reference labels retain each document's destinations",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Namespace reference labels before consolidating Markdown**\n\nWhen two selected registries use the same reference label for different destinations, appending their Markdown into one document changes their meaning. For example, migrating two files that each contain `[Source][source]`, with different `[source]: https://...` definitions, succeeds and deletes both originals, but both rendered links now resolve to the first definition in `REFERENCES.md`. Namespace each entry's reference definitions and corresponding usages before appending, or resolve those references to inline links.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "thread_id": "PRRT_kwDOSKaOPs649ZBr",
+      "comment_id": 4614099511,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4614099511",
+      "test": "rebased path segments escape filename characters instead of creating URL fragments",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Encode reserved characters in rebased filesystem paths**\n\nWhen a moved filename contains a URL-reserved character, decoding the original destination and then applying `encodeURI` produces a link to a different resource. For example, migrating `models/decisions/C#.md` changes `[C sharp](models/decisions/C%23.md)` into `[C sharp](decisions/C#.md)`: the browser interprets `#.md` as a fragment instead of part of the filename, so the previously valid link breaks despite migration exiting successfully. Encode individual path segments so filename characters such as `#` and `?` remain escaped.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    },
+    {
+      "thread_id": "PRRT_kwDOSKaOPs649ZB_",
+      "comment_id": 4614099529,
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "url": "https://github.com/alvarovillalbaa/afs/pull/1#discussion_r4614099529",
+      "test": "consolidated explicit HTML anchors keep incoming and local fragment targets",
+      "body": "**<sub><sub>![P2 Badge](https://img.shields.io/badge/P2-yellow?style=flat)</sub></sub>  Preserve explicit anchor targets when prefixing fragments**\n\nWhen a consolidated registry contains an explicit HTML anchor, every incoming fragment is prefixed here, but `headingAnchors` only creates prefixed IDs for Markdown headings and leaves existing HTML IDs unchanged. Migrating a file containing `<a id=\"custom\"></a>` therefore rewrites a link ending in `a.md#custom` to `REFERENCES.md#afs-migrated-…-custom`, although that ID does not exist in the output. Namespace explicit anchor definitions along with their incoming links, or retain an actual target mapping rather than unconditionally prefixing every fragment.\n\nUseful? React with 👍 / 👎.\n\n<!-- codex-code-review-finding:v1 -->"
+    }
+  ]
+}

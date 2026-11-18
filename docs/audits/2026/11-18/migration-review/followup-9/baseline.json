@@ -1,0 +1,10 @@
+{
+  "source_head": "e3835206158a5ffadc8cff04741b229e88f8e56d",
+  "command": "node --test --test-name-pattern='heading suffixes' tests/afs-contract.test.mjs",
+  "exit_code": 1,
+  "passed": 0,
+  "failed": 1,
+  "output_chunk": "adcb07",
+  "reason": "Six headings produce only four distinct heading IDs; generated suffixes collide with literal numbered headings",
+  "synthetic_fixture_removed": true
+}

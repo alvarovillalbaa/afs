@@ -1,0 +1,50 @@
+{
+  "at": "2026-11-18T16:05:41.674179+00:00",
+  "source_parent": "ac3e0b87100b76f07fc623326838d90af02537c9",
+  "unit_command": "node --test tests/afs-contract.test.mjs",
+  "tests_passed": 55,
+  "exit_code": 0,
+  "unit_output_sha256": "6ff305760937c7d28a606725e973425b37d5d173380704262928ab5521cc2c79",
+  "duration_ms": "10636.234125",
+  "syntax": [
+    {
+      "path": "skills/use-afs/scripts/create-afs.mjs",
+      "exit_code": 0,
+      "sha256": "24e1ff0c3e6fdfdd7ae6f3cc0d3f0dd5d89f21c3bd84ec74eb66170d4e670361"
+    },
+    {
+      "path": "skills/use-afs/scripts/migrate-afs.mjs",
+      "exit_code": 0,
+      "sha256": "d8ca8a956e4a83255eb995a6031b3ed4749969327b1bfebad52533d40f13dc18"
+    },
+    {
+      "path": "skills/use-afs/scripts/standard.mjs",
+      "exit_code": 0,
+      "sha256": "f73d846c02d4dfe4b73b0db71c5c5f7e7fb13e31feef26b781cb3bbd13b3e06e"
+    },
+    {
+      "path": "skills/use-afs/scripts/validate-afs.mjs",
+      "exit_code": 0,
+      "sha256": "8c1cf3d33624e6eefee29472a4495f9aed1b653d9ed81348f97b97608733180e"
+    },
+    {
+      "path": "skills/use-afs/scripts/character-references.mjs",
+      "exit_code": 0,
+      "sha256": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58"
+    },
+    {
+      "path": "tests/afs-contract.test.mjs",
+      "exit_code": 0,
+      "sha256": "9b392a4cf06f7453fdf8e61610beb9938fe1a1cf3e19e80437c756d17b973ef8"
+    }
+  ],
+  "git_diff_check_passed": true,
+  "dirty_primary_fingerprints_unchanged": true,
+  "primary_fingerprints": {
+    "head": "76caffaaaea6766cffbbd2b1153bd950be1acb54",
+    "status_sha256": "5394eb062ea2d80027d49fd927079dc77b7b65edb51aae14dfdbe701d7b9e3e3",
+    "tracked_diff_sha256": "ac935e3c0c837f69ed83df76d5a73b78113c8ba1104e48f5aae15861fe283d70",
+    "index_sha256": "0e07addd8799fb8248acedcab10de6af12f50dcb57ba61dca7a39e6c68874b72"
+  },
+  "real_workspace_migration_build_install_or_database": false
+}

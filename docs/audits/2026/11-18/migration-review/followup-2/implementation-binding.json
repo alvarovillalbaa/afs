@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-18T13:51:52.213664+00:00",
+  "implementation_commit": "9035763024ed6ed97ebcc82d71b9277b3c7d0796",
+  "tested_source_parent": "093bc5371bb68b000a3dfd932b7af58fe6d9aa06",
+  "source_and_test_hashes": {
+    "skills/use-afs/scripts/create-afs.mjs": "24e1ff0c3e6fdfdd7ae6f3cc0d3f0dd5d89f21c3bd84ec74eb66170d4e670361",
+    "skills/use-afs/scripts/migrate-afs.mjs": "24dbc99be7c14660a924768fb6c1c5b61973b9ba12ad0771a5f1d3b36a30c87d",
+    "skills/use-afs/scripts/standard.mjs": "f73d846c02d4dfe4b73b0db71c5c5f7e7fb13e31feef26b781cb3bbd13b3e06e",
+    "skills/use-afs/scripts/validate-afs.mjs": "8c1cf3d33624e6eefee29472a4495f9aed1b653d9ed81348f97b97608733180e",
+    "tests/afs-contract.test.mjs": "b951918a4db4c80088646092ad69fbfad39e31d0093ab2b0a63f870230759f48"
+  },
+  "unit_tests_passed": 37,
+  "independent_rendered_links_checked": 8,
+  "evidence_commit_changes_tested_source": false
+}

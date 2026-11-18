@@ -9,9 +9,9 @@ Support status: best-effort bridge.
 - Questions and decisions: `plans/`, `specs/`, and `knowledge/`
 - Unresolved gaps: `GAPS.md`
 - Research threads: `research/`
-- External source provenance: `sources/`
+- External source provenance: `SOURCES.md`; lookup catalog: `REFERENCES.md`
 - Stable procedures: `runbooks/` and `cookbooks/`
-- Strategic direction: `VISION.md`
+- Strategic direction: `COMPANY.md`, `PRODUCT.md`, `ROADMAP.md`
 
 Do not treat this file as native or official QMD support unless QMD publishes a
 native AFS integration.

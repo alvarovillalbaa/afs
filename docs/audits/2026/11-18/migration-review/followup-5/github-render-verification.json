@@ -1,0 +1,21 @@
+{
+  "at": "2026-11-18T14:35:31.931849+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "source_script_sha256": "21b69dadd36e2b19122625c4d64bcc3ccbf39a06ea073bae0bc9a65d6e50296f",
+  "render_requests": 4,
+  "only_synthetic_content": true,
+  "passed": true,
+  "EOF_fence_rendered_code_equal": true,
+  "later_entry_link_visible": "https://example.com/b",
+  "later_entry_heading_target_observed": true,
+  "directory_root_href": "decisions/",
+  "html_sha256": {
+    "a_before": "5ddc5dbba52bc3140277193086a1076461aa0a79a2cc067cdce0284e678bee2e",
+    "b_before": "ed64b2e42bb5c5b4c9b3c712c21189ad06e1ef8027fdb520490d4a5bdb75752a",
+    "catalog_after": "d87f7c0bf2e5c2b1c505c5c21a1a97b4a2e4524445d6adc4d54f69749cafede1",
+    "readme_after": "831d9acee7e518a21d7e6e43d7898d8f636e42e0d6889b7e1277d1829610d7ad"
+  },
+  "real_workspace_migration": false,
+  "issue_comment_or_repository_mutation": false,
+  "fixture_removed": true
+}

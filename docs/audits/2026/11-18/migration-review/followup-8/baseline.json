@@ -1,0 +1,13 @@
+{
+  "source_head": "05fdef18603a7b9d9c34a5d3545becfedd14091d",
+  "command": "node --test --test-name-pattern='heading emphasis|retained captures' tests/afs-contract.test.mjs",
+  "exit_code": 1,
+  "passed": 0,
+  "failed": 2,
+  "output_chunk": "57a496",
+  "failures": [
+    {"heading": "_Important_", "reason": "Incoming important fragment has no inserted target; delimiters survive in slug"},
+    {"capture": "raw/capture.md", "reason": "Automatic inbound edit changes a retained original from 58 bytes to 83 bytes"}
+  ],
+  "synthetic_fixtures_removed": true
+}

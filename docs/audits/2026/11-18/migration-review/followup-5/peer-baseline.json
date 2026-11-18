@@ -1,0 +1,6 @@
+{
+  "at": "2026-11-18T14:36:16.427639+00:00",
+  "command": "node --test --test-name-pattern=\"relocated directory roots\" tests/afs-contract.test.mjs",
+  "exit_code": 1,
+  "output": "\u2716 relocated directory roots retain direct navigation and trailing slashes (56.19175ms)\n\u2139 tests 1\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 1\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 112.308958\n\n\u2716 failing tests:\n\ntest at tests/afs-contract.test.mjs:706:1\n\u2716 relocated directory roots retain direct navigation and trailing slashes (56.19175ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  + actual - expected\n  \n  + '# Decisions\\n[Here](README.md/)\\n[Plain](README.md)\\n'\n  - '# Decisions\\n[Here](./)\\n[Plain](.)\\n'\n  \n      at TestContext.<anonymous> (file://<repository>/tests/afs-contract.test.mjs:714:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: '# Decisions\\n[Here](README.md/)\\n[Plain](README.md)\\n',\n    expected: '# Decisions\\n[Here](./)\\n[Plain](.)\\n',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n"
+}

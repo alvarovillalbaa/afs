@@ -1,0 +1,10 @@
+{
+  "at": "2026-11-18T15:22:12.088700+00:00",
+  "failed_exec_session": 18454,
+  "terminal_output_chunk": "e04b88",
+  "failure": "Assumed original REST Markdown rendering exposes generated heading IDs; observed empty ID inventory",
+  "original_API_generated_heading_ids_observed": false,
+  "source_sha256": "f3dc038364ffaf88a19713343922708089567b1c16b867a09bd8251dc261f5c3",
+  "fixture_removed": true,
+  "corrected_scope": "Compare rendered heading display and actual migrated IDs; original automatic page anchors remain unobserved"
+}

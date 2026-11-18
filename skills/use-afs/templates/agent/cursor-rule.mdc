@@ -5,13 +5,14 @@ alwaysApply: true
 
 # AFS Cursor Rule
 
-- Read `AGENTS.md`, `BRAIN.md`, `VISION.md`, `LOOPS.md`, `TASTE.md`, and
+- Read `AGENTS.md`, `COMPANY.md`, `PRODUCT.md`, `ROADMAP.md`, `LOOPS.md`, `TASTE.md`, and
   `GAPS.md` when relevant before changing behavior, product direction,
   knowledge, or subjective quality.
-- Put external source material in `sources/`.
+- Keep raw material in Google Drive; provenance in `SOURCES.md`; references in `REFERENCES.md`.
 - Do not create `official-documentation/`.
-- Put live facts in `facts/items/<domain>/`, `facts/episodes/<domain>/`, or
-  `facts/triples/<domain>/`, and technical how-to guides in `cookbooks/`.
+- Put live facts in `facts/<domain>/`, and technical how-to guides in `cookbooks/`.
+- Keep goals in Notion, guided by `ROADMAP.md`; templates beside their content.
+- Keep unique knowledge in `knowledge/` and research units in `research/<unit>/`.
 - Keep large root-style Markdown files out of legacy `context/`.
 - Add unresolved knowledge or understanding gaps to `GAPS.md`.
 - Prefer updating durable AFS files over burying reusable context in chat.

@@ -1,0 +1,17 @@
+{
+  "at": "2026-11-18T12:36:28.439369+00:00",
+  "source_head": "1bcf8d95895d926cc783af1b42ff058816c7a8d1",
+  "command": [
+    "node",
+    "--test",
+    "--test-name-pattern=reference-style definitions|legacy docs detection persists|mandatory root documents must",
+    "tests/afs-contract.test.mjs"
+  ],
+  "exit_code": 1,
+  "stdout": "\u2716 reference-style definitions keep entry anchors, fragments and optional titles (55.492334ms)\n\u2716 legacy docs detection persists across blocked migration retries (54.525375ms)\n\u2716 mandatory root documents must be regular files (36.7365ms)\n\u2139 tests 3\n\u2139 suites 0\n\u2139 pass 0\n\u2139 fail 3\n\u2139 cancelled 0\n\u2139 skipped 0\n\u2139 todo 0\n\u2139 duration_ms 209.012666\n\n\u2716 failing tests:\n\ntest at tests/afs-contract.test.mjs:356:1\n\u2716 reference-style definitions keep entry anchors, fragments and optional titles (55.492334ms)\n  AssertionError [ERR_ASSERTION]: [Entry][entry]\n  \n  [entry]: references/a.md \"Entry title\"\n  [detail]: <references/a.md#detail> 'Detail title'\n  [nextline]:\n    references/a.md (Next title)\n  [external]: https://example.com/source \"External title\"\n  \n      at TestContext.<anonymous> (file://<repository>/tests/afs-contract.test.mjs:365:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: null,\n    expected: true,\n    operator: '==',\n    diff: 'simple'\n  }\n\ntest at tests/afs-contract.test.mjs:374:1\n\u2716 legacy docs detection persists across blocked migration retries (54.525375ms)\n  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n  \n  'root' !== 'docs'\n  \n      at TestContext.<anonymous> (file://<repository>/tests/afs-contract.test.mjs:382:10)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: true,\n    code: 'ERR_ASSERTION',\n    actual: 'root',\n    expected: 'docs',\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n\ntest at tests/afs-contract.test.mjs:393:1\n\u2716 mandatory root documents must be regular files (36.7365ms)\n  AssertionError [ERR_ASSERTION]: AGENTS.md\n  \n  0 !== 1\n  \n      at TestContext.<anonymous> (file://<repository>/tests/afs-contract.test.mjs:401:12)\n      at async Test.run (node:internal/test_runner/test:1409:7)\n      at async Test.processPendingSubtests (node:internal/test_runner/test:974:7) {\n    generatedMessage: false,\n    code: 'ERR_ASSERTION',\n    actual: 0,\n    expected: 1,\n    operator: 'strictEqual',\n    diff: 'simple'\n  }\n",
+  "stderr": "",
+  "expected_tests": 3,
+  "expected_failures": 3,
+  "new_fixture_residue": [],
+  "only_synthetic_fixtures_executed": true
+}

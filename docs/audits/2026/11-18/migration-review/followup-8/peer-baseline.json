@@ -1,0 +1,18 @@
+{
+  "migrator_sha256": "f42b33baf4526a919483a54344855495acd18e19c7d091dd7e199ea1860ede7b",
+  "review": "independent read-only bug review",
+  "emphasis_cases_passed": 27,
+  "emphasis_cases_failed": 1,
+  "failure": {
+    "heading": "_[foo_](/url)",
+    "expected_suffix": "_foo_",
+    "actual_suffix": "foo",
+    "reason": "Link removal allowed emphasis matching across the completed link boundary"
+  },
+  "retained_captures_byte_identical": 22,
+  "maintained_navigation_files_rebased": 6,
+  "selected_registries_retired": 4,
+  "profiles": ["root", "docs"],
+  "fixtures_removed": true,
+  "repository_mutated_by_reviewer": false
+}

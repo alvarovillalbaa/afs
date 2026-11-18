@@ -1,71 +1,15 @@
 #!/usr/bin/env node
-import { copyFile, mkdir, readdir, stat, writeFile } from "node:fs/promises"
-import { existsSync } from "node:fs"
+import { appendFile, copyFile, mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises"
+import { constants, existsSync } from "node:fs"
 import { execFileSync } from "node:child_process"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { resolveWorkspace, safePath, standardDirs, rootTemplates } from "./standard.mjs"
+
+let installRoot
 
 const scriptDir = path.dirname(fileURLToPath(import.meta.url))
 const skillDir = path.resolve(scriptDir, "..")
-
-const standardDirs = [
-  "logs",
-  "lessons",
-  "facts",
-  "facts/items",
-  "facts/items/general",
-  "facts/episodes",
-  "facts/episodes/general",
-  "facts/triples",
-  "facts/triples/general",
-  "fixes",
-  "steers",
-  "models",
-  "models/decisions",
-  "models/problems",
-  "models/goals",
-  "reflections",
-  "audits",
-  "raw",
-  "plans",
-  "specs",
-  "sources",
-  "lib",
-  "objects",
-  "templates",
-  "results",
-  "references",
-  "cookbooks",
-  "knowledge",
-  "runbooks",
-  "research",
-]
-
-const rootTemplates = [
-  "AGENTS.md",
-  "BRAIN.md",
-  "CLAUDE.md",
-  "VISION.md",
-  "LOOPS.md",
-  "TASTE.md",
-  "GAPS.md",
-  "MEMORY.md",
-  "PLAYBOOK.md",
-  "PLAN.md",
-  "SPEC.md",
-  "SOUL.md",
-  "USER.md",
-  "DESIGN.md",
-  "PRODUCT.md",
-  "COMPANY.md",
-  "VALUES.md",
-  "ICP.md",
-  "VOICE.md",
-  "FRICTION.md",
-  "PREDICTION.md",
-  "REGRESSIONS.md",
-  "HEARTBEAT.md",
-]
 
 const compatTemplates = {
   gbrain: "GBRAIN.md",
@@ -234,7 +178,7 @@ async function looksLikeApplicationRepo(directory) {
 
 function looksLikeAfs(directory) {
   return (
-    existsSync(path.join(directory, "BRAIN.md")) ||
+    existsSync(path.join(directory, "SOURCES.md")) ||
     existsSync(path.join(directory, "GAPS.md")) ||
     existsSync(path.join(directory, "knowledge", "INDEX.md")) ||
     existsSync(path.join(directory, "sources")) ||
@@ -248,6 +192,11 @@ function looksLikeAfs(directory) {
 
 async function resolveInstallTarget(args) {
   const base = path.resolve(process.cwd(), args.target || ".")
+  const marker = await safePath(base, path.join(base, ".afs-profile.json"))
+  if (marker && args.mode === "auto") {
+    const recorded = resolveWorkspace(base)
+    return { target: recorded.target, profile: recorded.profile, reason: "recorded AFS profile" }
+  }
   const baseExists = existsSync(base)
   const baseEntries = await listVisibleEntries(base)
   const baseIsEmpty = !baseExists || baseEntries.length === 0
@@ -323,22 +272,24 @@ async function resolveInstallTarget(args) {
 }
 
 async function copyIfMissing(source, destination, created) {
-  if (existsSync(destination)) {
+  if (await safePath(installRoot, destination)) {
     return
   }
 
   await mkdir(path.dirname(destination), { recursive: true })
-  await copyFile(source, destination)
+  await safePath(installRoot, destination)
+  await copyFile(source, destination, constants.COPYFILE_EXCL)
   created.push(destination)
 }
 
 async function writeIfMissing(destination, content, created) {
-  if (existsSync(destination)) {
+  if (await safePath(installRoot, destination)) {
     return
   }
 
   await mkdir(path.dirname(destination), { recursive: true })
-  await writeFile(destination, content)
+  await safePath(installRoot, destination)
+  await writeFile(destination, content, { flag: "wx" })
   created.push(destination)
 }
 
@@ -433,30 +384,59 @@ async function main() {
 
   const placement = await resolveInstallTarget(args)
   const target = placement.target
+  const instructionRoot = placement.profile === "docs" ? path.dirname(target) : target
+  installRoot = instructionRoot
   const created = []
 
+  await safePath(installRoot, target)
+  const marker = path.join(instructionRoot, ".afs-profile.json")
+  if (await safePath(installRoot, marker)) {
+    const existing = JSON.parse(await readFile(marker, "utf8"))
+    const expected = placement.profile === "docs" ? "docs" : "root"
+    if (existing.version !== 1 || existing.profile !== expected) throw new Error("Existing AFS profile differs; review the workspace before changing placement")
+  }
   await mkdir(target, { recursive: true })
 
   for (const dir of standardDirs) {
+    await safePath(installRoot, path.join(target, dir))
     await mkdir(path.join(target, dir), { recursive: true })
   }
 
   for (const template of rootTemplates) {
+    if (template === "AGENTS.md") {
+      const prefix = placement.profile === "docs" ? "docs/" : ""
+      const content = (await readFile(path.join(skillDir, "templates", "root", template), "utf8"))
+        .replace(/`((?:knowledge|cookbooks|runbooks|research|logs|lessons|facts|fixes|steers|decisions|reflections|results|audits|plans|specs)\/[^`]*)`/g, (_, folder) => `\`${prefix}${folder}\``)
+      await writeIfMissing(path.join(instructionRoot, template), content, created)
+      continue
+    }
     await copyIfMissing(
       path.join(skillDir, "templates", "root", template),
-      path.join(target, template),
+      path.join(instructionRoot, template),
       created
     )
   }
 
   await copyWorkspaceTemplates(target, created)
+  await writeIfMissing(path.join(instructionRoot, ".afs-profile.json"),
+    JSON.stringify({ version: 1, profile: placement.profile === "docs" ? "docs" : "root" }) + "\n", created)
 
   if (args.sourceUrl) {
     await writeIfMissing(
-      path.join(target, "sources", "afs-standard-source.md"),
-      `# AFS Standard Source\n\n- URL: ${args.sourceUrl}\n- Capture status: install source recorded\n`,
+      path.join(instructionRoot, "SOURCES.md"),
+      `# Sources\n\n- AFS standard: ${args.sourceUrl}\n- Capture status: install source recorded; content not ingested.\n`,
       created
     )
+  }
+
+  if (args.sourceUrl) {
+    const registry = path.join(instructionRoot, "SOURCES.md")
+    await safePath(installRoot, registry)
+    const existing = (await readFile(registry, "utf8")).match(/https?:\/\/[^\s<>"')]+/g) ?? []
+    if (!existing.some((url) => new URL(url).href === new URL(args.sourceUrl).href)) {
+      await safePath(installRoot, registry)
+      await appendFile(registry, `\n- AFS install source: ${args.sourceUrl} (recorded; content not ingested).\n`)
+    }
   }
 
   for (const compat of args.compat) {

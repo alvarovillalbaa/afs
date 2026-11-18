@@ -1,0 +1,50 @@
+{
+  "at": "2026-11-18T15:22:12.088700+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "migrator_sha256": "f3dc038364ffaf88a19713343922708089567b1c16b867a09bd8251dc261f5c3",
+  "decoder_sha256": "900d66feffd92bb978661065f786c826755b7439fcd634527c0b856e8067ab58",
+  "render_requests": 2,
+  "only_synthetic_content": true,
+  "passed": true,
+  "heading_targets": [
+    {
+      "authored_original_fragment": "a--b",
+      "rendered_heading_display": "A & B",
+      "migrated_fragment": "afs-migrated-bb0a16791429875f0613-a--b",
+      "migrated_target_observed": true
+    },
+    {
+      "authored_original_fragment": "a-amp-b",
+      "rendered_heading_display": "A &amp; B",
+      "migrated_fragment": "afs-migrated-bb0a16791429875f0613-a-amp-b",
+      "migrated_target_observed": true
+    },
+    {
+      "authored_original_fragment": "a-amp-b-1",
+      "rendered_heading_display": "A &amp; B",
+      "migrated_fragment": "afs-migrated-bb0a16791429875f0613-a-amp-b-1",
+      "migrated_target_observed": true
+    },
+    {
+      "authored_original_fragment": "copy--right",
+      "rendered_heading_display": "Copy \u00a9 Right",
+      "migrated_fragment": "afs-migrated-bb0a16791429875f0613-copy--right",
+      "migrated_target_observed": true
+    },
+    {
+      "authored_original_fragment": "n--m",
+      "rendered_heading_display": "N & M",
+      "migrated_fragment": "afs-migrated-bb0a16791429875f0613-n--m",
+      "migrated_target_observed": true
+    }
+  ],
+  "original_and_migrated_heading_display_equal": true,
+  "original_API_generated_heading_ids_observed": false,
+  "original_fragment_basis": "authored incoming fixture links; first ampersand case is the exact remote review example",
+  "original_page_anchor_acceptance": false,
+  "old_html_sha256": "0d2fbdf132a8929493e7217ffe2045f3802bcc335eda0361f291e9cde4658dca",
+  "new_html_sha256": "2603fb8b354bad48ad78b735faec6d54b6d58cb30d20cdf14b3571a681cbabdc",
+  "real_workspace_migration": false,
+  "issue_comment_or_repository_mutation": false,
+  "fixture_removed": true
+}

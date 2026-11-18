@@ -1,0 +1,53 @@
+{
+  "at": "2026-11-18T13:50:43.601Z",
+  "source_parent": "093bc5371bb68b000a3dfd932b7af58fe6d9aa06",
+  "final_migration_script_sha256": "24dbc99be7c14660a924768fb6c1c5b61973b9ba12ad0771a5f1d3b36a30c87d",
+  "method": "Five AI review lenses with at most three workers concurrently; no human approval or full parser certification implied",
+  "lenses": [
+    {
+      "lens": "Instruction and CLAUDE compliance",
+      "result": "No findings; CLI/docs/test scope and whitespace checks conform"
+    },
+    {
+      "lens": "Bug detection",
+      "initial_findings": [
+        "List/footnote continuation references skipped",
+        "Quoted attribute contents rewritten",
+        "Escaped reference-like text rewritten"
+      ],
+      "bounded_recheck": "All exact reproductions fixed; no further confirmed blocker"
+    },
+    {
+      "lens": "Git history",
+      "initial_findings": [
+        "Inline URLs/titles and escaped literals changed",
+        "Indented list references broken",
+        "Quoted attribute values changed"
+      ],
+      "additional_confirmed": "Continued definition destinations/titles changed",
+      "bounded_recheck": "All exact cases fixed; final URI delta checked at final source hash"
+    },
+    {
+      "lens": "Prior PR comments",
+      "initial_findings": [
+        "Quoted definitions still collided"
+      ],
+      "additional_confirmed": "Angle-delimited inline destination mistaken for shortcut",
+      "bounded_recheck": "Quote collision, angle destination, root/quoted/continued/list URI rebasing, query/fragment preservation and retry checked at final source hash"
+    },
+    {
+      "lens": "Code comment and documentation accuracy",
+      "result": "No distinct inaccuracies beyond assigned implementation defects"
+    }
+  ],
+  "reproduced_before_fix": [
+    "peer-baseline.json",
+    "peer-boundary-baseline.json",
+    "peer-relative-uri-baseline.json"
+  ],
+  "test_fixtures_removed": true,
+  "reviewers_modified_repository_files": false,
+  "reviewers_sent_external_messages": false,
+  "known_reported_cases_fixed": true,
+  "full_markdown_parser_certified": false
+}

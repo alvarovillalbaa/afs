@@ -1,0 +1,26 @@
+{
+  "at": "2026-11-18T14:08:01.221501+00:00",
+  "source_sha256": "c8842298d5d9763f0c308afdae3f859342d4e7ffebb2f253d1d99562751c44f0",
+  "preceding_five_lens_review": "../followup-2/peer-review.json",
+  "bounded_rechecks": [
+    {
+      "agent": "afs_bug_review",
+      "initial_source_sha256": "7fe738bef9b95312457758b3df01acfe860595ea95e0bd64031f84334922efca",
+      "finding": "Indented code starting with bullet/numbered marker was classified as a list",
+      "reproduced_negative": "peer-baseline.json",
+      "fixed_and_rechecked": true,
+      "verified_source_sha256": "c8842298d5d9763f0c308afdae3f859342d4e7ffebb2f253d1d99562751c44f0",
+      "result": "Exact indented literals preserved; real list continuation and nested-list links correctly rebased",
+      "fixture_removed": true
+    },
+    {
+      "agent": "afs_prior_comments",
+      "verified_source_sha256": "7fe738bef9b95312457758b3df01acfe860595ea95e0bd64031f84334922efca",
+      "result": "No blocker in root/quoted/list/continued definitions, titles, encoded paths, queries/fragments, balanced/escaped filenames, code and retry",
+      "later_delta": "Two-line indentation guard before recognizing list markers; covered by other peer and current unit/render checks",
+      "fixture_removed": true
+    }
+  ],
+  "external_mutations": false,
+  "dependencies_installed": false
+}

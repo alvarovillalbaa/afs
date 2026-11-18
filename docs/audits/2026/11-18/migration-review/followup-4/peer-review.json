@@ -1,0 +1,33 @@
+{
+  "at": "2026-11-18T14:25:01.989468+00:00",
+  "source_sha256": "43af64211f4a880a33593a90712a5a2f09551a161e46e9f5afc7c84b888252a4",
+  "preceding_five_lens_review": "../followup-2/peer-review.json",
+  "bounded_rechecks": [
+    {
+      "agent": "afs_bug_review",
+      "findings": [
+        "Multiline HTML comment was treated as actual tags",
+        "Inline endpoint crossed separate Markdown blocks"
+      ],
+      "negative_evidence": [
+        "peer-baseline.json",
+        "block-boundary-baseline.json"
+      ],
+      "fixed_and_rechecked": true,
+      "verified_source_sha256": "43af64211f4a880a33593a90712a5a2f09551a161e46e9f5afc7c84b888252a4",
+      "result": "Exact blank/no-blank fence variants rebase actual links; comments including blank lines preserved",
+      "fixtures_removed": true
+    },
+    {
+      "agent": "afs_prior_comments",
+      "finding": "Decoded whitespace truncated previously bare HTML query",
+      "negative_evidence": "peer-baseline.json",
+      "fixed_and_rechecked": true,
+      "verified_source_sha256": "0e77608f44fef00ffa70fe5fe95d69ba595aa8b4f53de213bdcd1ad145eaa114",
+      "result": "Full quoted query/entities/single quotes/backslashes/literals/retry preserved",
+      "later_delta": "Only inline endpoint block reset; covered by final43tests, other peer and current renderer",
+      "fixture_removed": true
+    }
+  ],
+  "dependencies_or_external_mutations": false
+}
