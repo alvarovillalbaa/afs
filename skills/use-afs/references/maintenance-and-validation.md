@@ -66,6 +66,8 @@ migration; these checks do not replace content-specific review.
 Link rebasing shares the literal-aware reference traversal: inline, fenced and
 indented code examples remain unchanged in the exercised cases. Actual inline
 destinations support balanced or escaped parentheses, preserving their titles.
+Inline images nested inside link labels use that same destination rebasing;
+their own alternative text and adjacent code literals remain unchanged.
 Relative HTML `href`, `src`, `poster` and `xlink:href` attributes use the same
 relocation mappings. Rewritten attributes are quoted. Markdown and HTML URL
 character references use the [complete bundled reference data](html-character-references.md),

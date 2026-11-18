@@ -228,7 +228,8 @@ function rewriteMarkdown(text, anchor, source, destination, mappings) {
           const display = value.slice(start + 1, end)
           const inlineEnd = value[end + 1] === "(" ? close(value, end + 1, "(", ")") : -1
           if (inlineEnd >= 0) {
-            result += `${image ? "!" : ""}[${image ? display : rewriteUses(display, false)}]${value.slice(end + 1, inlineEnd + 1)}`
+            const destination = value.slice(end + 1, inlineEnd + 1)
+            result += `${image ? "!" : ""}[${image ? display : rewriteUses(display, false)}]${image ? inlineDestination(destination) : destination}`
             index = inlineEnd + 1
             continue
           }
