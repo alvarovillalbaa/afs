@@ -25,6 +25,10 @@ destinations and longer fenced examples, including peer reproductions for
 comments, bare attributes and inline-span block boundaries. Its final focused
 run passes 43 tests.
 
+The subsequent [transformation preflight and entry-boundary review](followup-5/README.md)
+prepares the full text plan before retirement, retains directory-root navigation
+and closes EOF-terminated fences between entries. All 46 focused tests pass.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.

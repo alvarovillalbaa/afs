@@ -1,0 +1,24 @@
+{
+  "at": "2026-11-18T14:38:13.035259+00:00",
+  "source_sha256": "0a9cc3b88d0e1925550e74e036117fa3167dd60451debda90cce83055fede949",
+  "preceding_five_lens_review": "../followup-2/peer-review.json",
+  "bounded_rechecks": [
+    {
+      "agent": "afs_bug_review",
+      "finding": "Internal directory-root links used README basename when relative target was empty",
+      "negative_evidence": "peer-baseline.json",
+      "fixed_and_rechecked": true,
+      "verified_source_sha256": "0a9cc3b88d0e1925550e74e036117fa3167dd60451debda90cce83055fede949",
+      "result": "Internal ./ and . preserved; incoming root becomes decisions/; preflight failure retains sources/inbound; retry succeeds",
+      "fixtures_removed": true
+    },
+    {
+      "agent": "afs_prior_comments",
+      "verified_source_sha256": "21b69dadd36e2b19122625c4d64bcc3ccbf39a06ea073bae0bc9a65d6e50296f",
+      "result": "Preflight inbound error preserves sources before destination creation; corrected retry, EOF isolation, HTML/URI/literal/root cases pass",
+      "later_delta": "Single relative-path fallback correction; final46tests and current renderer plus other peer verify it",
+      "fixtures_removed": true
+    }
+  ],
+  "dependencies_or_external_mutations": false
+}
