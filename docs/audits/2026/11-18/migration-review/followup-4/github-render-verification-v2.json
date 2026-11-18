@@ -1,0 +1,28 @@
+{
+  "at": "2026-11-18T14:22:06.931347+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "source_script_sha256": "0e77608f44fef00ffa70fe5fe95d69ba595aa8b4f53de213bdcd1ad145eaa114",
+  "render_requests": 2,
+  "only_synthetic_content": true,
+  "passed": true,
+  "HTML_target_with_observed_id": [
+    "REFERENCES.md#afs-migrated-860314f84e090a7acd0d-custom",
+    "title"
+  ],
+  "full_bare_query_before": [
+    "../asset%26icon.png?two words",
+    null
+  ],
+  "full_quoted_query_after": [
+    "asset%26icon.png?two words",
+    null
+  ],
+  "rendered_code_equal": true,
+  "comment_bytes_preserved": true,
+  "comment_not_rendered_as_link": true,
+  "before_html_sha256": "223bef49d04a266c50fdca7a4e50b06dec9c4fb79f11d006403712bb950b96d8",
+  "after_html_sha256": "87444a9a79436bcee7d05cb6182de76c153b3d72039810e970f31b6569607754",
+  "real_workspace_migration": false,
+  "issue_comment_or_repository_mutation": false,
+  "fixture_removed": true
+}

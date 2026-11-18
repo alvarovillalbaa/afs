@@ -20,6 +20,11 @@ the earlier regex pass that changed code examples and skipped parenthesized
 destinations. Both regressions failed before correction; all 39 focused tests
 now pass, with independent GitHub GFM rendering of the new cases.
 
+The next [HTML/fence correction](followup-4/README.md) addresses relative HTML
+destinations and longer fenced examples, including peer reproductions for
+comments, bare attributes and inline-span block boundaries. Its final focused
+run passes 43 tests.
+
 The [finding inventory](findings.json) and [coverage map](coverage.json) bind
 each original review comment to a behavioral regression case. Remote review
 resolution, CI and merge are separate subsequent steps.

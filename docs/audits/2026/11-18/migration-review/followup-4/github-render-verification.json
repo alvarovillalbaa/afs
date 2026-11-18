@@ -1,0 +1,43 @@
+{
+  "at": "2026-11-18T14:18:22.244314+00:00",
+  "provider": "GitHub POST /markdown, mode=gfm",
+  "source_script_sha256": "c9a5556eb66052038e2a74cb547f2fb8c3e8adefab6a2f65ce6d9088477ffaa4",
+  "render_requests": 5,
+  "only_synthetic_content": true,
+  "passed": true,
+  "HTML_links_with_observed_targets": {
+    "B": [
+      "REFERENCES.md#afs-migrated-860314f84e090a7acd0d",
+      null
+    ],
+    "Custom": [
+      "REFERENCES.md#afs-migrated-860314f84e090a7acd0d-custom",
+      "title href=literal"
+    ],
+    "Local": [
+      "REFERENCES.md#afs-migrated-bb0a16791429875f0613-local",
+      null
+    ]
+  },
+  "directory_link": [
+    "decisions/choice.md",
+    null
+  ],
+  "image_destination": "asset%26icon.png?first=1&second=2",
+  "code_samples_equal": true,
+  "rendered_code_samples": [
+    "```\n# Literal heading\n```` trailing text\n# Still literal",
+    "~~~\n# Literal heading\n~~~~ trailing text\n# Still literal",
+    "<a href=\"b.md\">B</a>"
+  ],
+  "html_sha256": {
+    "a_before": "d347a0d6b3cef36fa2bc51a6aebea4c5f75b954813e6352afe2d8fea20f067a8",
+    "b_before": "30749f1f98b42491679bf3897981b3fd7e967e33beb07422996c1d0ae407e277",
+    "readme_before": "bcdca6f551c9f8a498f731dcd3498d3590de9f4a6979e8c9d3395f9fd42ce478",
+    "catalog_after": "2930e1566247df9faf12e2d1e50b000cc9ebefc7395648138a4c50551e0c1a2a",
+    "readme_after": "f4d31f62b00d4cf35f4beea9ff691d90818a123f2c45fc1c218aa4941d563126"
+  },
+  "real_workspace_migration": false,
+  "issue_comment_or_repository_mutation": false,
+  "fixture_removed": true
+}

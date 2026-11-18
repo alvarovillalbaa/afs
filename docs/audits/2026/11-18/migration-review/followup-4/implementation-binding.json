@@ -1,0 +1,9 @@
+{
+  "at": "2026-11-18T14:25:17.054303+00:00",
+  "implementation_commit": "4e758248b666dc7ca76cb095e780104c353c6e2e",
+  "source_script_sha256": "43af64211f4a880a33593a90712a5a2f09551a161e46e9f5afc7c84b888252a4",
+  "tests_sha256": "78fc0410e17c0711c3238cd8e3bad64047363c12199885d5fe345339d8b26806",
+  "verified_unit_tests": 43,
+  "negative_baselines_preserved": true,
+  "evidence_commit_follows_source_commit": true
+}
