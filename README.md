@@ -1,5 +1,9 @@
 # AFS
 
+<!-- project-family:start -->
+> **Project family:** [Agent Infrastructure](https://github.com/alvarovillalbaa#agent-infrastructure) · **Area:** Context standards
+<!-- project-family:end -->
+
 AFS is the Agentic FileSystem Standard: portable instructions, unique knowledge,
 work history, and source provenance shared across agent harnesses.
 
