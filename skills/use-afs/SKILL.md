@@ -17,7 +17,8 @@ before acting. The user's current instructions override earlier standard version
   monitoring, capture/ingestion status, and verified Drive artifact links.
 - Raw data belongs in the personal or Clous Google Drive. Preserve unread sources
   and verify a recoverable copy before removing local material.
-- Goals belong in Notion and are linked from `ROADMAP.md`.
+- Goals belong in Notion (Clous Goals, Clous KPIs/metrics, Personal Goals) and are linked from `ROADMAP.md`.
+- Retire `problems/` and `models/problems/` only after routing actionable items to Notion/Linear or analytical findings to dated repository audits and verifying preservation.
 - Templates stay beside the content they generate.
 - Use living `facts/<domain>/` and `decisions/`.
 - Use `YYYY/MM-DD/` for logs, lessons, fixes, audits, plans, and results.

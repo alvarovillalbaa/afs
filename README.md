@@ -16,7 +16,8 @@ folders live in `docs/`.
 - Source of truth: cookbooks, unique knowledge, runbooks, and continuous research units.
 - References: one `REFERENCES.md`; source provenance: one `SOURCES.md`.
 - Raw material: the correct personal or Clous Google Drive.
-- Goals: Notion, guided by `ROADMAP.md`.
+- Goals: Notion (Clous Goals, Clous KPIs/metrics, Personal Goals), guided by `ROADMAP.md`.
+- Problems: Notion or Linear tasks and dated repository audits, not `problems/`.
 - Templates: beside the content they generate.
 
 `AGENTS.md` owns AFS management. Company/product/customer vision belongs in

@@ -4,7 +4,7 @@ import path from "node:path"
 
 export const standardDirs = [
   "logs", "lessons", "facts", "facts/general", "fixes", "decisions",
-  "steers", "problems", "reflections", "audits", "plans", "specs", "lib",
+  "steers", "reflections", "audits", "plans", "specs", "lib",
   "objects", "results", "cookbooks", "knowledge", "runbooks", "research",
 ]
 
@@ -20,7 +20,7 @@ export const removedRootFiles = [
   "FOCUS.md", "RUNBOOK.md", "DECISIONS.md",
 ]
 
-export const removedDirs = ["raw", "sources", "templates", "goals", "models/goals", "models/problems", "facts/items", "facts/episodes", "facts/triples"]
+export const removedDirs = ["raw", "sources", "templates", "goals", "models/goals", "problems", "models/problems", "facts/items", "facts/episodes", "facts/triples"]
 
 export async function safePath(root, candidate) {
   const relative = path.relative(root, candidate)

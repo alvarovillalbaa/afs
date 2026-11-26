@@ -45,7 +45,7 @@ test("fresh root and application profiles create the current contract and preser
     assert.equal(await readFile(path.join(target, "AGENTS.md"), "utf8"), "# Existing rules\nPreserve this.\n")
     for (const name of ["REFERENCES.md", "SOURCES.md", "GAPS.md", "ROADMAP.md", "BEHAVIOR.md", "IEP.md"]) assert.ok(existsSync(path.join(target, name)))
     const shell = mode === "docs" ? path.join(target, "docs") : target
-    for (const name of ["raw", "sources", "references", "templates", "goals", "models/goals", "BRAIN.md", "VISION.md", "FRICTION.md", "PREDICTION.md", "REGRESSIONS.md"]) assert.ok(!existsSync(path.join(shell, name)), name)
+    for (const name of ["raw", "sources", "references", "templates", "goals", "problems", "models/goals", "models/problems", "BRAIN.md", "VISION.md", "FRICTION.md", "PREDICTION.md", "REGRESSIONS.md"]) assert.ok(!existsSync(path.join(shell, name)), name)
     if (mode === "docs") assert.ok(!existsSync(path.join(shell, "AGENTS.md")))
     assert.match(await readFile(path.join(target, "SOURCES.md"), "utf8"), /https:\/\/example.com\/afs/)
     run("validate", [target])
@@ -267,17 +267,15 @@ test("legacy docs root files are consolidated at the instruction root without lo
 
 test("directory relocation rebases inbound links, nested links and actual conflict destinations", async () => {
   const target = await fixture("afs-directory-links-")
-  for (const dir of ["models/decisions", "models/problems/nested", "decisions", "assets"]) await mkdir(path.join(target, dir), { recursive: true })
+  for (const dir of ["models/decisions", "decisions", "assets"]) await mkdir(path.join(target, dir), { recursive: true })
   await writeFile(path.join(target, "assets", "proof.txt"), "Proof\n")
   await writeFile(path.join(target, "decisions", "choice.md"), "Keep destination\n")
   await writeFile(path.join(target, "models", "decisions", "choice.md"), '[Proof](../../assets/proof.txt "Evidence")\n')
-  await writeFile(path.join(target, "models", "problems", "nested", "problem.md"), "[Choice](../../decisions/choice.md)\n")
-  await writeFile(path.join(target, "README.md"), '[Choice](models/decisions/choice.md "Decision")\n[Problem](models/problems/nested/problem.md)\n')
+  await writeFile(path.join(target, "README.md"), '[Choice](models/decisions/choice.md "Decision")\n')
   run("migrate", [target])
   assert.equal(await readFile(path.join(target, "decisions", "choice.md"), "utf8"), "Keep destination\n")
   assert.equal(await readFile(path.join(target, "decisions", "choice-migrated.md"), "utf8"), '[Proof](../assets/proof.txt "Evidence")\n')
-  assert.equal(await readFile(path.join(target, "problems", "nested", "problem.md"), "utf8"), "[Choice](../../decisions/choice-migrated.md)\n")
-  assert.equal(await readFile(path.join(target, "README.md"), "utf8"), '[Choice](decisions/choice-migrated.md "Decision")\n[Problem](problems/nested/problem.md)\n')
+  assert.equal(await readFile(path.join(target, "README.md"), "utf8"), '[Choice](decisions/choice-migrated.md "Decision")\n')
   assert.ok(!existsSync(path.join(target, "models")))
 })
 
@@ -320,8 +318,8 @@ test("directory planning reserves destinations already owned by root consolidati
   assert.match(index, /\[Root\]\(decisions\/prior-decisions.md#afs-migrated-/)
 })
 
-test("legacy type-first facts and models/problems cannot be certified as current", async () => {
-  for (const dir of ["facts/items", "facts/episodes", "facts/triples", "models/problems"]) {
+test("legacy type-first facts and problem folders cannot be certified as current", async () => {
+  for (const dir of ["facts/items", "facts/episodes", "facts/triples", "problems", "models/problems"]) {
     const target = await fixture("afs-legacy-validation-")
     for (const name of ["AGENTS.md", "REFERENCES.md", "SOURCES.md", "GAPS.md"]) await writeFile(path.join(target, name), `# ${name}\n`)
     await mkdir(path.join(target, dir, "domain"), { recursive: true })
@@ -330,7 +328,7 @@ test("legacy type-first facts and models/problems cannot be certified as current
     const result = spawnSync(process.execPath, [script("validate"), target], { encoding: "utf8" })
     assert.equal(result.status, 1)
     assert.ok(result.stderr.includes(dir))
-    if (dir.startsWith("facts/")) {
+    {
       const migration = spawnSync(process.execPath, [script("migrate"), target], { encoding: "utf8" })
       assert.equal(migration.status, 2)
       assert.equal(await readFile(original, "utf8"), "Keep record\n")

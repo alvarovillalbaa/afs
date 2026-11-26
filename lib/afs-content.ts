@@ -173,12 +173,6 @@ export const afsPathGroups: AfsPathGroup[] = [
           "Live brief records of decisions made so reasoning remains inspectable.",
       },
       {
-        path: "/problems/",
-        label: "Problems",
-        description:
-          "Live brief records of problems encountered and their current status.",
-      },
-      {
         path: "/reflections/",
         label: "Reflections",
         description:
@@ -264,7 +258,7 @@ export const afsPathGroups: AfsPathGroup[] = [
         path: "/knowledge/",
         label: "Knowledge",
         description:
-          "Unique knowledge, original perspectives, and source-backed synthesis that generalizes across areas. Operational definitions belong in runbooks or cookbooks.",
+          "Unique knowledge, original perspectives, and source-backed synthesis that generalizes beyond the project across any domain. Do not copy online content or define operations here.",
       },
       {
         path: "/runbooks/",

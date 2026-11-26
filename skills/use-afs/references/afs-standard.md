@@ -1,6 +1,6 @@
 # AFS Standard
 
-Last updated: 2026-10-10
+Last updated: 2026-11-26
 
 AFS is a portable filesystem and Markdown standard for agent instructions,
 durable knowledge, work history, and source provenance.
@@ -60,8 +60,7 @@ They must route into the current owners rather than duplicate them.
   in timestamp folders.
 - `decisions/`: brief living decision records, without timestamp folders.
 
-Existing `steers/`, `problems/`, and `reflections/` may remain as scoped
-history or problem records. They do not create a separate goal system.
+Existing `steers/` and `reflections/` may remain as scoped history. Do not create a separate problem register: actionable problems belong in Notion or Linear tasks; analytical findings belong in the relevant dated repository audit.
 
 ## Operational
 
@@ -78,7 +77,7 @@ history or problem records. They do not create a separate goal system.
 
 - `cookbooks/`: technical guides explaining how something is actually done.
 - `knowledge/`: unique knowledge, original perspectives, and source-backed
-  synthesis that generalizes across areas. It is not a mirror of online material
+  synthesis that generalizes beyond a particular project or operational context. It may cover any domain; it must add original insight, not merely restate public information. It is not a mirror of online material
   and does not define operations. Procedures belong in runbooks or cookbooks;
   product, company, user, and audience intent belongs in the matching root file.
 - `runbooks/`: recurring operational procedures grounded in prior execution.
@@ -91,7 +90,7 @@ Each research unit has a `README.md` defining:
 4. Method, scope, evidence criteria, and stopping/review conditions.
 5. Evidence, results, status, next questions, and an owner when known.
 
-Research folders are living, not organized primarily by dates. Dated observations
+Research folders are living, not organized primarily by dates. Each unit has its own ordered research agenda; distinguish hypotheses from observations and conclusions. Dated observations
 can remain within a unit as evidence. Do not invent hypotheses or claim research
 was performed to fill a template.
 
@@ -103,8 +102,7 @@ Raw data and source captures live in Google Drive: personal material in
 checksums when migrated, and destinations of any unique synthesis. An archived
 copy is preservation evidence, not proof of ingestion.
 
-Goals live in Notion, guided by `ROADMAP.md`. The roadmap links to those goal
-records rather than maintaining a competing goal database.
+Goals live in Notion, guided by `ROADMAP.md`. Use separate Clous Goals and KPI/metrics databases, and a Personal Goals database. The roadmap links to the appropriate canonical records rather than maintaining a competing goal database; never invent missing database links.
 
 Templates live beside the content they generate, such as
 `lib/videos/template.md`, or within the corresponding Drive/Figma content
@@ -124,6 +122,7 @@ with their owning content/component.
 | RUNBOOK.md | runbooks/ |
 | DECISIONS.md | decisions/ |
 | goals/ and models/goals/ | Canonical Notion goals and ROADMAP.md links |
+| problems/ and models/problems/ | Notion or Linear tasks for actionable problems; relevant dated audits for analytical findings. Preserve original records until their destination is verified. |
 | raw/ | The correct personal or Clous Google Drive |
 | sources/ | SOURCES.md; copied artifacts move to Drive |
 | External reference registries in references/ | REFERENCES.md for the AFS reference catalog |

@@ -22,7 +22,7 @@ used to detect it, so retries and validation keep checking the same shell.
 ## Validate
 
 `npm run afs:validate -- .` checks the detected AFS shell. It rejects removed
-root files and global raw, source, reference, goal, and template surfaces.
+root files and global raw, source, goal, problem, and template surfaces. External reference registries must be consolidated after review; native technical guides may remain.
 It requires root `AGENTS.md`, `REFERENCES.md`, `SOURCES.md`, and `GAPS.md`.
 Each research unit must define ordered questions, hypotheses, reasoning, method,
 and evidence/status. Missing optional shell folders and undated history produce
@@ -33,7 +33,7 @@ warnings; a warning is not proof of completed migration.
 `npm run afs:migrate -- .` consolidates obsolete root files and text registries
 without overwriting content. Conflicting names receive a migration suffix.
 The command reports blockers for raw/binary material needing verified Drive
-export, goals needing Notion routing, or templates needing a content owner.
+export, goals needing Notion routing, problems needing a verified Notion/Linear task or dated audit, or templates needing a content owner.
 Review these blockers; do not treat a partial migration as complete.
 
 Registry content is selected explicitly after review, for example:
@@ -43,7 +43,7 @@ instruction root (`docs/references/...` in the application profile).
 Unselected Markdown snapshots and repository-native technical guides remain
 in place with blockers and are excluded from automatic inbound-link edits.
 The same byte-preservation boundary covers retained raw, official-documentation,
-goal, model, global-template and type-first fact trees under the selected AFS
+goal, model, problem, global-template and type-first fact trees under the selected AFS
 target. Explicitly selected registry jobs still consolidate and rebase their own
 content. Retained captures can contain obsolete paths; update maintained
 navigation separately instead of altering unreviewed evidence.

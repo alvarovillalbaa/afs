@@ -553,7 +553,7 @@ async function main() {
   }
   // Resolve actual conflict destinations before rewriting any referring text.
   const reserved = new Set(jobs.map((job) => job.destination))
-  for (const [sourcePath, destinationPath] of [["cookbook", "cookbooks"], ["items", "facts/general"], ["models/decisions", "decisions"], ["models/problems", "problems"]]) {
+  for (const [sourcePath, destinationPath] of [["cookbook", "cookbooks"], ["items", "facts/general"], ["models/decisions", "decisions"]]) {
     const sourceRoot = path.join(target, sourcePath)
     const destinationRoot = path.join(target, destinationPath)
     try {
@@ -628,7 +628,7 @@ async function main() {
   }
   for (const job of directoryJobs) for (const item of job.markdown) item.updated = rebase(item.text, item.file, mappings.get(item.file).destination, mappings)
   const retiredTextSources = new Set([...admittedJobs.map((job) => job.source), ...directoryJobs.flatMap((job) => job.markdown.map((item) => item.file))])
-  const retainedRoots = ["references", "sources", "raw", "official-documentation", "goals", "models", "templates", "facts/items", "facts/episodes", "facts/triples"].map((name) => path.join(target, name) + path.sep)
+  const retainedRoots = ["references", "sources", "raw", "official-documentation", "goals", "models", "problems", "templates", "facts/items", "facts/episodes", "facts/triples"].map((name) => path.join(target, name) + path.sep)
   const preparedUpdates = []
   for (const file of await files(instructionRoot, instructionRoot, true)) {
     if (!file.endsWith(".md") || retiredTextSources.has(file) || futureDestinations.has(file) || retainedRoots.some((root) => file.startsWith(root))) continue
@@ -701,8 +701,17 @@ async function main() {
     for (const entry of await readdir(root, { withFileTypes: true })) if (entry.isDirectory()) await removeEmpty(path.join(root, entry.name))
     if ((await readdir(root)).length === 0) await rmdir(root)
   }
-  for (const dir of ["references", "sources", "models", "items", "cookbook"]) {
+  for (const dir of ["references", "sources", "models/decisions", "items", "cookbook"]) {
     try { await removeEmpty(path.join(target, dir)) } catch (error) { blockers.push(error.message) }
+  }
+  try {
+    const models = path.join(target, "models")
+    if (await safePath(instructionRoot, models) && (await readdir(models)).length === 0) await rmdir(models)
+  } catch (error) { blockers.push(error.message) }
+  for (const dir of ["problems", "models/problems"]) {
+    try {
+      if (await safePath(instructionRoot, path.join(target, dir))) blockers.push(`${dir}/ requires a verified Notion/Linear task or dated audit destination; it has been preserved.`)
+    } catch (error) { blockers.push(error.message) }
   }
   for (const dir of ["raw", "official-documentation", "goals", "models/goals", "templates", "facts/items", "facts/episodes", "facts/triples"]) {
     if (existsSync(path.join(target, dir))) blockers.push(`${dir}/ requires verified external preservation or an explicit content owner; it has been preserved.`)
