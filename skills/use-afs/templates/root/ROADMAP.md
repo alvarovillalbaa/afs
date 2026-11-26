@@ -12,4 +12,4 @@ No workspace-specific roadmap has been supplied yet.
 
 ## Canonical goals
 
-Add verified Notion goal links when available.
+Add verified Notion links to the appropriate Clous Goals, Clous KPIs/metrics, or Personal Goals database and records when available.

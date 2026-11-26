@@ -22,7 +22,8 @@ This workspace follows the Agentic FileSystem Standard.
 - Put unresolved gaps in understanding in `GAPS.md` so humans and agents can
   resolve them deliberately.
 - Put technical how-to guides in `cookbooks/`, not `cookbook/`.
-- Put decisions in `decisions/`; goals are canonical in Notion and linked from `ROADMAP.md`.
+- Put decisions in `decisions/`; goals are canonical in Notion (Clous Goals, Clous KPIs/metrics, Personal Goals) and linked from `ROADMAP.md`.
+- Route actionable problems to Notion or Linear tasks and analytical findings to dated audits; do not create `problems/`. Preserve existing problem records until their destination is verified.
 - Keep templates beside the content they generate, rather than in a global template folder.
 - Keep unique knowledge and perspectives in `knowledge/`; operations belong in runbooks or cookbooks.
 - Organize continuous research in `research/<unit>/`, defining ordered questions, hypotheses, reasoning, method, and evidence/status in each unit's README.
